@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from backend.database import get_db
 from backend.core.security import Role
 from backend.core.dependencies import require_role
@@ -11,12 +11,20 @@ from backend.models.recruiter import Recruiter, RecruiterStatus
 from backend.models.job import Job, JobStatus
 from backend.models.application import Application, ApplicationStatus
 from backend.models.audit_log import AuditLog
-from backend.schemas.recruiter import RecruiterResponse
+from backend.schemas.recruiter import (
+    RecruiterResponse,
+    RecruiterAdminDetailResponse,
+    PaginatedAdminRecruitersResponse,
+)
 from backend.schemas.job import JobResponse, JobFeedbackRequest
 from backend.schemas.audit import (
     AuditLogResponse,
     PaginatedAuditLogsResponse,
     AdminMetricsResponse,
+)
+from backend.schemas.student import (
+    StudentAdminDetailResponse,
+    PaginatedAdminStudentsResponse,
 )
 
 router = APIRouter(prefix="/admin", tags=["Placement Cell Administration"])
@@ -187,6 +195,134 @@ def request_changes_on_job(
     db.commit()
     db.refresh(job)
     return job
+
+
+@router.get("/students", response_model=PaginatedAdminStudentsResponse)
+def get_all_students(
+    page: int = Query(1, ge=1, description="Page index"),
+    limit: int = Query(20, ge=1, le=100, description="Items per page"),
+    search: Optional[str] = Query(None, description="Search by name, roll number, or email"),
+    branch: Optional[str] = Query(None, description="Filter by student department / branch"),
+    min_cgpa: Optional[float] = Query(None, description="Filter by minimum CGPA"),
+    current_admin: Admin = Depends(require_role(Role.ADMIN)),
+    db: Session = Depends(get_db),
+):
+    """
+    Admin Student Directory.
+    Enables administrators to inspect full student applicant metrics (CGPA, Branch, Resume, Applications count).
+    """
+    query = db.query(Student)
+
+    if search:
+        search_fmt = f"%{search.strip()}%"
+        query = query.filter(
+            or_(
+                Student.full_name.ilike(search_fmt),
+                Student.roll_number.ilike(search_fmt),
+                Student.email.ilike(search_fmt),
+            )
+        )
+
+    if branch:
+        query = query.filter(Student.branch.ilike(f"%{branch.strip()}%"))
+
+    if min_cgpa is not None:
+        query = query.filter(Student.cgpa >= min_cgpa)
+
+    total = query.count()
+    offset = (page - 1) * limit
+    students = query.order_by(Student.cgpa.desc(), Student.roll_number.asc()).offset(offset).limit(limit).all()
+
+    total_pages = (total + limit - 1) // limit if total > 0 else 1
+
+    items = []
+    for s in students:
+        apps_count = db.query(func.count(Application.id)).filter(Application.student_id == s.id).scalar() or 0
+        items.append(
+            StudentAdminDetailResponse(
+                id=s.id,
+                email=s.email,
+                full_name=s.full_name,
+                roll_number=s.roll_number,
+                cgpa=s.cgpa,
+                branch=s.branch,
+                graduation_year=s.graduation_year,
+                resume_url=s.resume_url,
+                created_at=s.created_at,
+                applications_count=apps_count,
+            )
+        )
+
+    return PaginatedAdminStudentsResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        total_pages=total_pages,
+        items=items,
+    )
+
+
+@router.get("/recruiters", response_model=PaginatedAdminRecruitersResponse)
+def get_all_recruiters(
+    page: int = Query(1, ge=1, description="Page index"),
+    limit: int = Query(20, ge=1, le=100, description="Items per page"),
+    status: Optional[RecruiterStatus] = Query(None, description="Filter by status (PENDING, ACTIVE, REJECTED)"),
+    search: Optional[str] = Query(None, description="Search company or HR name"),
+    current_admin: Admin = Depends(require_role(Role.ADMIN)),
+    db: Session = Depends(get_db),
+):
+    """
+    Admin Recruiter Directory.
+    Enables administrators to inspect all registered partner companies and their activity.
+    """
+    query = db.query(Recruiter)
+
+    if status:
+        query = query.filter(Recruiter.status == status)
+
+    if search:
+        search_fmt = f"%{search.strip()}%"
+        query = query.filter(
+            or_(
+                Recruiter.company_name.ilike(search_fmt),
+                Recruiter.hr_name.ilike(search_fmt),
+                Recruiter.email.ilike(search_fmt),
+            )
+        )
+
+    total = query.count()
+    offset = (page - 1) * limit
+    recruiters = query.order_by(Recruiter.created_at.desc()).offset(offset).limit(limit).all()
+
+    total_pages = (total + limit - 1) // limit if total > 0 else 1
+
+    items = []
+    for r in recruiters:
+        jobs_count = (
+            db.query(func.count(Job.id))
+            .filter(Job.recruiter_id == r.id, Job.is_deleted == False)
+            .scalar()
+            or 0
+        )
+        items.append(
+            RecruiterAdminDetailResponse(
+                id=r.id,
+                email=r.email,
+                company_name=r.company_name,
+                hr_name=r.hr_name,
+                status=r.status,
+                created_at=r.created_at,
+                jobs_count=jobs_count,
+            )
+        )
+
+    return PaginatedAdminRecruitersResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        total_pages=total_pages,
+        items=items,
+    )
 
 
 @router.get("/audit-logs", response_model=PaginatedAuditLogsResponse)

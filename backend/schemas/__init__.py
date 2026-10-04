@@ -5,8 +5,17 @@ from backend.schemas.auth import (
     TokenResponse,
     UserResponse,
 )
-from backend.schemas.student import StudentProfileUpdate, StudentResponse
-from backend.schemas.recruiter import RecruiterResponse
+from backend.schemas.student import (
+    StudentProfileUpdate,
+    StudentResponse,
+    StudentAdminDetailResponse,
+    PaginatedAdminStudentsResponse,
+)
+from backend.schemas.recruiter import (
+    RecruiterResponse,
+    RecruiterAdminDetailResponse,
+    PaginatedAdminRecruitersResponse,
+)
 from backend.schemas.job import (
     JobCreate,
     JobUpdate,
@@ -35,7 +44,11 @@ __all__ = [
     "UserResponse",
     "StudentProfileUpdate",
     "StudentResponse",
+    "StudentAdminDetailResponse",
+    "PaginatedAdminStudentsResponse",
     "RecruiterResponse",
+    "RecruiterAdminDetailResponse",
+    "PaginatedAdminRecruitersResponse",
     "JobCreate",
     "JobUpdate",
     "JobFeedbackRequest",

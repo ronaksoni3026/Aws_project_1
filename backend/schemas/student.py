@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, HttpUrl, Field, ConfigDict
 
 
@@ -23,3 +23,26 @@ class StudentResponse(BaseModel):
     graduation_year: int
     resume_url: Optional[str] = None
     created_at: datetime
+
+
+class StudentAdminDetailResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    full_name: str
+    roll_number: str
+    cgpa: float
+    branch: str
+    graduation_year: int
+    resume_url: Optional[str] = None
+    created_at: datetime
+    applications_count: int = 0
+
+
+class PaginatedAdminStudentsResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    total_pages: int
+    items: List[StudentAdminDetailResponse]
