@@ -92,4 +92,17 @@ export const api = {
     request(`/admin/jobs/${id}/request-changes`, { method: "POST", body: JSON.stringify({ admin_feedback }) }),
   getAuditLogs: (page = 1, limit = 25) => request(`/admin/audit-logs?page=${page}&limit=${limit}`),
   getMetrics: () => request("/admin/metrics"),
+  getAdminStudents: (page = 1, limit = 20, search = "", branch = "", min_cgpa = null) => {
+    let url = `/admin/students?page=${page}&limit=${limit}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (branch) url += `&branch=${encodeURIComponent(branch)}`;
+    if (min_cgpa !== null && min_cgpa !== undefined && min_cgpa !== "") url += `&min_cgpa=${min_cgpa}`;
+    return request(url);
+  },
+  getAdminRecruiters: (page = 1, limit = 20, status = "", search = "") => {
+    let url = `/admin/recruiters?page=${page}&limit=${limit}`;
+    if (status) url += `&status=${encodeURIComponent(status)}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    return request(url);
+  },
 };
