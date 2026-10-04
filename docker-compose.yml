@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: placement_portal_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: placement_admin
+      POSTGRES_PASSWORD: placement_secret_password
+      POSTGRES_DB: placement_portal
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U placement_admin -d placement_portal"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: placement_portal_api
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://placement_admin:placement_secret_password@db:5432/placement_portal
+      - SECRET_KEY=institutional-placement-portal-super-secret-key-production-grade
+      - ACCESS_TOKEN_EXPIRE_MINUTES=120
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

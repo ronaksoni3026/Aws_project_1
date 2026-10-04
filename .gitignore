@@ -1,0 +1,29 @@
+# Environments
+venv/
+env/
+ENV/
+.env
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database files
+*.db
+*.sqlite3
+
+# Node / Frontend build (if generated)
+node_modules/
+dist/
+build/
+.parcel-cache/
+
+# OS and IDE files
+.DS_Store
+.vscode/
+.idea/
