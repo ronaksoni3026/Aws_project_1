@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class NotificationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     student_id: int
     job_id: Optional[int] = None
@@ -11,6 +13,3 @@ class NotificationResponse(BaseModel):
     message: str
     is_read: bool
     created_at: datetime
-
-    class Config:
-        from_attributes = True

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from backend.models.application import ApplicationStatus
 from backend.schemas.student import StudentResponse
 
@@ -15,6 +15,8 @@ class ApplicationBatchUpdateRequest(BaseModel):
 
 
 class ApplicationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     student_id: int
     job_id: int
@@ -24,9 +26,6 @@ class ApplicationResponse(BaseModel):
     student: Optional[StudentResponse] = None
     job_title: Optional[str] = None
     company_name: Optional[str] = None
-
-    class Config:
-        from_attributes = True
 
 
 class PaginatedApplicationsResponse(BaseModel):

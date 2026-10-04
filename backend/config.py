@@ -1,8 +1,9 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
     PROJECT_NAME: str = "Role-Based Campus Placement Portal"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api"
@@ -19,10 +20,6 @@ class Settings(BaseSettings):
     RATE_LIMIT_DEFAULT: str = "100/minute"
     RATE_LIMIT_APPLY: str = "10/minute"
     RATE_LIMIT_AUTH: str = "20/minute"
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 
 settings = Settings()

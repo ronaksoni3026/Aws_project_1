@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from backend.models.job import JobStatus
 
 
@@ -25,6 +25,8 @@ class JobFeedbackRequest(BaseModel):
 
 
 class JobResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     recruiter_id: int
     title: str
@@ -38,9 +40,6 @@ class JobResponse(BaseModel):
     is_deleted: bool
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class JobWithEligibilityResponse(JobResponse):

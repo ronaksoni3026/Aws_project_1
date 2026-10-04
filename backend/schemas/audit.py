@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AuditLogResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     admin_id: int
     admin_email: Optional[str] = None
@@ -12,9 +14,6 @@ class AuditLogResponse(BaseModel):
     target_id: int
     details: Optional[str] = None
     timestamp: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class PaginatedAuditLogsResponse(BaseModel):
