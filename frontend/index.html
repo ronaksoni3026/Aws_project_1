@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apex Placement Portal • Institutional Campus Placement Portal</title>
+  <title>Apex • Institutional Campus Placement Portal & Recruitment OS</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -25,6 +25,21 @@
               900: '#312e81',
               950: '#1e1b4b',
             }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 4s ease-in-out infinite',
+            'shimmer': 'shimmer 2s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            }
           }
         }
       }
@@ -36,57 +51,110 @@
   <!-- Babel for runtime JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+    
+    :root {
+      --bg-main: #030712;
+      --card-bg: rgba(17, 24, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(99, 102, 241, 0.4);
+    }
+    
     body {
-      background-color: #030712;
+      background-color: var(--bg-main);
       color: #f3f4f6;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
     }
-    .glass-card {
-      background: rgba(17, 24, 39, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* Subtle grid background like Linear/Vercel */
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.85);
+
+    /* Ambient spotlight glow */
+    .spotlight {
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.05) 45%, transparent 70%);
+    }
+
+    /* Enterprise Glassmorphic card styling */
+    .company-card {
+      background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .gradient-border {
+    .company-card:hover {
+      border-color: rgba(99, 102, 241, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 20px 0 rgba(99, 102, 241, 0.1);
+    }
+
+    /* Pop-up Micro-interaction on cursor hover */
+    .pop-trigger {
       position: relative;
     }
-    .gradient-border::before {
+    .pop-content {
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.92);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 60;
+      white-space: nowrap;
+    }
+    .pop-trigger:hover .pop-content {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Animated interactive button sheen */
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shine::after {
       content: '';
       position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(to bottom right, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.1), rgba(14, 165, 233, 0.2));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+      transform: rotate(25deg) translateY(-100%);
+      transition: transform 0.6s ease;
     }
-    /* Custom scrollbar */
+    .btn-shine:hover::after {
+      transform: rotate(25deg) translateY(100%);
+    }
+
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: #0b0f19;
+      background: #030712;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1f293d;
-      border-radius: 4px;
+      background: #1f2937;
+      border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
       background: #374151;
     }
   </style>
 </head>
-<body class="bg-gray-950 text-gray-100 antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col">
-  <div id="root" class="flex-1 flex flex-col"></div>
+<body class="bg-gray-950 text-gray-100 antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col relative bg-grid-pattern">
+  <!-- Top ambient aura spotlight -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] spotlight pointer-events-none -z-10"></div>
+  
+  <div id="root" class="flex-1 flex flex-col z-10"></div>
 
   <!-- React Application Core -->
   <script type="text/babel">
@@ -216,30 +284,55 @@
       exportPlacementsCsvUrl: () => `${API_BASE}/admin/export/placements-csv`,
     };
 
-    // --- TOAST NOTIFICATION COMPONENT ---
+    // --- POPUP HOVER COMPONENT ---
+    // Provides smooth floating card pop-up on cursor hover
+    function HoverPopup({ children, title, subtitle, badge, align = "center" }) {
+      return (
+        <div className="pop-trigger inline-flex items-center">
+          {children}
+          <div className="pop-content">
+            <div className="px-3 py-2 rounded-xl bg-gray-900/95 backdrop-blur-xl border border-white/10 text-left shadow-2xl shadow-black/80 flex flex-col gap-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-white tracking-wide">{title}</span>
+                {badge && (
+                  <span className="px-1.5 py-0.2 rounded-md bg-indigo-500/20 text-indigo-300 text-[9px] font-extrabold uppercase border border-indigo-500/30">
+                    {badge}
+                  </span>
+                )}
+              </div>
+              {subtitle && <span className="text-[10px] text-gray-400 font-medium">{subtitle}</span>}
+              {/* Bottom arrow notch */}
+              <div className="w-2 h-2 bg-gray-900 border-r border-b border-white/10 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // --- TOAST COMPONENT ---
     function ToastContainer({ toasts, onDismiss }) {
       return (
-        <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none">
           {toasts.map((t) => (
             <div
               key={t.id}
-              className={`pointer-events-auto p-4 rounded-xl shadow-2xl border flex items-start gap-3 transform transition-all duration-300 animate-slide-up ${
+              className={`pointer-events-auto p-4 rounded-2xl shadow-2xl border backdrop-blur-xl flex items-start gap-3 transition-all duration-300 transform translate-y-0 ${
                 t.type === "error"
-                  ? "bg-rose-950/90 border-rose-700/50 text-rose-100"
+                  ? "bg-rose-950/90 border-rose-600/40 text-rose-100"
                   : t.type === "success"
-                  ? "bg-emerald-950/90 border-emerald-700/50 text-emerald-100"
-                  : "bg-slate-900/90 border-slate-700 text-slate-100"
+                  ? "bg-emerald-950/90 border-emerald-600/40 text-emerald-100"
+                  : "bg-gray-900/95 border-gray-700/60 text-gray-100"
               }`}
             >
               <div className="text-xl">
-                {t.type === "error" ? "⚠️" : t.type === "success" ? "✅" : "ℹ️"}
+                {t.type === "error" ? "🚨" : t.type === "success" ? "✨" : "💡"}
               </div>
               <div className="flex-1 text-xs whitespace-pre-line leading-relaxed font-medium">
                 {t.message}
               </div>
               <button
                 onClick={() => onDismiss(t.id)}
-                className="text-gray-400 hover:text-white text-sm leading-none"
+                className="text-gray-400 hover:text-white text-xs font-bold leading-none p-1"
               >
                 ✕
               </button>
@@ -304,7 +397,7 @@
         removeStoredToken();
         setUser(null);
         setNotifications([]);
-        addToast("Signed out successfully", "info");
+        addToast("Signed out of session safely.", "info");
       };
 
       const handleQuickLogin = async (email, password, role) => {
@@ -315,9 +408,9 @@
           setStoredUser(u);
           setUser(u);
           if (u.role === "STUDENT") loadNotifications();
-          addToast(`Logged in as ${u.name} (${u.role})`, "success");
+          addToast(`Authenticated as ${u.name} (${u.role})`, "success");
         } catch (e) {
-          addToast(`Login failed: ${e.message}`, "error");
+          addToast(`Authentication failed: ${e.message}`, "error");
         }
       };
 
@@ -325,109 +418,123 @@
 
       if (loading) {
         return (
-          <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center text-indigo-400 gap-3">
-            <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-            <div className="text-xs font-semibold tracking-wider text-gray-400">INITIALIZING APEX PLACEMENT ENGINE...</div>
+          <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center text-indigo-400 gap-4">
+            <div className="relative">
+              <div className="w-12 h-12 border-2 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-cyan-400/30 border-b-cyan-400 rounded-full animate-spin absolute inset-3"></div>
+            </div>
+            <div className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+              Loading Apex Institutional Engine...
+            </div>
           </div>
         );
       }
 
       return (
-        <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans">
-          {/* Header */}
-          <header className="bg-gray-900/90 backdrop-blur-md border-b border-gray-800/80 sticky top-0 z-40 shadow-xl">
+        <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans relative">
+          {/* Top Enterprise Navigation */}
+          <header className="sticky top-0 z-40 bg-gray-950/80 backdrop-blur-2xl border-b border-white/[0.08] shadow-2xl shadow-black/40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-              {/* Brand Logo */}
-              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setUser(user)}>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/25">
-                  <span className="text-lg tracking-tighter font-extrabold">AP</span>
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-base sm:text-lg bg-gradient-to-r from-white via-indigo-100 to-gray-300 bg-clip-text text-transparent">
-                      Apex Placement Portal
-                    </span>
-                    {/* AWS Cloud Badge */}
-                    <div
-                      className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                      title={awsStatus ? `AWS Region: ${awsStatus.region} | S3: ${awsStatus.s3_configured ? 'Active' : 'Fallback'}` : 'Cloud Connected'}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                      AWS Cloud Ready
+              
+              {/* Brand Logo & AWS Cloud Pulse */}
+              <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setUser(user)}>
+                <HoverPopup title="Apex Campus OS" subtitle="Institutional Campus Placement Portal" badge="v2.0">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25 group transition-transform duration-300 hover:scale-105">
+                    <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center">
+                      <span className="text-sm font-black tracking-tight bg-gradient-to-tr from-white to-indigo-200 bg-clip-text text-transparent">
+                        AP
+                      </span>
                     </div>
                   </div>
-                  <div className="text-[10px] text-gray-400 font-medium">Institutional Campus Recruitment & ATS Engine</div>
+                </HoverPopup>
+
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5">
+                      Apex <span className="text-gray-400 font-medium text-xs hidden sm:inline">| Campus Placement Portal</span>
+                    </span>
+
+                    {/* AWS Cloud Live Status Indicator with Pop-Up Animation */}
+                    <HoverPopup
+                      title={awsStatus?.s3_configured ? "AWS Cloud Active" : "Local Storage Sandbox"}
+                      subtitle={awsStatus ? `Region: ${awsStatus.region} • S3 Bucket: ${awsStatus.s3_configured ? 'Online' : 'Fallback'}` : "AWS Engine Standby"}
+                      badge={awsStatus?.s3_configured ? "AWS S3 / SES" : "Local Mock"}
+                    >
+                      <div className="cursor-pointer flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-sm transition-all hover:bg-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span className="hidden md:inline">AWS Cloud Engine</span>
+                        <span className="md:hidden">AWS</span>
+                      </div>
+                    </HoverPopup>
+                  </div>
                 </div>
               </div>
 
-              {/* Navigation & User Menu */}
-              <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Navigation Controls */}
+              <div className="flex items-center space-x-2.5 sm:space-x-3">
                 {user ? (
                   <>
-                    {/* Student Alert Bell */}
+                    {/* Student Alert Inbox */}
                     {user.role === "STUDENT" && (
-                      <button
-                        onClick={() => setNotificationsOpen(true)}
-                        className="relative p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700/60 transition-all shadow-sm"
-                        title="Alert Inbox"
-                      >
-                        🔔
-                        {unreadCount > 0 && (
-                          <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-rose-500 text-white font-bold text-[10px] rounded-full animate-bounce">
-                            {unreadCount}
-                          </span>
-                        )}
-                      </button>
+                      <HoverPopup title="Notification Inbox" subtitle={`${unreadCount} unread system announcements`}>
+                        <button
+                          onClick={() => setNotificationsOpen(true)}
+                          className="relative p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
+                        >
+                          🔔
+                          {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-rose-500 text-white font-extrabold text-[9px] rounded-full animate-bounce shadow-md">
+                              {unreadCount}
+                            </span>
+                          )}
+                        </button>
+                      </HoverPopup>
                     )}
 
-                    {/* User Profile Pill */}
-                    <div className="flex items-center space-x-2.5 bg-gray-900/90 px-3 py-1.5 rounded-xl border border-gray-800 shadow-sm">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white text-xs">
-                        {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    {/* User Identity Pill with Pop-Up Details */}
+                    <HoverPopup
+                      title={user.name || user.email}
+                      subtitle={`Role: ${user.role} • Status: ${user.status || 'Verified'}`}
+                      badge={user.role}
+                    >
+                      <div className="cursor-pointer flex items-center space-x-2.5 bg-gray-900/90 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center font-bold text-white text-xs shadow-md">
+                          {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        </div>
+                        <div className="text-right hidden sm:block">
+                          <div className="text-xs font-bold text-white leading-tight">{user.name}</div>
+                          <div className="text-[10px] text-gray-400 font-mono">{user.email}</div>
+                        </div>
                       </div>
-                      <div className="text-right hidden sm:block">
-                        <div className="text-xs font-semibold text-white leading-tight">{user.name || user.email}</div>
-                        <div className="text-[10px] text-gray-400">{user.email}</div>
-                      </div>
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                          user.role === "ADMIN"
-                            ? "bg-purple-500/15 text-purple-300 border border-purple-500/30"
-                            : user.role === "RECRUITER"
-                            ? user.status === "ACTIVE"
-                              ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                              : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
-                            : "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30"
-                        }`}
+                    </HoverPopup>
+
+                    {/* Change Password Key */}
+                    <HoverPopup title="Security Credentials" subtitle="Update current account password">
+                      <button
+                        onClick={() => setPasswordModalOpen(true)}
+                        className="p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
                       >
-                        {user.role} {user.role === "RECRUITER" && `(${user.status || "PENDING"})`}
-                      </span>
-                    </div>
+                        🔑
+                      </button>
+                    </HoverPopup>
 
-                    {/* Password Button */}
-                    <button
-                      onClick={() => setPasswordModalOpen(true)}
-                      className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-gray-800/80 hover:bg-gray-800 text-gray-400 hover:text-white border border-gray-700/60 text-xs font-medium transition-all"
-                      title="Change Password"
-                    >
-                      🔑 <span className="hidden md:inline">Key</span>
-                    </button>
-
-                    {/* Logout */}
-                    <button
-                      onClick={handleLogout}
-                      className="text-xs font-semibold px-3 py-2 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
-                    >
-                      Logout
-                    </button>
+                    {/* Sign Out */}
+                    <HoverPopup title="End Active Session" subtitle="Safely revoke JWT token and logout">
+                      <button
+                        onClick={handleLogout}
+                        className="text-xs font-bold px-3 py-2 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
+                      >
+                        Sign Out
+                      </button>
+                    </HoverPopup>
                   </>
                 ) : (
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => { setAuthModalMode("LOGIN"); setAuthModalOpen(true); }}
-                      className="text-xs font-bold px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all transform hover:-translate-y-0.5"
+                      className="btn-shine text-xs font-bold px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/30 transition-all"
                     >
-                      Sign In / Register
+                      Sign In / Register →
                     </button>
                   </div>
                 )}
@@ -435,7 +542,7 @@
             </div>
           </header>
 
-          {/* Main Body */}
+          {/* Main Workspace Body */}
           <main className="flex-1 flex flex-col">
             {!user ? (
               <LandingView
@@ -452,7 +559,7 @@
             ) : null}
           </main>
 
-          {/* Modals */}
+          {/* Global Modals */}
           <AuthModal
             isOpen={authModalOpen}
             initialMode={authModalMode}
@@ -460,7 +567,7 @@
             onSuccess={(u) => {
               setUser(u);
               if (u.role === "STUDENT") loadNotifications();
-              addToast(`Welcome ${u.name}!`, "success");
+              addToast(`Welcome back, ${u.name}!`, "success");
             }}
           />
 
@@ -479,23 +586,32 @@
 
           <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-          <footer className="border-t border-gray-800/80 bg-gray-950 py-6 text-center text-xs text-gray-500">
-            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div>
-                Apex Placement Portal &bull; Multi-Tenant Academic Recruitment System
+          {/* Professional Enterprise Footer */}
+          <footer className="border-t border-white/[0.08] bg-gray-950/90 py-6 text-xs text-gray-500">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-white">Apex Institutional Suite</span>
+                <span>&bull;</span>
+                <span>Campus Placement Portal &bull; Enterprise ACID Relational Guarantee</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500"></span> FastAPI 2.0
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400"></span> React 18 SPA
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-amber-400"></span> AWS S3 & SES
-                </span>
+              <div className="flex items-center gap-4 text-gray-400 font-mono text-[11px]">
+                <HoverPopup title="FastAPI 2.0" subtitle="Asynchronous REST API with Pydantic v2">
+                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> FastAPI
+                  </span>
+                </HoverPopup>
+                <span>&bull;</span>
+                <HoverPopup title="Amazon S3 & SES" subtitle="Cloud Native Storage and Mailer Engine">
+                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> AWS Cloud
+                  </span>
+                </HoverPopup>
+                <span>&bull;</span>
+                <HoverPopup title="PostgreSQL 15" subtitle="Physical Entity Isolation & Compound Indexing">
+                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> PostgreSQL
+                  </span>
+                </HoverPopup>
               </div>
             </div>
           </footer>
@@ -503,130 +619,212 @@
       );
     }
 
-    // --- LANDING VIEW ---
+    // --- LANDING VIEW (COMPANY HERO PAGE) ---
     function LandingView({ onQuickLogin, onOpenAuth, awsStatus }) {
       return (
         <div className="flex-1 flex flex-col justify-center">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-12">
-            {/* Hero Header */}
-            <div className="text-center space-y-5 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 text-xs font-semibold shadow-inner">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
-                Institutional Placement Architecture &bull; AWS Cloud Integration
-              </div>
-              <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
-                Precision Campus Placements. <br />
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-400 bg-clip-text text-transparent">
-                  Enterprise-Grade RBAC.
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 space-y-16">
+            
+            {/* Hero Banner */}
+            <div className="text-center space-y-6 max-w-3xl mx-auto">
+              <HoverPopup title="Cloud Verified" subtitle="FastAPI + AWS S3 + PostgreSQL" badge="Production Grade">
+                <div className="cursor-pointer inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold shadow-lg shadow-indigo-500/10 transition-all hover:bg-indigo-500/20">
+                  <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                  Institutional Campus Placement Portal &bull; Multi-Tenant ATS OS
+                </div>
+              </HoverPopup>
+
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white">
+                The Operating System for <br />
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
+                  Institutional Placements.
                 </span>
               </h1>
-              <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
-                Streamline university recruitment with server-side eligibility enforcement, direct AWS S3 resume storage, automated transactional ATS pipelines, and administrative audit logging.
+
+              <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-normal">
+                Engineered for university placement cells, student applicants, and partner recruiters. Featuring server-side CGPA gating, native AWS S3 resume indexing, and atomic applicant tracking.
               </p>
             </div>
 
-            {/* Quick Demo Login Cards */}
+            {/* Quick Interactive Persona Switcher Cards */}
             <div className="space-y-4">
-              <div className="text-center text-xs font-bold uppercase tracking-wider text-gray-400">
-                Instant 1-Click Interactive Demo Profiles
+              <div className="text-center text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center justify-center gap-2">
+                <span>⚡ Instant 1-Click Persona Access (Hover on icons for details)</span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Student Card */}
-                <div className="glass-card rounded-2xl p-6 text-left relative overflow-hidden group hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl mb-4">
-                    🎓
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* 1. Student Demo Card */}
+                <div className="company-card rounded-2xl p-6 text-left relative overflow-hidden group">
+                  <div className="flex items-center justify-between mb-4">
+                    <HoverPopup title="Candidate Profile" subtitle="Roll: 21CS001 • Class of 2025" badge="CSE">
+                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
+                        🎓
+                      </div>
+                    </HoverPopup>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
+                      STUDENT
+                    </span>
                   </div>
-                  <div className="text-xs font-bold text-cyan-400 uppercase tracking-wider mb-1">Student Applicant</div>
-                  <h3 className="text-lg font-bold text-white mb-2">Ronak Soni</h3>
-                  <div className="space-y-1.5 text-xs text-gray-400 mb-6">
-                    <div>• Department: <b className="text-gray-200">CSE (2025)</b></div>
-                    <div>• Academic CGPA: <b className="text-emerald-400">9.20 / 10.0</b></div>
-                    <div>• Verified Resume in AWS S3</div>
+
+                  <h3 className="text-lg font-bold text-white mb-1">Ronak Soni</h3>
+                  <div className="text-xs text-cyan-300 font-semibold mb-4">Computer Science & Engineering</div>
+
+                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Academic CGPA</span>
+                      <span className="font-extrabold text-emerald-400">9.20 / 10.0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Resume Status</span>
+                      <span className="font-bold text-cyan-300">AWS S3 Indexed</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Scheduled Interview</span>
+                      <span className="font-bold text-indigo-300">Round 1 (AWS)</span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => onQuickLogin("student@placement.edu", "Student@1234", "STUDENT")}
-                    className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-600/25 transition-all flex items-center justify-center gap-2"
-                  >
-                    Launch Student Portal →
-                  </button>
+
+                  <HoverPopup title="Launch Student View" subtitle="Explore job feed & interview notifications">
+                    <button
+                      onClick={() => onQuickLogin("student@placement.edu", "Student@1234", "STUDENT")}
+                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-600/25 transition-all flex items-center justify-center gap-2"
+                    >
+                      Enter Student Workspace →
+                    </button>
+                  </HoverPopup>
                 </div>
 
-                {/* Recruiter Card */}
-                <div className="glass-card rounded-2xl p-6 text-left relative overflow-hidden group hover:border-indigo-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-2xl mb-4">
-                    🏢
+                {/* 2. Recruiter Demo Card */}
+                <div className="company-card rounded-2xl p-6 text-left relative overflow-hidden group">
+                  <div className="flex items-center justify-between mb-4">
+                    <HoverPopup title="Partner Company" subtitle="Enterprise Recruiter Account" badge="Verified">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
+                        🏢
+                      </div>
+                    </HoverPopup>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                      ACTIVE PARTNER
+                    </span>
                   </div>
-                  <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">Company Recruiter</div>
-                  <h3 className="text-lg font-bold text-white mb-2">Amazon Web Services</h3>
-                  <div className="space-y-1.5 text-xs text-gray-400 mb-6">
-                    <div>• HR Partner: <b className="text-gray-200">Priya Sharma</b></div>
-                    <div>• Verification: <b className="text-emerald-400">ACTIVE & Approved</b></div>
-                    <div>• Active Drive: <b className="text-indigo-300">₹18.5 LPA (Cloud SDE)</b></div>
+
+                  <h3 className="text-lg font-bold text-white mb-1">Amazon Web Services</h3>
+                  <div className="text-xs text-indigo-300 font-semibold mb-4">HR Partner: Priya Sharma</div>
+
+                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Active Opening</span>
+                      <span className="font-bold text-white">Cloud SDE (AWS)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Package / CTC</span>
+                      <span className="font-extrabold text-emerald-400">₹18.5 LPA</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">ATS Pipeline</span>
+                      <span className="font-bold text-indigo-300">ACID Batch Actions</span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => onQuickLogin("recruiter@placement.edu", "Recruiter@1234", "RECRUITER")}
-                    className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2"
-                  >
-                    Launch Recruiter ATS →
-                  </button>
+
+                  <HoverPopup title="Launch Recruiter ATS" subtitle="Review candidates, schedule interviews, and export CSVs">
+                    <button
+                      onClick={() => onQuickLogin("recruiter@placement.edu", "Recruiter@1234", "RECRUITER")}
+                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2"
+                    >
+                      Enter Recruiter ATS →
+                    </button>
+                  </HoverPopup>
                 </div>
 
-                {/* Admin Card */}
-                <div className="glass-card rounded-2xl p-6 text-left relative overflow-hidden group hover:border-purple-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10">
-                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl mb-4">
-                    🛡️
+                {/* 3. Placement Director Admin Card */}
+                <div className="company-card rounded-2xl p-6 text-left relative overflow-hidden group">
+                  <div className="flex items-center justify-between mb-4">
+                    <HoverPopup title="Institutional Admin" subtitle="Central Placement Cell Governance" badge="Director">
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
+                        🛡️
+                      </div>
+                    </HoverPopup>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                      SUPERUSER
+                    </span>
                   </div>
-                  <div className="text-xs font-bold text-purple-400 uppercase tracking-wider mb-1">Placement Cell Director</div>
-                  <h3 className="text-lg font-bold text-white mb-2">Central Admin Console</h3>
-                  <div className="space-y-1.5 text-xs text-gray-400 mb-6">
-                    <div>• Vetting Queues for Recruiters & Drives</div>
-                    <div>• Placement KPI & Analytics Dashboard</div>
-                    <div>• Immutable Audit Trail & CSV Reports</div>
+
+                  <h3 className="text-lg font-bold text-white mb-1">Placement Cell Director</h3>
+                  <div className="text-xs text-purple-300 font-semibold mb-4">University Governance Console</div>
+
+                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Vetting Queues</span>
+                      <span className="font-bold text-amber-300">Partner & Job Approvals</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Audit Trail</span>
+                      <span className="font-bold text-white">Immutable Logs</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Institutional Reports</span>
+                      <span className="font-bold text-emerald-400">CSV Export Ready</span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => onQuickLogin("admin@placement.edu", "Admin@1234", "ADMIN")}
-                    className="w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/25 transition-all flex items-center justify-center gap-2"
-                  >
-                    Launch Admin Console →
-                  </button>
+
+                  <HoverPopup title="Launch Admin Console" subtitle="Vetting queues, platform metrics, and audit trail">
+                    <button
+                      onClick={() => onQuickLogin("admin@placement.edu", "Admin@1234", "ADMIN")}
+                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/25 transition-all flex items-center justify-center gap-2"
+                    >
+                      Enter Admin Console →
+                    </button>
+                  </HoverPopup>
                 </div>
               </div>
             </div>
 
-            {/* Feature Highlights Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-800/60">
-              <div className="glass-card p-4 rounded-xl text-left">
-                <div className="text-lg mb-1">☁️</div>
-                <div className="text-xs font-bold text-white mb-1">AWS S3 Resume Storage</div>
-                <div className="text-[11px] text-gray-400">Direct PDF file upload with automated S3 key indexing and local fallback.</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left">
-                <div className="text-lg mb-1">⚡</div>
-                <div className="text-xs font-bold text-white mb-1">Deterministic Eligibility</div>
-                <div className="text-[11px] text-gray-400">Mathematical CGPA check, department whitelist, and application deadline gating.</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left">
-                <div className="text-lg mb-1">🔄</div>
-                <div className="text-xs font-bold text-white mb-1">ACID ATS Pipeline</div>
-                <div className="text-[11px] text-gray-400">Atomic batch transitions, interview scheduling, and instant CSV candidate exports.</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left">
-                <div className="text-lg mb-1">📜</div>
-                <div className="text-xs font-bold text-white mb-1">Immutable Audit Logging</div>
-                <div className="text-[11px] text-gray-400">All administrative approvals, rejections, and feedback loops recorded permanently.</div>
-              </div>
+            {/* Architecture Highlights Pill Matrix */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/[0.08]">
+              <HoverPopup title="AWS S3 Presigned Uploads" subtitle="PDF format sanitation & secure download endpoints">
+                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
+                  <div className="text-xl mb-1.5">☁️</div>
+                  <div className="text-xs font-bold text-white mb-1">AWS S3 Resume Hub</div>
+                  <div className="text-[11px] text-gray-400">Direct streaming to Amazon S3 with zero-config fallback.</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Server-Side Gatekeeper" subtitle="Calculates CGPA, batch, branch, and deadline constraints">
+                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
+                  <div className="text-xl mb-1.5">⚡</div>
+                  <div className="text-xs font-bold text-white mb-1">Deterministic Eligibility</div>
+                  <div className="text-[11px] text-gray-400">Guaranteed criteria matching before SQL write persistence.</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="ACID ATS Funnel" subtitle="Atomic status updates with rollback on invalid foreign keys">
+                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
+                  <div className="text-xl mb-1.5">🔄</div>
+                  <div className="text-xs font-bold text-white mb-1">Atomic Pipeline</div>
+                  <div className="text-[11px] text-gray-400">Batch updates, interview scheduling, and CSV generation.</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Cryptographic Audit" subtitle="All admin actions recorded in immutable audit tables">
+                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
+                  <div className="text-xl mb-1.5">📜</div>
+                  <div className="text-xs font-bold text-white mb-1">Immutable Logs</div>
+                  <div className="text-[11px] text-gray-400">Full transparency on recruiter approvals and job edits.</div>
+                </div>
+              </HoverPopup>
             </div>
+
           </div>
         </div>
       );
     }
 
-    // --- STUDENT VIEW ---
+    // --- STUDENT VIEW (APPLICANT WORKSPACE) ---
     function StudentView({ user, onRefreshNotifications, addToast }) {
       const [profile, setProfile] = useState(null);
       const [jobs, setJobs] = useState([]);
       const [applications, setApplications] = useState([]);
-      const [activeTab, setActiveTab] = useState("JOBS"); // "JOBS" | "APPLICATIONS" | "PROFILE"
+      const [activeTab, setActiveTab] = useState("JOBS");
       const [searchQuery, setSearchQuery] = useState("");
       const [filterEligibleOnly, setFilterEligibleOnly] = useState(false);
       const [uploadingResume, setUploadingResume] = useState(false);
@@ -679,7 +877,7 @@
       const handleApply = async (job) => {
         try {
           await api.applyJob(job.id);
-          addToast(`Successfully applied to ${job.title} at ${job.company_name}!`, "success");
+          addToast(`Application confirmed for ${job.title} at ${job.company_name}!`, "success");
           loadData();
         } catch (e) {
           addToast(e.message, "error");
@@ -701,32 +899,48 @@
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* Student Banner Card */}
-          <div className="glass-panel rounded-2xl p-6 shadow-xl gradient-border">
+          
+          {/* Student Academic Identity Banner */}
+          <div className="company-card rounded-2xl p-6 shadow-2xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-3xl font-black text-white shadow-lg shadow-cyan-500/20">
-                  {profile ? profile.full_name.charAt(0) : "S"}
-                </div>
+                <HoverPopup title="Candidate Avatar" subtitle="Verified Student Identity" badge={profile?.branch || "CSE"}>
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20">
+                    <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center text-2xl font-black text-cyan-300">
+                      {profile ? profile.full_name.charAt(0) : "S"}
+                    </div>
+                  </div>
+                </HoverPopup>
+
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.full_name || "Student"}</h2>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                      {profile?.roll_number}
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-white">{profile?.full_name || "Student"}</h2>
+                    
+                    <HoverPopup title="Registration ID" subtitle="Official Institutional Roll Number">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 cursor-pointer">
+                        {profile?.roll_number}
+                      </span>
+                    </HoverPopup>
+
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
                       {profile?.branch} &bull; Class of {profile?.graduation_year}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-400 mt-1 flex items-center gap-4">
-                    <span>Academic CGPA: <b className="text-emerald-400 font-bold">{profile?.cgpa ? profile.cgpa.toFixed(2) : "0.00"} / 10.0</b></span>
+
+                  <div className="text-xs text-gray-400 mt-1.5 flex items-center gap-4">
+                    <HoverPopup title="Cumulative Grade Point" subtitle="Official academic score verified by placement cell">
+                      <span className="cursor-pointer">
+                        Academic CGPA: <b className="text-emerald-400 font-bold">{profile?.cgpa ? profile.cgpa.toFixed(2) : "0.00"} / 10.0</b>
+                      </span>
+                    </HoverPopup>
                     <span>&bull;</span>
-                    <span>Applications: <b className="text-white">{applications.length}</b></span>
+                    <span>Applications: <b className="text-white font-bold">{applications.length}</b></span>
                   </div>
                 </div>
               </div>
 
-              {/* Resume & Profile Actions */}
+              {/* S3 Resume Vault Actions */}
               <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 <input
                   type="file"
@@ -736,107 +950,113 @@
                   className="hidden"
                 />
 
-                <button
-                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                  disabled={uploadingResume}
-                  className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/20 transition-all disabled:opacity-50"
-                >
-                  {uploadingResume ? (
-                    <>
-                      <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <span>📄 Upload Resume (PDF)</span>
-                    </>
-                  )}
-                </button>
+                <HoverPopup title="Upload Resume PDF" subtitle="Encrypted storage via Amazon S3 bucket" badge="PDF Only">
+                  <button
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    disabled={uploadingResume}
+                    className="btn-shine px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/20 transition-all disabled:opacity-50"
+                  >
+                    {uploadingResume ? (
+                      <>
+                        <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                        Uploading to S3...
+                      </>
+                    ) : (
+                      <>
+                        <span>📄 Upload Resume</span>
+                      </>
+                    )}
+                  </button>
+                </HoverPopup>
 
                 {profile?.resume_url && (
-                  <a
-                    href={profile.resume_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-3.5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 font-semibold text-xs transition-all flex items-center gap-1.5"
-                  >
-                    <span>👁️ View</span>
-                  </a>
+                  <HoverPopup title="View Active Document" subtitle="Open PDF preview in browser">
+                    <a
+                      href={profile.resume_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3.5 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-200 border border-white/10 font-bold text-xs transition-all flex items-center gap-1.5 hover:border-cyan-500/40"
+                    >
+                      <span>👁️ Preview</span>
+                    </a>
+                  </HoverPopup>
                 )}
 
-                <button
-                  onClick={() => setProfileModalOpen(true)}
-                  className="px-3.5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 font-semibold text-xs transition-all"
-                  title="Edit Profile"
-                >
-                  ✏️ Edit Metrics
-                </button>
+                <HoverPopup title="Edit Academic Metrics" subtitle="Adjust CGPA, branch, or graduating batch">
+                  <button
+                    onClick={() => setProfileModalOpen(true)}
+                    className="px-3.5 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 border border-white/10 font-bold text-xs transition-all hover:border-indigo-500/40"
+                  >
+                    ✏️ Edit
+                  </button>
+                </HoverPopup>
               </div>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="flex border-b border-gray-800 gap-2">
+          {/* Segmented Control Workspace Tabs */}
+          <div className="bg-gray-900/60 p-1 rounded-2xl border border-white/[0.08] inline-flex gap-1.5 backdrop-blur-xl">
             <button
               onClick={() => setActiveTab("JOBS")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                 activeTab === "JOBS"
-                  ? "border-cyan-500 text-cyan-400 bg-cyan-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <span>💼 Active Placement Drives</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-gray-800 text-gray-300 font-semibold">
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-indigo-200">
                 {jobs.length}
               </span>
             </button>
             <button
               onClick={() => setActiveTab("APPLICATIONS")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
                 activeTab === "APPLICATIONS"
-                  ? "border-cyan-500 text-cyan-400 bg-cyan-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              <span>📑 My Applications & Interviews</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-cyan-500/20 text-cyan-300 font-semibold">
+              <span>📑 Application Funnel & Interviews</span>
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-indigo-200">
                 {applications.length}
               </span>
             </button>
           </div>
 
-          {/* TAB CONTENT: SMART JOB BOARD */}
+          {/* TAB 1: SMART JOB BOARD */}
           {activeTab === "JOBS" && (
             <div className="space-y-4">
-              {/* Filter & Search Bar */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 glass-card p-4 rounded-xl">
-                <div className="relative w-full sm:w-80">
-                  <span className="absolute left-3 top-2.5 text-gray-400 text-xs">🔍</span>
+              {/* Search & Filter Controls */}
+              <div className="company-card p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="relative w-full sm:w-96">
+                  <span className="absolute left-3.5 top-2.5 text-gray-400 text-xs">🔍</span>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by job title, company, or location..."
-                    className="w-full pl-8 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-lg text-xs text-white focus:outline-none focus:border-cyan-500"
+                    placeholder="Search by role, company name, or location..."
+                    className="w-full pl-9 pr-4 py-2 bg-gray-950/80 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   />
                 </div>
+
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
-                  <label className="flex items-center gap-2 text-xs font-medium text-gray-300 cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-gray-300 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={filterEligibleOnly}
                       onChange={(e) => setFilterEligibleOnly(e.target.checked)}
-                      className="rounded bg-gray-800 border-gray-700 text-cyan-500 focus:ring-0"
+                      className="rounded bg-gray-900 border-gray-700 text-cyan-500 focus:ring-0"
                     />
-                    <span>Show Eligible Only</span>
+                    <span>Show Eligible Drives Only</span>
                   </label>
                 </div>
               </div>
 
-              {/* Job Cards Grid */}
+              {/* Job Grid */}
               {filteredJobs.length === 0 ? (
-                <div className="glass-card rounded-2xl p-12 text-center text-gray-400 text-xs">
-                  No active recruitment drives match your filter criteria.
+                <div className="company-card rounded-2xl p-12 text-center text-gray-400 text-xs">
+                  No recruitment drives match your query.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -845,19 +1065,22 @@
                     return (
                       <div
                         key={job.id}
-                        className="glass-card rounded-2xl p-5 text-left border border-gray-800/80 hover:border-indigo-500/40 transition-all flex flex-col justify-between space-y-4"
+                        className="company-card rounded-2xl p-6 flex flex-col justify-between space-y-4 text-left"
                       >
                         <div className="space-y-3">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <div className="text-xs font-semibold text-gray-400">{job.company_name}</div>
-                              <h3 className="text-base font-bold text-white leading-snug">{job.title}</h3>
+                              <div className="text-xs font-bold text-gray-400 tracking-wide">{job.company_name}</div>
+                              <h3 className="text-base font-extrabold text-white leading-snug">{job.title}</h3>
                             </div>
-                            {/* CTC Badge */}
+                            
+                            {/* Compensation Package Tag with Hover Popup */}
                             {job.ctc_lpa > 0 && (
-                              <div className="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-extrabold text-xs whitespace-nowrap">
-                                ₹{job.ctc_lpa} LPA
-                              </div>
+                              <HoverPopup title="Annual Compensation" subtitle="Annual CTC in Lakhs Per Annum">
+                                <div className="cursor-pointer px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-extrabold text-xs whitespace-nowrap shadow-sm">
+                                  ₹{job.ctc_lpa} LPA
+                                </div>
+                              </HoverPopup>
                             )}
                           </div>
 
@@ -865,57 +1088,73 @@
                             {job.description}
                           </p>
 
-                          {/* Metadata Badges */}
+                          {/* Attribute Tags with Pop-Up Animations */}
                           <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-800/80 text-gray-300 border border-gray-700/60 font-medium">
-                              📍 {job.job_location || "On-site / Hybrid"}
-                            </span>
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-800/80 text-gray-300 border border-gray-700/60 font-medium">
-                              💼 {job.job_type || "Full-Time"}
-                            </span>
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-800/80 text-gray-300 border border-gray-700/60 font-medium">
-                              📊 Min CGPA: {job.min_cgpa.toFixed(2)}
-                            </span>
-                            {job.allowed_branches && job.allowed_branches.length > 0 && (
-                              <span className="px-2.5 py-1 rounded-lg bg-gray-800/80 text-gray-300 border border-gray-700/60 font-medium">
-                                🎓 [{job.allowed_branches.join(", ")}]
+                            <HoverPopup title="Office Location" subtitle="Recruitment physical work site">
+                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
+                                📍 {job.job_location || "On-site / Hybrid"}
                               </span>
+                            </HoverPopup>
+
+                            <HoverPopup title="Position Type" subtitle="Engagement mode">
+                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
+                                💼 {job.job_type || "Full-Time"}
+                              </span>
+                            </HoverPopup>
+
+                            <HoverPopup title="CGPA Cutoff" subtitle="Minimum academic grade cutoff required">
+                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
+                                📊 Min CGPA: {job.min_cgpa.toFixed(2)}
+                              </span>
+                            </HoverPopup>
+
+                            {job.allowed_branches && job.allowed_branches.length > 0 && (
+                              <HoverPopup title="Whitelisted Branches" subtitle="Eligible graduating academic departments">
+                                <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
+                                  🎓 [{job.allowed_branches.join(", ")}]
+                                </span>
+                              </HoverPopup>
                             )}
                           </div>
                         </div>
 
-                        {/* Bottom Action & Eligibility Bar */}
-                        <div className="pt-3 border-t border-gray-800/60 flex items-center justify-between gap-3">
-                          {/* Eligibility Status Button */}
-                          <button
-                            onClick={() => setEligibilityModalJob(job)}
-                            className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 ${
-                              job.is_eligible
-                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
-                                : "bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
-                            }`}
-                          >
-                            <span>{job.is_eligible ? "✓ Eligible" : "⚠️ Ineligible"}</span>
-                            <span className="text-[10px] underline">(Details)</span>
-                          </button>
+                        {/* Bottom Actions Bar */}
+                        <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between gap-3">
+                          
+                          {/* Interactive Eligibility Breakdown Button */}
+                          <HoverPopup title="Eligibility Gatekeeper" subtitle="View deterministic criteria inspection">
+                            <button
+                              onClick={() => setEligibilityModalJob(job)}
+                              className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 ${
+                                job.is_eligible
+                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
+                                  : "bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
+                              }`}
+                            >
+                              <span>{job.is_eligible ? "✓ Criteria Met" : "⚠️ Ineligible"}</span>
+                              <span className="text-[10px] underline">(Inspect)</span>
+                            </button>
+                          </HoverPopup>
 
                           {/* Apply Action */}
                           {isApplied ? (
-                            <span className="px-4 py-2 rounded-xl bg-gray-800 text-gray-400 font-bold text-xs border border-gray-700 flex items-center gap-1.5">
-                              ✓ Application Submitted
+                            <span className="px-4 py-2 rounded-xl bg-gray-900 text-gray-400 font-bold text-xs border border-white/10 flex items-center gap-1.5">
+                              ✓ Application Lodged
                             </span>
                           ) : (
-                            <button
-                              onClick={() => handleApply(job)}
-                              disabled={!job.is_eligible}
-                              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                                job.is_eligible
-                                  ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25"
-                                  : "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                              }`}
-                            >
-                              Apply Now →
-                            </button>
+                            <HoverPopup title="Apply for Position" subtitle={job.is_eligible ? "Submit your academic profile" : "Criteria unmet"}>
+                              <button
+                                onClick={() => handleApply(job)}
+                                disabled={!job.is_eligible}
+                                className={`btn-shine px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                                  job.is_eligible
+                                    ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30"
+                                    : "bg-gray-900 text-gray-500 cursor-not-allowed border border-white/5"
+                                }`}
+                              >
+                                Submit Application →
+                              </button>
+                            </HoverPopup>
                           )}
                         </div>
                       </div>
@@ -926,12 +1165,12 @@
             </div>
           )}
 
-          {/* TAB CONTENT: APPLICATIONS & INTERVIEW HUB */}
+          {/* TAB 2: APPLICATION TRACKER & INTERVIEWS */}
           {activeTab === "APPLICATIONS" && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {applications.length === 0 ? (
-                <div className="glass-card rounded-2xl p-12 text-center text-gray-400 text-xs">
-                  You haven't submitted any job applications yet. Browse the active placement drives to apply!
+                <div className="company-card rounded-2xl p-12 text-center text-gray-400 text-xs">
+                  No active job applications found. Explore the smart job board to apply!
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -943,43 +1182,41 @@
                     return (
                       <div
                         key={app.id}
-                        className={`glass-card rounded-2xl p-5 border transition-all ${
+                        className={`company-card rounded-2xl p-6 text-left border ${
                           isOffered
-                            ? "border-emerald-500/50 bg-emerald-950/20"
+                            ? "border-emerald-500/40 bg-emerald-950/20"
                             : isRejected
-                            ? "border-rose-900/50"
-                            : "border-gray-800/80"
+                            ? "border-rose-900/40 bg-rose-950/10"
+                            : "border-white/[0.08]"
                         }`}
                       >
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-gray-800/60">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
                           <div>
-                            <div className="text-xs text-gray-400 font-semibold">{app.company_name}</div>
-                            <h3 className="text-base font-bold text-white">{app.job_title}</h3>
-                            <div className="text-[11px] text-gray-400">
-                              Applied on {new Date(app.applied_at).toLocaleDateString()}
+                            <div className="text-xs text-gray-400 font-bold">{app.company_name}</div>
+                            <h3 className="text-base font-extrabold text-white">{app.job_title}</h3>
+                            <div className="text-[11px] text-gray-400 mt-0.5">
+                              Submitted on {new Date(app.applied_at).toLocaleDateString()}
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wide border ${
-                                app.status === "OFFERED"
-                                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                                  : app.status === "SHORTLISTED"
-                                  ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
-                                  : app.status === "UNDER_REVIEW"
-                                  ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
-                                  : app.status === "REJECTED"
-                                  ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                                  : "bg-gray-800 text-gray-300 border-gray-700"
-                              }`}
-                            >
-                              {app.status.replace("_", " ")}
-                            </span>
-                          </div>
+                          <span
+                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border ${
+                              app.status === "OFFERED"
+                                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20"
+                                : app.status === "SHORTLISTED"
+                                ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
+                                : app.status === "UNDER_REVIEW"
+                                ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
+                                : app.status === "REJECTED"
+                                ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
+                                : "bg-gray-800 text-gray-300 border-gray-700"
+                            }`}
+                          >
+                            {app.status.replace("_", " ")}
+                          </span>
                         </div>
 
-                        {/* Funnel Progress Stepper */}
+                        {/* Pipeline Progress Stepper */}
                         <div className="py-4">
                           <div className="grid grid-cols-4 text-center text-[10px] font-bold text-gray-400 mb-2">
                             <div className={app.status ? "text-cyan-400" : ""}>1. APPLIED</div>
@@ -989,29 +1226,29 @@
                               {app.status === "REJECTED" ? "4. REJECTED" : "4. OFFERED"}
                             </div>
                           </div>
-                          <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                          <div className="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-white/5">
                             <div
-                              className={`h-full transition-all duration-500 ${
+                              className={`h-full transition-all duration-700 ${
                                 app.status === "OFFERED"
-                                  ? "bg-emerald-500 w-full"
+                                  ? "bg-gradient-to-r from-cyan-500 to-emerald-400 w-full"
                                   : app.status === "SHORTLISTED"
-                                  ? "bg-indigo-500 w-3/4"
+                                  ? "bg-gradient-to-r from-cyan-500 to-indigo-500 w-3/4"
                                   : app.status === "UNDER_REVIEW"
                                   ? "bg-cyan-500 w-1/2"
                                   : app.status === "REJECTED"
                                   ? "bg-rose-500 w-full"
-                                  : "bg-gray-600 w-1/4"
+                                  : "bg-gray-700 w-1/4"
                               }`}
                             ></div>
                           </div>
                         </div>
 
-                        {/* Interview Invite Banner (If Scheduled) */}
+                        {/* Scheduled Interview Card */}
                         {hasInterview && (
-                          <div className="mt-3 p-4 rounded-xl bg-gradient-to-r from-indigo-950/70 via-purple-950/50 to-slate-900 border border-indigo-500/40 text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                          <div className="mt-2 p-4 rounded-xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-gray-900 border border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-base">🎙️</span>
+                                <span className="text-lg">🎙️</span>
                                 <span className="text-xs font-bold text-indigo-300 uppercase tracking-wide">
                                   Interview Scheduled &bull; {app.interview_round}
                                 </span>
@@ -1027,14 +1264,16 @@
                             </div>
 
                             {app.interview_meeting_link && (
-                              <a
-                                href={app.interview_meeting_link}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 whitespace-nowrap transition-all"
-                              >
-                                Join Interview Meeting ↗
-                              </a>
+                              <HoverPopup title="Join Meeting" subtitle="External video link">
+                                <a
+                                  href={app.interview_meeting_link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="btn-shine px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 whitespace-nowrap"
+                                >
+                                  Join Meeting ↗
+                                </a>
+                              </HoverPopup>
                             )}
                           </div>
                         )}
@@ -1048,16 +1287,11 @@
 
           {/* ELIGIBILITY DETAILS MODAL */}
           {eligibilityModalJob && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-              <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-                  <h3 className="font-bold text-base text-white">Eligibility Criteria Breakdown</h3>
-                  <button
-                    onClick={() => setEligibilityModalJob(null)}
-                    className="text-gray-400 hover:text-white text-sm"
-                  >
-                    ✕
-                  </button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+              <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <h3 className="font-extrabold text-base text-white">Server-Side Eligibility Breakdown</h3>
+                  <button onClick={() => setEligibilityModalJob(null)} className="text-gray-400 hover:text-white text-sm">✕</button>
                 </div>
 
                 <div>
@@ -1066,43 +1300,39 @@
                 </div>
 
                 <div className="space-y-2.5 text-xs">
-                  {/* CGPA Check */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-900 border border-gray-800">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
                     <div>
-                      <div className="font-semibold text-gray-200">Minimum CGPA Required</div>
-                      <div className="text-[11px] text-gray-400">Your CGPA: {profile?.cgpa.toFixed(2)}</div>
+                      <div className="font-semibold text-gray-200">CGPA Requirement</div>
+                      <div className="text-[11px] text-gray-400">Your profile: {profile?.cgpa.toFixed(2)}</div>
                     </div>
                     <span className={`font-bold ${profile?.cgpa >= eligibilityModalJob.min_cgpa ? 'text-emerald-400' : 'text-rose-400'}`}>
                       {eligibilityModalJob.min_cgpa.toFixed(2)} {profile?.cgpa >= eligibilityModalJob.min_cgpa ? '✓' : '✗'}
                     </span>
                   </div>
 
-                  {/* Branch Check */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-900 border border-gray-800">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
                     <div>
                       <div className="font-semibold text-gray-200">Eligible Departments</div>
-                      <div className="text-[11px] text-gray-400">Your Department: {profile?.branch}</div>
+                      <div className="text-[11px] text-gray-400">Your branch: {profile?.branch}</div>
                     </div>
-                    <span className="font-bold text-right text-gray-300 max-w-[140px] truncate">
+                    <span className="font-bold text-gray-300 max-w-[140px] truncate text-right">
                       [{eligibilityModalJob.allowed_branches.join(", ")}]
                     </span>
                   </div>
 
-                  {/* Resume Check */}
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-900 border border-gray-800">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
                     <div>
-                      <div className="font-semibold text-gray-200">Validated Resume Attached</div>
-                      <div className="text-[11px] text-gray-400">AWS S3 or Verified Link</div>
+                      <div className="font-semibold text-gray-200">Resume Attached</div>
+                      <div className="text-[11px] text-gray-400">AWS S3 or Verified URL</div>
                     </div>
                     <span className={`font-bold ${profile?.resume_url ? 'text-emerald-400' : 'text-rose-400'}`}>
                       {profile?.resume_url ? 'Attached ✓' : 'Missing ✗'}
                     </span>
                   </div>
 
-                  {/* Ineligibility Reasons */}
-                  {!eligibilityModalJob.is_eligible && eligibilityModalJob.reasons && eligibilityModalJob.reasons.length > 0 && (
+                  {!eligibilityModalJob.is_eligible && eligibilityModalJob.reasons && (
                     <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 text-rose-300 text-[11px] space-y-1">
-                      <div className="font-bold">Reasons for Ineligibility:</div>
+                      <div className="font-bold">Reasons for Gating:</div>
                       {eligibilityModalJob.reasons.map((r, idx) => (
                         <div key={idx}>• {r}</div>
                       ))}
@@ -1110,14 +1340,12 @@
                   )}
                 </div>
 
-                <div className="pt-2">
-                  <button
-                    onClick={() => setEligibilityModalJob(null)}
-                    className="w-full py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs"
-                  >
-                    Close Breakdown
-                  </button>
-                </div>
+                <button
+                  onClick={() => setEligibilityModalJob(null)}
+                  className="w-full py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs border border-white/10"
+                >
+                  Dismiss Breakdown
+                </button>
               </div>
             </div>
           )}
@@ -1167,10 +1395,10 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Edit Academic Metrics</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Edit Academic Metrics</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
@@ -1231,16 +1459,16 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold disabled:opacity-50"
                 >
-                  {saving ? "Saving..." : "Save Changes"}
+                  {saving ? "Saving..." : "Save Metrics"}
                 </button>
               </div>
             </form>
@@ -1249,7 +1477,7 @@
       );
     }
 
-    // --- RECRUITER VIEW ---
+    // --- RECRUITER VIEW (ATS COMMAND CENTER) ---
     function RecruiterView({ user, addToast }) {
       const [profile, setProfile] = useState(null);
       const [jobs, setJobs] = useState([]);
@@ -1309,7 +1537,7 @@
         }
         try {
           const res = await api.batchUpdate(selectedJob.id, selectedAppIds, newStatus);
-          addToast(`ACID Batch Complete: ${res.updated_count} candidate(s) set to ${newStatus}`, "success");
+          addToast(`Atomic Batch Completed: ${res.updated_count} candidate(s) set to ${newStatus}`, "success");
           setSelectedAppIds([]);
           selectJobForAts(selectedJob);
         } catch (e) {
@@ -1320,7 +1548,7 @@
       const handleSubmitJob = async (jobId) => {
         try {
           await api.submitJob(jobId);
-          addToast("Job successfully submitted for placement admin vetting!", "success");
+          addToast("Job successfully submitted for placement cell vetting!", "success");
           loadRecruiterData();
         } catch (e) {
           addToast(e.message, "error");
@@ -1364,35 +1592,40 @@
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* Recruiter Header */}
-          <div className="glass-panel rounded-2xl p-6 shadow-xl gradient-border">
+          
+          {/* Recruiter Workspace Header */}
+          <div className="company-card rounded-2xl p-6 shadow-2xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.company_name}</h2>
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                      profile?.status === "ACTIVE"
-                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                        : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                    }`}
-                  >
-                    {profile?.status}
-                  </span>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-white">{profile?.company_name}</h2>
+                  <HoverPopup title="Account Verification" subtitle="Placement cell vetted status">
+                    <span
+                      className={`cursor-pointer px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                        profile?.status === "ACTIVE"
+                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                          : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                      }`}
+                    >
+                      {profile?.status}
+                    </span>
+                  </HoverPopup>
                 </div>
                 <div className="text-xs text-gray-400 mt-1">
-                  HR Lead: <b className="text-gray-200">{profile?.hr_name}</b> &bull; Account: {profile?.email}
+                  HR Representative: <b className="text-gray-200">{profile?.hr_name}</b> &bull; Account: {profile?.email}
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setCreateModalOpen(true)}
-                  disabled={profile?.status !== "ACTIVE"}
-                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/25 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <span>➕ Post New Job Opening</span>
-                </button>
+                <HoverPopup title="New Recruitment Drive" subtitle="Post opening with package & criteria">
+                  <button
+                    onClick={() => setCreateModalOpen(true)}
+                    disabled={profile?.status !== "ACTIVE"}
+                    className="btn-shine px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <span>➕ Post New Job Opening</span>
+                  </button>
+                </HoverPopup>
               </div>
             </div>
 
@@ -1400,18 +1633,18 @@
               <div className="mt-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2.5">
                 <span>⏳</span>
                 <span>
-                  Your recruiter profile is pending vetting by the Placement Cell Admin. Job posting unlocks upon approval.
+                  Your recruiter organization is pending approval by the Placement Director. Posting jobs is temporarily locked.
                 </span>
               </div>
             )}
           </div>
 
-          {/* Job Drives Overview */}
+          {/* Drives Grid */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400">Recruitment Drives</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">Recruitment Drives</h3>
             {jobs.length === 0 ? (
-              <div className="glass-card rounded-2xl p-8 text-center text-gray-400 text-xs">
-                No job postings created yet. Click "Post New Job Opening" to initiate your recruitment drive!
+              <div className="company-card rounded-2xl p-8 text-center text-gray-400 text-xs">
+                No active drives posted. Click "Post New Job Opening" to get started!
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1421,10 +1654,10 @@
                     <div
                       key={job.id}
                       onClick={() => selectJobForAts(job)}
-                      className={`glass-card rounded-2xl p-4 text-left border cursor-pointer transition-all flex flex-col justify-between space-y-3 ${
+                      className={`company-card rounded-2xl p-5 text-left border cursor-pointer transition-all flex flex-col justify-between space-y-3 ${
                         isSelected
                           ? "border-indigo-500 bg-indigo-950/20 ring-1 ring-indigo-500"
-                          : "border-gray-800 hover:border-gray-700"
+                          : "border-white/[0.08]"
                       }`}
                     >
                       <div className="space-y-1.5">
@@ -1446,24 +1679,24 @@
                             <span className="text-xs font-bold text-emerald-400">₹{job.ctc_lpa} LPA</span>
                           )}
                         </div>
-                        <h4 className="text-sm font-bold text-white line-clamp-1">{job.title}</h4>
+                        <h4 className="text-sm font-extrabold text-white line-clamp-1">{job.title}</h4>
                         <div className="text-[11px] text-gray-400">{job.job_location || "On-site / Hybrid"}</div>
                       </div>
 
-                      {/* Admin Feedback Warning */}
+                      {/* Admin Feedback Block */}
                       {job.status === "REQUIRES_CHANGES" && job.admin_feedback && (
-                        <div className="p-2 rounded-lg bg-rose-950/60 border border-rose-800 text-rose-200 text-[11px]">
+                        <div className="p-2.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-[11px]">
                           <b>Admin Feedback:</b> {job.admin_feedback}
                         </div>
                       )}
 
-                      {/* Action buttons */}
-                      <div className="pt-2 border-t border-gray-800 flex items-center justify-between gap-2 text-xs">
+                      {/* Job Controls Bar */}
+                      <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-1.5">
                           {["DRAFT", "REQUIRES_CHANGES"].includes(job.status) && (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleSubmitJob(job.id); }}
-                              className="px-2.5 py-1 rounded bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-600/50 text-[10px] font-bold"
+                              className="px-2.5 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-600/50 text-[10px] font-bold"
                             >
                               Submit
                             </button>
@@ -1471,7 +1704,7 @@
                           {job.status === "ACTIVE" && (
                             <button
                               onClick={(e) => { e.stopPropagation(); handleCloseJob(job.id); }}
-                              className="px-2.5 py-1 rounded bg-gray-800 text-gray-300 hover:bg-gray-700 text-[10px]"
+                              className="px-2.5 py-1 rounded-lg bg-gray-900 text-gray-300 hover:bg-gray-800 text-[10px]"
                             >
                               Close
                             </button>
@@ -1479,23 +1712,26 @@
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          {/* Export CSV */}
-                          <a
-                            href={api.exportJobCsvUrl(job.id)}
-                            onClick={(e) => e.stopPropagation()}
-                            download
-                            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 text-[10px] font-medium"
-                            title="Download Applicants CSV"
-                          >
-                            📥 CSV
-                          </a>
+                          {/* Export CSV with Pop-Up */}
+                          <HoverPopup title="Export Applicants CSV" subtitle="Download candidate spreadsheet">
+                            <a
+                              href={api.exportJobCsvUrl(job.id)}
+                              onClick={(e) => e.stopPropagation()}
+                              download
+                              className="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-300 text-[10px] font-medium border border-white/5"
+                            >
+                              📥 CSV
+                            </a>
+                          </HoverPopup>
 
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteJob(job.id); }}
-                            className="px-2 py-1 rounded bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 text-[10px]"
-                          >
-                            🗑️
-                          </button>
+                          <HoverPopup title="Soft Delete Drive" subtitle="Archive drive and notify candidates">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteJob(job.id); }}
+                              className="px-2 py-1 rounded-lg bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 text-[10px]"
+                            >
+                              🗑️
+                            </button>
+                          </HoverPopup>
                         </div>
                       </div>
                     </div>
@@ -1505,12 +1741,12 @@
             )}
           </div>
 
-          {/* Applicant Tracking System (ATS Pipeline Table) */}
+          {/* ATS Pipeline Table */}
           {selectedJob && (
-            <div className="glass-card rounded-2xl p-6 shadow-xl space-y-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-gray-800">
+            <div className="company-card rounded-2xl p-6 shadow-2xl space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
                 <div>
-                  <div className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">Candidate Tracking System (ATS)</div>
+                  <div className="text-xs text-indigo-400 font-bold uppercase tracking-wider">Candidate Tracking System (ATS)</div>
                   <h3 className="text-lg font-bold text-white">
                     Applicants for: <span className="text-indigo-200">{selectedJob.title}</span>
                   </h3>
@@ -1521,7 +1757,7 @@
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs text-white"
+                    className="px-3 py-1.5 bg-gray-950 border border-white/10 rounded-xl text-xs text-white"
                   >
                     <option value="">All Statuses</option>
                     <option value="APPLIED">Applied</option>
@@ -1534,7 +1770,7 @@
                   <select
                     value={branchFilter}
                     onChange={(e) => setBranchFilter(e.target.value)}
-                    className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-lg text-xs text-white"
+                    className="px-3 py-1.5 bg-gray-950 border border-white/10 rounded-xl text-xs text-white"
                   >
                     <option value="">All Branches</option>
                     <option value="CSE">CSE</option>
@@ -1543,44 +1779,46 @@
                     <option value="ME">ME</option>
                   </select>
 
-                  <a
-                    href={api.exportJobCsvUrl(selectedJob.id)}
-                    download
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5"
-                  >
-                    <span>📊 Export CSV</span>
-                  </a>
+                  <HoverPopup title="Candidate Spreadsheet" subtitle="Download candidate table as CSV">
+                    <a
+                      href={api.exportJobCsvUrl(selectedJob.id)}
+                      download
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5"
+                    >
+                      <span>📊 Export CSV</span>
+                    </a>
+                  </HoverPopup>
                 </div>
               </div>
 
-              {/* ACID Batch Operations Toolbar */}
+              {/* Floating Batch Actions Dock */}
               {selectedAppIds.length > 0 && (
-                <div className="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/40 flex items-center justify-between flex-wrap gap-3 animate-fade-in">
+                <div className="p-3.5 rounded-2xl bg-indigo-950/60 border border-indigo-500/40 flex items-center justify-between flex-wrap gap-3 animate-fade-in shadow-xl">
                   <span className="text-xs font-bold text-indigo-200">
-                    {selectedAppIds.length} candidate(s) selected for atomic batch action:
+                    {selectedAppIds.length} candidate(s) selected for atomic batch update:
                   </span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleBatchUpdate("UNDER_REVIEW")}
-                      className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold"
                     >
                       Mark Under Review
                     </button>
                     <button
                       onClick={() => handleBatchUpdate("SHORTLISTED")}
-                      className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
                     >
                       Shortlist All
                     </button>
                     <button
                       onClick={() => handleBatchUpdate("OFFERED")}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold"
                     >
                       Make Offer All
                     </button>
                     <button
                       onClick={() => handleBatchUpdate("REJECTED")}
-                      className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold"
                     >
                       Reject All
                     </button>
@@ -1588,24 +1826,24 @@
                 </div>
               )}
 
-              {/* Candidates Table */}
+              {/* Table */}
               {loadingApps ? (
                 <div className="py-12 text-center text-gray-400 text-xs animate-pulse">Loading ATS candidates...</div>
               ) : applications.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 text-xs">
-                  No applicants found for the current filters.
+                  No applicants matching filter conditions.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-gray-800 text-gray-400 uppercase text-[10px] tracking-wider">
+                      <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px] tracking-wider">
                         <th className="py-3 px-3">
                           <input
                             type="checkbox"
                             checked={selectedAppIds.length === applications.length && applications.length > 0}
                             onChange={toggleSelectAll}
-                            className="rounded bg-gray-800 border-gray-700 text-indigo-500"
+                            className="rounded bg-gray-900 border-gray-700 text-indigo-500"
                           />
                         </th>
                         <th className="py-3 px-3">Candidate</th>
@@ -1617,7 +1855,7 @@
                         <th className="py-3 px-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-800/60">
+                    <tbody className="divide-y divide-white/[0.05]">
                       {applications.map((app) => {
                         const student = app.student;
                         const isChecked = selectedAppIds.includes(app.id);
@@ -1628,7 +1866,7 @@
                                 type="checkbox"
                                 checked={isChecked}
                                 onChange={() => toggleAppSelection(app.id)}
-                                className="rounded bg-gray-800 border-gray-700 text-indigo-500"
+                                className="rounded bg-gray-900 border-gray-700 text-indigo-500"
                               />
                             </td>
                             <td className="py-3.5 px-3">
@@ -1644,14 +1882,16 @@
                             </td>
                             <td className="py-3.5 px-3">
                               {student?.resume_url ? (
-                                <a
-                                  href={student.resume_url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="px-2.5 py-1 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20 font-semibold text-[11px]"
-                                >
-                                  📄 View Resume
-                                </a>
+                                <HoverPopup title="Open Document" subtitle="Inspect verified applicant resume">
+                                  <a
+                                    href={student.resume_url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20 font-bold text-[11px]"
+                                  >
+                                    📄 PDF
+                                  </a>
+                                </HoverPopup>
                               ) : (
                                 <span className="text-gray-500 text-[10px]">None</span>
                               )}
@@ -1686,12 +1926,14 @@
                               )}
                             </td>
                             <td className="py-3.5 px-3 text-right">
-                              <button
-                                onClick={() => setInterviewModalApp(app)}
-                                className="px-2.5 py-1 rounded bg-purple-600/30 text-purple-200 border border-purple-500/40 hover:bg-purple-600/50 font-semibold text-[11px]"
-                              >
-                                🎙️ Schedule Interview
-                              </button>
+                              <HoverPopup title="Schedule Round" subtitle="Dispatch video invitation + AWS SES email">
+                                <button
+                                  onClick={() => setInterviewModalApp(app)}
+                                  className="px-3 py-1.5 rounded-xl bg-purple-600/30 text-purple-200 border border-purple-500/40 hover:bg-purple-600/50 font-bold text-[11px]"
+                                >
+                                  🎙️ Interview
+                                </button>
+                              </HoverPopup>
                             </td>
                           </tr>
                         );
@@ -1709,7 +1951,7 @@
               onClose={() => setCreateModalOpen(false)}
               onSuccess={() => {
                 setCreateModalOpen(false);
-                addToast("New job draft successfully created!", "success");
+                addToast("Job draft successfully created!", "success");
                 loadRecruiterData();
               }}
               addToast={addToast}
@@ -1724,7 +1966,7 @@
               onClose={() => setInterviewModalApp(null)}
               onSuccess={() => {
                 setInterviewModalApp(null);
-                addToast("Interview scheduled and email dispatched to candidate!", "success");
+                addToast("Candidate interview invitation scheduled & dispatched!", "success");
                 selectJobForAts(selectedJob);
               }}
               addToast={addToast}
@@ -1738,7 +1980,7 @@
     function CreateJobModal({ onClose, onSuccess, addToast }) {
       const [title, setTitle] = useState("");
       const [description, setDescription] = useState("");
-      const [ctcLpa, setCtcLpa] = useState(15.0);
+      const [ctcLpa, setCtcLpa] = useState(16.0);
       const [jobLocation, setJobLocation] = useState("Bengaluru / Hybrid");
       const [jobType, setJobType] = useState("Full-Time");
       const [minCgpa, setMinCgpa] = useState(7.0);
@@ -1775,10 +2017,10 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-lg w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Post New Job Recruitment Drive</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-lg w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Post New Recruitment Opening</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
@@ -1788,7 +2030,7 @@
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Software Development Engineer (AWS Cloud)"
+                  placeholder="e.g. Cloud Solutions Engineer (AWS)"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
@@ -1796,7 +2038,7 @@
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Role Description & Responsibilities</label>
+                <label className="block text-gray-400 font-semibold mb-1">Role Description</label>
                 <textarea
                   required
                   rows={3}
@@ -1809,7 +2051,7 @@
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Package / CTC (LPA)</label>
+                  <label className="block text-gray-400 font-semibold mb-1">Package (LPA)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -1821,7 +2063,7 @@
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Minimum CGPA (0.0 - 10.0)</label>
+                  <label className="block text-gray-400 font-semibold mb-1">Minimum CGPA</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1837,7 +2079,7 @@
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Job Location</label>
+                  <label className="block text-gray-400 font-semibold mb-1">Location</label>
                   <input
                     type="text"
                     required
@@ -1847,7 +2089,7 @@
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Employment Type</label>
+                  <label className="block text-gray-400 font-semibold mb-1">Type</label>
                   <select
                     value={jobType}
                     onChange={(e) => setJobType(e.target.value)}
@@ -1868,10 +2110,10 @@
                       type="button"
                       key={branch}
                       onClick={() => handleBranchToggle(branch)}
-                      className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
+                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         allowedBranches.includes(branch)
-                          ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+                          : "bg-gray-900 text-gray-400 hover:text-white"
                       }`}
                     >
                       {branch}
@@ -1884,14 +2126,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
                 >
                   {submitting ? "Creating..." : "Save Draft"}
                 </button>
@@ -1911,7 +2153,6 @@
       const [scheduling, setScheduling] = useState(false);
 
       useEffect(() => {
-        // Default to tomorrow 10:00 AM
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         tomorrow.setHours(10, 0, 0, 0);
@@ -1937,15 +2178,15 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Schedule Candidate Interview</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Schedule Candidate Interview</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
-            <div className="p-3 rounded-xl bg-gray-900 border border-gray-800 text-xs">
-              <div className="text-gray-400">Candidate:</div>
+            <div className="p-3.5 rounded-xl bg-gray-900 border border-white/5 text-xs">
+              <div className="text-gray-400">Target Candidate:</div>
               <div className="font-bold text-white text-sm">{app.student?.full_name} ({app.student?.roll_number})</div>
               <div className="text-[11px] text-gray-400">{app.student?.email}</div>
             </div>
@@ -1985,7 +2226,7 @@
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Preparation Instructions for Candidate</label>
+                <label className="block text-gray-400 font-semibold mb-1">Candidate Preparation Notes</label>
                 <textarea
                   rows={2}
                   placeholder="Topics to prepare, assessment format, etc."
@@ -1999,16 +2240,16 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={scheduling}
-                  className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold disabled:opacity-50"
                 >
-                  {scheduling ? "Scheduling..." : "Dispatch Invite →"}
+                  {scheduling ? "Scheduling..." : "Send Invite →"}
                 </button>
               </div>
             </form>
@@ -2017,7 +2258,7 @@
       );
     }
 
-    // --- ADMIN VIEW ---
+    // --- ADMIN VIEW (GOVERNANCE SUITE) ---
     function AdminView({ user, addToast }) {
       const [metrics, setMetrics] = useState(null);
       const [pendingRecruiters, setPendingRecruiters] = useState([]);
@@ -2025,7 +2266,7 @@
       const [students, setStudents] = useState([]);
       const [recruiters, setRecruiters] = useState([]);
       const [auditLogs, setAuditLogs] = useState([]);
-      const [activeTab, setActiveTab] = useState("VETTING"); // "VETTING" | "STUDENTS" | "RECRUITERS" | "AUDIT"
+      const [activeTab, setActiveTab] = useState("VETTING");
       const [feedbackModalJob, setFeedbackModalJob] = useState(null);
 
       useEffect(() => {
@@ -2056,7 +2297,7 @@
       const handleApproveRecruiter = async (id) => {
         try {
           await api.approveRecruiter(id);
-          addToast("Recruiter approved and activated. Audit log recorded.", "success");
+          addToast("Recruiter approved and activated in directory.", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
@@ -2066,7 +2307,7 @@
       const handleRejectRecruiter = async (id) => {
         try {
           await api.rejectRecruiter(id);
-          addToast("Recruiter rejected. Audit log recorded.", "info");
+          addToast("Recruiter registration rejected.", "info");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
@@ -2076,7 +2317,7 @@
       const handleApproveJob = async (id) => {
         try {
           await api.approveJob(id);
-          addToast("Job approved and unlocked for student applicants!", "success");
+          addToast("Job verified and unlocked for student applicants!", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
@@ -2085,124 +2326,148 @@
 
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-          {/* Admin Header & Export Center */}
-          <div className="glass-panel rounded-2xl p-6 shadow-xl gradient-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          
+          {/* Admin Command Header */}
+          <div className="company-card rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-purple-400">Institutional Governance</div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white">Central Placement Cell Administration</h2>
-              <div className="text-xs text-gray-400 mt-1">Superuser Access &bull; Immutable Audit Logs Active</div>
+              <div className="text-xs font-bold uppercase tracking-wider text-purple-400">Institutional Governance Console</div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white">Central Placement Cell Operations</h2>
+              <div className="text-xs text-gray-400 mt-1">Superuser Clearance &bull; Permanent Audit Logging Active</div>
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <a
-                href={api.exportStudentsCsvUrl()}
-                download
-                className="px-3.5 py-2 rounded-xl bg-purple-600/20 text-purple-200 border border-purple-500/40 text-xs font-bold hover:bg-purple-600/30 flex items-center gap-1.5 transition-all"
-              >
-                <span>📥 Export Student Registry (CSV)</span>
-              </a>
-              <a
-                href={api.exportPlacementsCsvUrl()}
-                download
-                className="px-3.5 py-2 rounded-xl bg-emerald-600/20 text-emerald-200 border border-emerald-500/40 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5 transition-all"
-              >
-                <span>🏆 Export Placements Report (CSV)</span>
-              </a>
+              <HoverPopup title="Student Database" subtitle="Export complete student metrics to CSV">
+                <a
+                  href={api.exportStudentsCsvUrl()}
+                  download
+                  className="px-3.5 py-2 rounded-xl bg-purple-600/20 text-purple-200 border border-purple-500/40 text-xs font-bold hover:bg-purple-600/30 flex items-center gap-1.5 transition-all"
+                >
+                  <span>📥 Student Registry (CSV)</span>
+                </a>
+              </HoverPopup>
+
+              <HoverPopup title="Placement Record" subtitle="Export all offered students and CTC to CSV">
+                <a
+                  href={api.exportPlacementsCsvUrl()}
+                  download
+                  className="px-3.5 py-2 rounded-xl bg-emerald-600/20 text-emerald-200 border border-emerald-500/40 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5 transition-all"
+                >
+                  <span>🏆 Placements Report (CSV)</span>
+                </a>
+              </HoverPopup>
             </div>
           </div>
 
-          {/* Real-Time KPI Cards */}
+          {/* KPI Cards */}
           {metrics && (
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3.5">
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Total Students</div>
-                <div className="text-2xl font-extrabold text-white mt-1">{metrics.total_students}</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Recruiters</div>
-                <div className="text-2xl font-extrabold text-cyan-400 mt-1">{metrics.total_recruiters}</div>
-                <div className="text-[10px] text-gray-400">{metrics.pending_recruiters} Pending Vetting</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Active Job Drives</div>
-                <div className="text-2xl font-extrabold text-indigo-400 mt-1">{metrics.active_jobs}</div>
-                <div className="text-[10px] text-gray-400">{metrics.pending_jobs} In Review</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Applications</div>
-                <div className="text-2xl font-extrabold text-purple-400 mt-1">{metrics.total_applications}</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Offers Released</div>
-                <div className="text-2xl font-extrabold text-emerald-400 mt-1">{metrics.total_offered}</div>
-              </div>
-              <div className="glass-card p-4 rounded-xl text-left border border-gray-800">
-                <div className="text-xs text-gray-400">Conversion Rate</div>
-                <div className="text-2xl font-extrabold text-amber-400 mt-1">{metrics.conversion_rate_percentage}%</div>
-              </div>
+              <HoverPopup title="Student Cohort" subtitle="Total verified student signups">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Total Students</div>
+                  <div className="text-2xl font-black text-white mt-1">{metrics.total_students}</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Corporate Network" subtitle={`${metrics.pending_recruiters} awaiting administrative vetting`}>
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Recruiters</div>
+                  <div className="text-2xl font-black text-cyan-400 mt-1">{metrics.total_recruiters}</div>
+                  <div className="text-[10px] text-gray-400">{metrics.pending_recruiters} Pending</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Drives Live" subtitle={`${metrics.pending_jobs} drives in review queue`}>
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Active Drives</div>
+                  <div className="text-2xl font-black text-indigo-400 mt-1">{metrics.active_jobs}</div>
+                  <div className="text-[10px] text-gray-400">{metrics.pending_jobs} In Review</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Total Applications" subtitle="Submissions evaluated server-side">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Applications</div>
+                  <div className="text-2xl font-black text-purple-400 mt-1">{metrics.total_applications}</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Offers Confirmed" subtitle="Successful candidate selections">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Offers Released</div>
+                  <div className="text-2xl font-black text-emerald-400 mt-1">{metrics.total_offered}</div>
+                </div>
+              </HoverPopup>
+
+              <HoverPopup title="Placement Efficiency" subtitle="Candidate offer conversion ratio">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Conversion Rate</div>
+                  <div className="text-2xl font-black text-amber-400 mt-1">{metrics.conversion_rate_percentage}%</div>
+                </div>
+              </HoverPopup>
             </div>
           )}
 
-          {/* Navigation Tabs */}
-          <div className="flex border-b border-gray-800 gap-2 overflow-x-auto">
+          {/* Segmented Control Admin Tabs */}
+          <div className="bg-gray-900/60 p-1 rounded-2xl border border-white/[0.08] inline-flex gap-1.5 backdrop-blur-xl overflow-x-auto">
             <button
               onClick={() => setActiveTab("VETTING")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "VETTING"
-                  ? "border-purple-500 text-purple-400 bg-purple-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <span>⚖️ Vetting Queues</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-purple-500/20 text-purple-300 font-semibold">
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
                 {pendingRecruiters.length + pendingJobs.length}
               </span>
             </button>
             <button
               onClick={() => setActiveTab("STUDENTS")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "STUDENTS"
-                  ? "border-purple-500 text-purple-400 bg-purple-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <span>🎓 Student Directory</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-gray-800 text-gray-300">
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
                 {students.length}
               </span>
             </button>
             <button
               onClick={() => setActiveTab("RECRUITERS")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "RECRUITERS"
-                  ? "border-purple-500 text-purple-400 bg-purple-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              <span>🏢 Partner Companies</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-gray-800 text-gray-300">
+              <span>🏢 Partner Directory</span>
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
                 {recruiters.length}
               </span>
             </button>
             <button
               onClick={() => setActiveTab("AUDIT")}
-              className={`px-5 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "AUDIT"
-                  ? "border-purple-500 text-purple-400 bg-purple-500/5"
-                  : "border-transparent text-gray-400 hover:text-gray-200"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              <span>📜 Immutable Audit Trail</span>
+              <span>📜 Audit Trail</span>
             </button>
           </div>
 
           {/* TAB 1: VETTING QUEUES */}
           {activeTab === "VETTING" && (
             <div className="space-y-6">
-              {/* Recruiter Onboarding Queue */}
-              <div className="glass-card rounded-2xl p-5 border border-gray-800 space-y-4">
+              
+              {/* Recruiter Vetting */}
+              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
                     <span>🏢 Recruiter Verification Queue</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-bold">
                       {pendingRecruiters.length} Pending
@@ -2212,34 +2477,38 @@
 
                 {pendingRecruiters.length === 0 ? (
                   <div className="py-6 text-center text-gray-400 text-xs">
-                    All partner recruiters have been vetted and verified!
+                    All partner organizations verified. No pending reviews in queue!
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {pendingRecruiters.map((r) => (
                       <div
                         key={r.id}
-                        className="p-4 rounded-xl bg-gray-900 border border-gray-800 flex items-center justify-between gap-4"
+                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex items-center justify-between gap-4"
                       >
                         <div>
                           <div className="font-bold text-white">{r.company_name}</div>
                           <div className="text-xs text-gray-400">
-                            HR: <b className="text-gray-300">{r.hr_name}</b> &bull; {r.email}
+                            HR Partner: <b className="text-gray-300">{r.hr_name}</b> &bull; {r.email}
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleApproveRecruiter(r.id)}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleRejectRecruiter(r.id)}
-                            className="px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/40 hover:bg-rose-600/50 text-xs"
-                          >
-                            Reject
-                          </button>
+                          <HoverPopup title="Authorize Recruiter" subtitle="Grant immediate job posting permissions">
+                            <button
+                              onClick={() => handleApproveRecruiter(r.id)}
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            >
+                              Approve
+                            </button>
+                          </HoverPopup>
+                          <HoverPopup title="Decline Account" subtitle="Mark recruiter as rejected">
+                            <button
+                              onClick={() => handleRejectRecruiter(r.id)}
+                              className="px-3 py-1.5 rounded-xl bg-rose-600/30 text-rose-300 border border-rose-500/40 hover:bg-rose-600/50 text-xs font-bold"
+                            >
+                              Reject
+                            </button>
+                          </HoverPopup>
                         </div>
                       </div>
                     ))}
@@ -2247,11 +2516,11 @@
                 )}
               </div>
 
-              {/* Job Draft Vetting Queue */}
-              <div className="glass-card rounded-2xl p-5 border border-gray-800 space-y-4">
+              {/* Job Draft Vetting */}
+              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <span>📋 Job Posting Approval Queue</span>
+                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <span>📋 Job Opening Approval Queue</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-indigo-500/20 text-indigo-300 font-bold">
                       {pendingJobs.length} In Review
                     </span>
@@ -2260,57 +2529,62 @@
 
                 {pendingJobs.length === 0 ? (
                   <div className="py-6 text-center text-gray-400 text-xs">
-                    No job drafts awaiting placement approval.
+                    No job drafts awaiting placement cell vetting.
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {pendingJobs.map((j) => (
                       <div
                         key={j.id}
-                        className="p-4 rounded-xl bg-gray-900 border border-gray-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
                       >
                         <div className="space-y-1">
-                          <div className="text-xs font-semibold text-gray-400">{j.company_name}</div>
+                          <div className="text-xs font-bold text-gray-400">{j.company_name}</div>
                           <div className="text-sm font-bold text-white">{j.title}</div>
                           <div className="text-xs text-gray-300">
-                            Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Branches: [{j.allowed_branches.join(", ")}]
+                            Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Whitelist: [{j.allowed_branches.join(", ")}]
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleApproveJob(j.id)}
-                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
-                          >
-                            Approve Job
-                          </button>
-                          <button
-                            onClick={() => setFeedbackModalJob(j)}
-                            className="px-3.5 py-1.5 rounded-lg bg-amber-600/30 text-amber-200 border border-amber-500/40 hover:bg-amber-600/50 font-semibold text-xs"
-                          >
-                            Request Changes
-                          </button>
+                          <HoverPopup title="Approve Opening" subtitle="Make visible to eligible students">
+                            <button
+                              onClick={() => handleApproveJob(j.id)}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            >
+                              Approve Drive
+                            </button>
+                          </HoverPopup>
+                          <HoverPopup title="Request Modifications" subtitle="Append feedback & return to recruiter">
+                            <button
+                              onClick={() => setFeedbackModalJob(j)}
+                              className="px-3.5 py-1.5 rounded-xl bg-amber-600/30 text-amber-200 border border-amber-500/40 hover:bg-amber-600/50 font-bold text-xs"
+                            >
+                              Request Changes
+                            </button>
+                          </HoverPopup>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
+
             </div>
           )}
 
           {/* TAB 2: STUDENT DIRECTORY */}
           {activeTab === "STUDENTS" && (
-            <div className="glass-card rounded-2xl p-5 border border-gray-800 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-                <h3 className="font-bold text-white text-sm">Institutional Student Directory</h3>
-                <span className="text-xs text-gray-400">{students.length} Registered Applicants</span>
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">University Student Cohort Directory</h3>
+                <span className="text-xs text-gray-400 font-mono">{students.length} Registered</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-gray-800 text-gray-400 uppercase text-[10px]">
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
                       <th className="py-2.5 px-3">Roll Number</th>
                       <th className="py-2.5 px-3">Full Name</th>
                       <th className="py-2.5 px-3">Department</th>
@@ -2319,7 +2593,7 @@
                       <th className="py-2.5 px-3">Resume</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800/60">
+                  <tbody className="divide-y divide-white/[0.05]">
                     {students.map((s) => (
                       <tr key={s.id} className="hover:bg-gray-900/40">
                         <td className="py-3 px-3 font-mono font-bold text-cyan-400">{s.roll_number}</td>
@@ -2333,7 +2607,7 @@
                               href={s.resume_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-indigo-400 hover:underline"
+                              className="text-indigo-400 hover:underline font-bold"
                             >
                               View PDF ↗
                             </a>
@@ -2349,18 +2623,18 @@
             </div>
           )}
 
-          {/* TAB 3: PARTNER COMPANIES */}
+          {/* TAB 3: PARTNER DIRECTORY */}
           {activeTab === "RECRUITERS" && (
-            <div className="glass-card rounded-2xl p-5 border border-gray-800 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-                <h3 className="font-bold text-white text-sm">Partner Companies & Recruiters</h3>
-                <span className="text-xs text-gray-400">{recruiters.length} Registered Companies</span>
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">Corporate Recruitment Partners</h3>
+                <span className="text-xs text-gray-400 font-mono">{recruiters.length} Organizations</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-gray-800 text-gray-400 uppercase text-[10px]">
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
                       <th className="py-2.5 px-3">Company</th>
                       <th className="py-2.5 px-3">HR Lead</th>
                       <th className="py-2.5 px-3">Email</th>
@@ -2368,7 +2642,7 @@
                       <th className="py-2.5 px-3">Active Drives</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800/60">
+                  <tbody className="divide-y divide-white/[0.05]">
                     {recruiters.map((r) => (
                       <tr key={r.id} className="hover:bg-gray-900/40">
                         <td className="py-3 px-3 font-bold text-white">{r.company_name}</td>
@@ -2376,7 +2650,7 @@
                         <td className="py-3 px-3 text-gray-400">{r.email}</td>
                         <td className="py-3 px-3">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                               r.status === "ACTIVE"
                                 ? "bg-emerald-500/20 text-emerald-300"
                                 : "bg-amber-500/20 text-amber-300"
@@ -2396,16 +2670,16 @@
 
           {/* TAB 4: AUDIT TRAIL */}
           {activeTab === "AUDIT" && (
-            <div className="glass-card rounded-2xl p-5 border border-gray-800 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-                <h3 className="font-bold text-white text-sm">Application-Level Immutable Audit Trail</h3>
-                <span className="text-[11px] text-gray-400 font-mono">HASH: SHA256 Relational Integrity</span>
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">Cryptographic Application-Level Audit Logs</h3>
+                <span className="text-[11px] text-gray-400 font-mono">APPEND-ONLY INTEGRITY</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-gray-800 text-gray-400 uppercase text-[10px]">
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
                       <th className="py-2.5 px-3">Timestamp</th>
                       <th className="py-2.5 px-3">Admin</th>
                       <th className="py-2.5 px-3">Action</th>
@@ -2413,7 +2687,7 @@
                       <th className="py-2.5 px-3">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800/60 font-mono text-[11px]">
+                  <tbody className="divide-y divide-white/[0.05] font-mono text-[11px]">
                     {auditLogs.map((log) => (
                       <tr key={log.id} className="hover:bg-gray-900/40">
                         <td className="py-2.5 px-3 text-gray-400">{new Date(log.timestamp).toLocaleString()}</td>
@@ -2429,14 +2703,14 @@
             </div>
           )}
 
-          {/* REQUEST CHANGES FEEDBACK MODAL */}
+          {/* REQUEST CHANGES MODAL */}
           {feedbackModalJob && (
             <RequestFeedbackModal
               job={feedbackModalJob}
               onClose={() => setFeedbackModalJob(null)}
               onSuccess={() => {
                 setFeedbackModalJob(null);
-                addToast("Changes requested and feedback sent to recruiter.", "info");
+                addToast("Change request dispatched to recruiter.", "info");
                 loadAdminData();
               }}
               addToast={addToast}
@@ -2465,22 +2739,22 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Request Job Corrections</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Request Job Corrections</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
                 <label className="block text-gray-400 font-semibold mb-1">
-                  Mandatory Admin Feedback for {job.company_name}
+                  Mandatory Correction Feedback for {job.company_name}
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Explain required corrections (e.g., clarify branch eligibility, adjust minimum CGPA)..."
+                  placeholder="Explain requested corrections (e.g. adjust minimum CGPA, clarify branch requirements)..."
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-500"
@@ -2491,14 +2765,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-50"
                 >
                   {sending ? "Sending..." : "Submit Feedback"}
                 </button>
@@ -2522,7 +2796,7 @@
         setSaving(true);
         try {
           await api.changePassword({ old_password: oldPassword, new_password: newPassword });
-          addToast("Password changed successfully!", "success");
+          addToast("Password updated successfully!", "success");
           onClose();
         } catch (err) {
           addToast(`Error: ${err.message}`, "error");
@@ -2532,10 +2806,10 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-sm w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Change Account Password</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-sm w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Change Password</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
@@ -2552,7 +2826,7 @@
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">New Password (Min 6 chars)</label>
+                <label className="block text-gray-400 font-semibold mb-1">New Password (Min 6 characters)</label>
                 <input
                   type="password"
                   required
@@ -2567,16 +2841,16 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
                 >
-                  {saving ? "Updating..." : "Update Password"}
+                  {saving ? "Updating..." : "Confirm Update"}
                 </button>
               </div>
             </form>
@@ -2597,10 +2871,10 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4 max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">Student Alert Inbox</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Student Alert Inbox</h3>
               <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
@@ -2622,7 +2896,7 @@
                       {!n.is_read && (
                         <button
                           onClick={() => handleMarkRead(n.id)}
-                          className="text-[10px] text-cyan-400 hover:underline"
+                          className="text-[10px] text-cyan-400 hover:underline font-bold"
                         >
                           Mark as read
                         </button>
@@ -2643,7 +2917,7 @@
 
     // --- AUTH MODAL ---
     function AuthModal({ isOpen, initialMode, onClose, onSuccess }) {
-      const [mode, setMode] = useState(initialMode || "LOGIN"); // "LOGIN" | "REGISTER_STUDENT" | "REGISTER_RECRUITER"
+      const [mode, setMode] = useState(initialMode || "LOGIN");
       const [role, setRole] = useState("STUDENT");
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
@@ -2708,12 +2982,12 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-left border border-gray-700 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
-              <h3 className="font-bold text-base text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">
                 {mode === "LOGIN"
-                  ? "Sign In to Placement Portal"
+                  ? "Sign In • Campus Placement Portal"
                   : mode === "REGISTER_STUDENT"
                   ? "Register Student Applicant"
                   : "Register Partner Recruiter"}
@@ -2722,12 +2996,12 @@
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-xs whitespace-pre-line">
+              <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-xs whitespace-pre-line">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               {mode === "LOGIN" && (
                 <div>
                   <label className="block text-gray-400 font-semibold mb-1">Target Account Role</label>
@@ -2740,7 +3014,7 @@
                         className={`py-2 rounded-xl font-bold text-xs transition-all ${
                           role === r
                             ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                            : "bg-gray-800 text-gray-400 hover:text-white"
+                            : "bg-gray-900 text-gray-400 hover:text-white border border-white/5"
                         }`}
                       >
                         {r}
@@ -2805,7 +3079,7 @@
                       </select>
                     </div>
                     <div>
-                      <label className="block text-gray-400 font-semibold mb-1">Graduation Batch</label>
+                      <label className="block text-gray-400 font-semibold mb-1">Batch Year</label>
                       <input
                         type="number"
                         required
@@ -2873,38 +3147,37 @@
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
+                  className="btn-shine w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
                 >
                   {submitting
-                    ? "Authenticating..."
+                    ? "Validating..."
                     : mode === "LOGIN"
-                    ? "Sign In →"
-                    : "Create Account →"}
+                    ? "Enter Workspace →"
+                    : "Create Profile →"}
                 </button>
               </div>
 
-              {/* Mode switch links */}
               <div className="pt-2 text-center text-[11px] text-gray-400 space-y-1">
                 {mode === "LOGIN" ? (
                   <>
                     <div>
-                      Student?{" "}
+                      Student applicant?{" "}
                       <button
                         type="button"
                         onClick={() => { setMode("REGISTER_STUDENT"); setError(""); }}
                         className="text-cyan-400 hover:underline font-bold"
                       >
-                        Register as Applicant
+                        Register as Student
                       </button>
                     </div>
                     <div>
-                      Company Recruiter?{" "}
+                      Company recruiter?{" "}
                       <button
                         type="button"
                         onClick={() => { setMode("REGISTER_RECRUITER"); setError(""); }}
                         className="text-indigo-400 hover:underline font-bold"
                       >
-                        Register Company
+                        Register Organization
                       </button>
                     </div>
                   </>
@@ -2927,7 +3200,7 @@
       );
     }
 
-    // Render the React app into #root
+    // Render into root
     ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
