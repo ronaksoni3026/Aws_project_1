@@ -16,9 +16,13 @@ export const setStoredUser = (user) => localStorage.setItem("placement_user", JS
 async function request(endpoint, options = {}) {
   const token = getStoredToken();
   const headers = {
-    "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
+  // Only set application/json if body is not FormData
+  if (!(options.body instanceof FormData) && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -32,11 +36,16 @@ async function request(endpoint, options = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const errorMsg = data.detail
-      ? typeof data.detail === "object"
-        ? data.detail.message || JSON.stringify(data.detail)
-        : data.detail
-      : "An unexpected network or server error occurred.";
+    let errorMsg = "An unexpected network or server error occurred.";
+    if (data.detail) {
+      if (typeof data.detail === "object" && data.detail.reasons) {
+        errorMsg = `Eligibility Criteria Unmet:\n• ` + data.detail.reasons.join("\n• ");
+      } else if (typeof data.detail === "object") {
+        errorMsg = data.detail.message || JSON.stringify(data.detail);
+      } else {
+        errorMsg = data.detail;
+      }
+    }
     const error = new Error(errorMsg);
     error.status = response.status;
     error.data = data;
@@ -47,15 +56,27 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
+  // System / AWS Cloud
+  getAwsStatus: () => request("/aws/status"),
+
   // Auth
   login: (credentials) => request("/auth/login", { method: "POST", body: JSON.stringify(credentials) }),
   registerStudent: (data) => request("/auth/register/student", { method: "POST", body: JSON.stringify(data) }),
   registerRecruiter: (data) => request("/auth/register/recruiter", { method: "POST", body: JSON.stringify(data) }),
   getMe: () => request("/auth/me"),
+  changePassword: (data) => request("/auth/change-password", { method: "POST", body: JSON.stringify(data) }),
 
   // Student
   getStudentProfile: () => request("/student/profile"),
   updateStudentProfile: (profile) => request("/student/profile", { method: "PUT", body: JSON.stringify(profile) }),
+  uploadResume: (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return request("/student/resume/upload", {
+      method: "POST",
+      body: formData,
+    });
+  },
   getStudentJobs: () => request("/student/jobs"),
   applyJob: (jobId) => request(`/student/jobs/${jobId}/apply`, { method: "POST" }),
   getStudentApplications: () => request("/student/applications"),
@@ -81,6 +102,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ application_ids: applicationIds, status: targetStatus }),
     }),
+  scheduleInterview: (jobId, applicationId, payload) =>
+    request(`/recruiter/jobs/${jobId}/applications/${applicationId}/schedule-interview`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  exportJobCsvUrl: (jobId) => `/api/recruiter/jobs/${jobId}/export-csv`,
 
   // Admin
   getPendingRecruiters: () => request("/admin/recruiters/pending"),
@@ -105,4 +132,6 @@ export const api = {
     if (search) url += `&search=${encodeURIComponent(search)}`;
     return request(url);
   },
+  exportStudentsCsvUrl: () => "/api/admin/export/students-csv",
+  exportPlacementsCsvUrl: () => "/api/admin/export/placements-csv",
 };
