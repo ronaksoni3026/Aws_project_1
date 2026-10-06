@@ -7,7 +7,7 @@ from sqlalchemy.pool import StaticPool
 from backend.main import app
 from backend.database import Base, get_db
 import backend.core.tasks
-from backend.models import Admin
+from backend.models import Admin, Student, Recruiter, Job, Application, Notification, AuditLog
 from backend.core.security import get_password_hash, create_access_token, Role
 
 # In-memory SQLite engine for fast, isolated test runs

@@ -124,15 +124,44 @@ pytest tests/ -v
 
 ### 4. Launch Application Server
 ```bash
-# Seed initial admin and run FastAPI with hot reload
+# Seed initial demo data and run FastAPI with hot reload
 uvicorn backend.main:app --reload --port 8000
 ```
 - Open browser at **`http://127.0.0.1:8000`** to access the interactive web portal.
 - Interactive Swagger API docs are available at **`http://127.0.0.1:8000/docs`**.
 
 ### 5. Default Credentials for Instant Testing
+- **Student Applicant**: `student@placement.edu` / `Student@1234` (Ronak Soni - CSE)
+- **Partner Recruiter**: `recruiter@placement.edu` / `Recruiter@1234` (Amazon Web Services)
 - **Placement Cell Admin**: `admin@placement.edu` / `Admin@1234`
-- Alternatively, register as a new **Student** or **Recruiter** directly from the UI.
+
+---
+
+## AWS Cloud Architecture & Infrastructure as Code (IaC)
+
+### 1. AWS S3 & SES Native Services
+- **Resume Hub (AWS S3)**: Direct multi-part resume upload via `POST /api/student/resume/upload` into Amazon S3 (`resumes/student_{id}/...`) with zero-config local storage fallback.
+- **Transactional Alerts (AWS SES)**: Automated candidate interview invitations and scheduling alerts dispatched via Amazon Simple Email Service (SES).
+- **Cloud Status Shield**: Live `/api/aws/status` endpoint monitoring S3 and SES health.
+
+### 2. Infrastructure as Code (Terraform)
+Located in [`terraform/`](terraform/):
+- **Amazon ECS (Fargate)**: Serverless container compute running FastAPI.
+- **Amazon RDS (PostgreSQL 15)**: Managed ACID relational database.
+- **Amazon S3 Bucket**: Secure resume storage with CORS policies and public access blocks.
+- **Application Load Balancer (ALB)**: SSL/HTTP ingress with automated `/health` probing.
+
+```bash
+cd terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+### 3. CI/CD Automation (GitHub Actions)
+Located in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
+- Automated test runs via `pytest` on every commit/PR.
+- Container image build and automated push to AWS ECR.
 
 ---
 
@@ -142,32 +171,41 @@ docker-compose up --build
 ```
 This spins up:
 - PostgreSQL 15 container (`placement_portal_postgres`) on port 5432.
-- FastAPI backend container (`placement_portal_api`) on port 8000.
+- FastAPI backend container (`placement_portal_api`) on port 8000 (built via multi-stage `Dockerfile`).
 
 ---
 
 ## API Route Summary
+
+### AWS Cloud & System
+- `GET /health` - System health check.
+- `GET /api/aws/status` - Live AWS S3 and SES service status.
 
 ### Authentication (`/api/auth`)
 - `POST /register/student` - Register student applicant.
 - `POST /register/recruiter` - Register company recruiter (defaults to PENDING).
 - `POST /login` - Role-aware login issuing stateless JWT.
 - `GET /me` - Retrieve current user session.
+- `POST /change-password` - Securely change account password.
 
 ### Student Applicant (`/api/student`)
-- `GET /profile` & `PUT /profile` - Academic metric management with `HttpUrl` validation.
-- `GET /jobs` - Smart job board enriched with server-side eligibility evaluation.
+- `GET /profile` & `PUT /profile` - Academic metric management.
+- `POST /resume/upload` - Direct PDF resume upload to AWS S3 (or local fallback).
+- `GET /jobs` - Smart job board enriched with server-side eligibility evaluation and CTC.
 - `POST /jobs/{id}/apply` - Gated job application endpoint (HTTP 422 on failure).
-- `GET /applications` - Student application macro-funnel tracker.
+- `GET /applications` - Student application macro-funnel tracker & interview details.
 - `GET /notifications` - Asynchronous student alert inbox.
+- `POST /notifications/{id}/read` - Mark notification as read.
 
 ### Recruiter Portal (`/api/recruiter`)
-- `GET /jobs` & `POST /jobs` - Job creation (locked with HTTP 403 for PENDING recruiters).
+- `GET /jobs` & `POST /jobs` - Job creation with CTC (LPA), location, and deadline.
 - `PUT /jobs/{id}` - Edit job (allowed in DRAFT and REQUIRES_CHANGES).
 - `POST /jobs/{id}/submit` - Submit job for approval.
 - `POST /jobs/{id}/close` - Close recruitment drive.
 - `DELETE /jobs/{id}` - Soft-delete job with automated background alerts.
 - `GET /jobs/{id}/applications` - Paginated ATS table with status/branch filtering.
+- `POST /jobs/{id}/applications/{app_id}/schedule-interview` - Schedule candidate interview round + SES alert.
+- `GET /jobs/{id}/export-csv` - Export candidate list as CSV.
 - `POST /jobs/{id}/applications/batch-update` - ACID transactional batch updater.
 
 ### Administrative Oversight (`/api/admin`)
@@ -176,5 +214,8 @@ This spins up:
 - `GET /jobs/pending` - Job review queue.
 - `POST /jobs/{id}/approve` - Approve job for student discovery.
 - `POST /jobs/{id}/request-changes` - Feedback loop (transitions to REQUIRES_CHANGES).
+- `GET /students` & `GET /recruiters` - Searchable university directories.
+- `GET /export/students-csv` - One-click student directory CSV export.
+- `GET /export/placements-csv` - One-click placed candidates report CSV export.
 - `GET /audit-logs` - Paginated immutable audit trail.
 - `GET /metrics` - Real-time platform KPI dashboard.
