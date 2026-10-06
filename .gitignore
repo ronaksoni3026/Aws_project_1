@@ -22,6 +22,7 @@ node_modules/
 dist/
 build/
 .parcel-cache/
+uploads/
 
 # OS and IDE files
 .DS_Store

@@ -27,11 +27,19 @@ services:
       - DATABASE_URL=postgresql://placement_admin:placement_secret_password@db:5432/placement_portal
       - SECRET_KEY=institutional-placement-portal-super-secret-key-production-grade
       - ACCESS_TOKEN_EXPIRE_MINUTES=120
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME:-}
+      - AWS_SES_SENDER_EMAIL=${AWS_SES_SENDER_EMAIL:-}
     ports:
       - "8000:8000"
+    volumes:
+      - uploads_data:/app/uploads
     depends_on:
       db:
         condition: service_healthy
 
 volumes:
   pgdata:
+  uploads_data:
