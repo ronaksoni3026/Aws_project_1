@@ -160,3 +160,23 @@ def get_current_user_profile(current_user=Depends(get_current_user)):
         "name": display_name,
         "status": status_val,
     }
+
+
+from backend.schemas.auth import ChangePasswordRequest
+
+@router.post("/change-password")
+def change_password(
+    payload: ChangePasswordRequest,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Allows any authenticated user (Student, Recruiter, Admin) to change their password."""
+    if not verify_password(payload.old_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password verification failed.",
+        )
+
+    current_user.password_hash = get_password_hash(payload.new_password)
+    db.commit()
+    return {"message": "Password updated successfully."}

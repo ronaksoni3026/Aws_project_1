@@ -1,3 +1,4 @@
+import datetime
 from typing import Tuple, List
 from backend.models.student import Student
 from backend.models.job import Job
@@ -7,7 +8,8 @@ def evaluate_eligibility(student: Student, job: Job) -> Tuple[bool, List[str]]:
     """
     Centralized Server-Side Eligibility Engine.
     Performs deterministic mathematical and categorical comparisons between
-    the student's live academic profile and the job's hard criteria.
+    the student's live academic profile and the job's hard criteria,
+    including application deadlines.
 
     Returns:
         (is_eligible, reasons_for_ineligibility)
@@ -41,7 +43,15 @@ def evaluate_eligibility(student: Student, job: Job) -> Tuple[bool, List[str]]:
 
     # 4. Resume verification check
     if not student.resume_url or not student.resume_url.strip():
-        reasons.append("A validated external resume URL must be attached to student profile before applying")
+        reasons.append("A validated resume must be uploaded or linked to student profile before applying")
+
+    # 5. Application deadline check
+    if job.deadline:
+        now = datetime.datetime.utcnow()
+        if now > job.deadline:
+            reasons.append(
+                f"Application deadline ({job.deadline.strftime('%Y-%m-%d %H:%M')}) has passed"
+            )
 
     is_eligible = len(reasons) == 0
     return is_eligible, reasons

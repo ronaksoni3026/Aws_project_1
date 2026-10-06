@@ -9,6 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from backend.config import settings
 from backend.seed import init_db
 from backend.core.rate_limiter import limiter, rate_limit_exceeded_handler
+from backend.core.aws import get_aws_status
 from backend.routers import (
     auth_router,
     students_router,
@@ -56,6 +57,18 @@ app.include_router(admin_router, prefix=settings.API_V1_STR)
 def health_check():
     """Health check endpoint for Docker and monitoring."""
     return {"status": "healthy", "project": settings.PROJECT_NAME, "version": settings.VERSION}
+
+
+@app.get("/api/aws/status", tags=["AWS Cloud"])
+def aws_status():
+    """Returns the configuration status of AWS S3 and SES services."""
+    return get_aws_status()
+
+
+# Ensure uploads directory exists and mount for local resume viewing
+os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+os.makedirs(os.path.join(settings.UPLOAD_DIR, "resumes"), exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
 
 
 # Frontend SPA static mount

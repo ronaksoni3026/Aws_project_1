@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.config import settings
@@ -7,6 +7,7 @@ from backend.core.security import Role
 from backend.core.dependencies import require_role
 from backend.core.eligibility import evaluate_eligibility
 from backend.core.rate_limiter import limiter
+from backend.core.aws import upload_resume
 from backend.models.student import Student
 from backend.models.job import Job, JobStatus
 from backend.models.application import Application, ApplicationStatus
@@ -53,6 +54,44 @@ def update_student_profile(
     return current_student
 
 
+@router.post("/resume/upload")
+async def upload_student_resume(
+    file: UploadFile = File(...),
+    current_student: Student = Depends(require_role(Role.STUDENT)),
+    db: Session = Depends(get_db),
+):
+    """
+    Direct Resume Upload Endpoint.
+    Validates PDF format, uploads directly to AWS S3 (or secure local storage fallback),
+    and updates the student's profile resume URL.
+    """
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file format. Only PDF documents (.pdf) are accepted for resume upload."
+        )
+
+    content = await file.read()
+    max_bytes = settings.MAX_RESUME_SIZE_MB * 1024 * 1024
+    if len(content) > max_bytes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File exceeds maximum allowed size of {settings.MAX_RESUME_SIZE_MB}MB."
+        )
+
+    upload_result = upload_resume(content, file.filename, current_student.id)
+    current_student.resume_url = upload_result["url"]
+    db.commit()
+    db.refresh(current_student)
+
+    return {
+        "message": "Resume successfully uploaded and attached to student profile.",
+        "resume_url": upload_result["url"],
+        "storage": upload_result["storage"],
+        "filename": upload_result["filename"],
+    }
+
+
 @router.get("/jobs", response_model=List[JobWithEligibilityResponse])
 def get_jobs_for_student(
     current_student: Student = Depends(require_role(Role.STUDENT)),
@@ -81,6 +120,10 @@ def get_jobs_for_student(
                 title=job.title,
                 description=job.description,
                 company_name=job.company_name,
+                ctc_lpa=job.ctc_lpa or 0.0,
+                job_location=job.job_location or "Bengaluru / Hybrid",
+                job_type=job.job_type or "Full-Time",
+                deadline=job.deadline,
                 min_cgpa=job.min_cgpa,
                 allowed_branches=job.allowed_branches or [],
                 allowed_graduation_years=job.allowed_graduation_years or [],
@@ -159,6 +202,10 @@ def apply_for_job(
         student_id=application.student_id,
         job_id=application.job_id,
         status=application.status,
+        interview_round=application.interview_round,
+        interview_scheduled_at=application.interview_scheduled_at,
+        interview_meeting_link=application.interview_meeting_link,
+        interview_notes=application.interview_notes,
         applied_at=application.applied_at,
         updated_at=application.updated_at,
         job_title=job.title,
@@ -192,6 +239,10 @@ def get_my_applications(
                 student_id=app.student_id,
                 job_id=app.job_id,
                 status=app.status,
+                interview_round=app.interview_round,
+                interview_scheduled_at=app.interview_scheduled_at,
+                interview_meeting_link=app.interview_meeting_link,
+                interview_notes=app.interview_notes,
                 applied_at=app.applied_at,
                 updated_at=app.updated_at,
                 job_title=job.title if job else "Archived Position",

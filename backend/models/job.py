@@ -22,6 +22,12 @@ class Job(Base):
     description = Column(Text, nullable=False)
     company_name = Column(String(255), nullable=False)
 
+    # Compensation, Role & Location Metadata
+    ctc_lpa = Column(Float, nullable=False, default=0.0)
+    job_location = Column(String(255), nullable=False, default="Bengaluru / Hybrid")
+    job_type = Column(String(100), nullable=False, default="Full-Time")
+    deadline = Column(DateTime, nullable=True)
+
     # Server-Side Eligibility Constraints
     min_cgpa = Column(Float, nullable=False, default=0.0)
     allowed_branches = Column(JSON, nullable=False, default=list)  # List of string branches e.g. ["CSE", "ECE"]

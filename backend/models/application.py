@@ -1,6 +1,6 @@
 import datetime
 import enum
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, Enum as SAEnum, Index, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Enum as SAEnum, Index, UniqueConstraint
 from sqlalchemy.orm import relationship
 from backend.database import Base
 
@@ -25,6 +25,12 @@ class Application(Base):
         default=ApplicationStatus.APPLIED,
         index=True
     )
+
+    # Interview Scheduling & ATS Pipeline Metadata
+    interview_round = Column(String(100), nullable=True)  # e.g., "Round 1: Tech Interview", "Round 2: HR"
+    interview_scheduled_at = Column(DateTime, nullable=True)
+    interview_meeting_link = Column(String(1000), nullable=True)
+    interview_notes = Column(Text, nullable=True)
 
     applied_at = Column(DateTime, default=datetime.datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow, nullable=False)

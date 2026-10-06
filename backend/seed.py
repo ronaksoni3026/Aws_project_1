@@ -1,3 +1,4 @@
+import datetime
 from backend.database import SessionLocal, engine, Base
 from backend.models import (
     Student,
@@ -15,7 +16,7 @@ from backend.core.security import get_password_hash
 
 
 def init_db():
-    """Creates all database tables and ensures initial Placement Cell Admin, demo recruiter, and students exist."""
+    """Creates all database tables and ensures initial Placement Cell Admin, demo recruiter, students, and demo jobs exist."""
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
@@ -43,6 +44,7 @@ def init_db():
                 status=RecruiterStatus.ACTIVE,
             )
             db.add(recruiter)
+            db.flush()
             print(f"[Seed] Created demo Recruiter: {recruiter_email} / Recruiter@1234")
 
         # 3. Demo Students
@@ -89,7 +91,47 @@ def init_db():
                     resume_url=s_data["resume_url"],
                 )
                 db.add(student)
+                db.flush()
                 print(f"[Seed] Created student: {s_data['full_name']} ({s_data['roll_number']})")
+
+        # 4. Demo Jobs & Applications
+        sample_job = db.query(Job).filter(Job.title == "Cloud Solutions Engineer (AWS)").first()
+        if not sample_job and recruiter:
+            sample_job = Job(
+                recruiter_id=recruiter.id,
+                title="Cloud Solutions Engineer (AWS)",
+                description="Design, deploy, and optimize scalable cloud infrastructure across AWS ECS, RDS, and S3. Requirements include proficiency in Python, Linux, and distributed cloud systems.",
+                company_name="Amazon Web Services",
+                ctc_lpa=18.5,
+                job_location="Bengaluru / Hybrid",
+                job_type="Full-Time",
+                min_cgpa=7.50,
+                allowed_branches=["CSE", "ECE", "IT"],
+                allowed_graduation_years=[2025, 2026],
+                status=JobStatus.ACTIVE,
+                is_deleted=False,
+            )
+            db.add(sample_job)
+            db.commit()
+            db.refresh(sample_job)
+            print(f"[Seed] Created demo Job: {sample_job.title} (₹{sample_job.ctc_lpa} LPA)")
+
+        # Link Ronak Soni to sample job as shortlisted with interview scheduled
+        ronak = db.query(Student).filter(Student.email == "student@placement.edu").first()
+        if ronak and sample_job:
+            app_exists = db.query(Application).filter(Application.student_id == ronak.id, Application.job_id == sample_job.id).first()
+            if not app_exists:
+                demo_app = Application(
+                    student_id=ronak.id,
+                    job_id=sample_job.id,
+                    status=ApplicationStatus.SHORTLISTED,
+                    interview_round="Technical Round 1: Cloud Architecture & Python",
+                    interview_scheduled_at=datetime.datetime.utcnow() + datetime.timedelta(days=2),
+                    interview_meeting_link="https://meet.google.com/aws-placement-interview",
+                    interview_notes="Prepare core fundamentals on Docker, REST APIs, and SQL transactions.",
+                )
+                db.add(demo_app)
+                print("[Seed] Created demo Application with interview schedule for Ronak Soni")
 
         db.commit()
     finally:

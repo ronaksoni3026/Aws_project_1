@@ -1,5 +1,7 @@
+import io
+import csv
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
 from backend.database import get_db
@@ -404,4 +406,101 @@ def get_placement_portal_metrics(
         total_applications=total_applications,
         total_offered=total_offered,
         conversion_rate_percentage=conversion_rate,
+    )
+
+
+@router.get("/export/students-csv")
+def export_students_directory_csv(
+    current_admin: Admin = Depends(require_role(Role.ADMIN)),
+    db: Session = Depends(get_db),
+):
+    """Exports all registered student profiles into CSV for administrative records."""
+    students = db.query(Student).order_by(Student.roll_number.asc()).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Student ID",
+        "Roll Number",
+        "Full Name",
+        "Email",
+        "CGPA",
+        "Department / Branch",
+        "Graduation Year",
+        "Resume URL",
+        "Registered Date",
+    ])
+
+    for s in students:
+        writer.writerow([
+            s.id,
+            s.roll_number,
+            s.full_name,
+            s.email,
+            s.cgpa,
+            s.branch,
+            s.graduation_year,
+            s.resume_url or "N/A",
+            s.created_at.strftime("%Y-%m-%d %H:%M") if s.created_at else "N/A",
+        ])
+
+    csv_data = output.getvalue()
+    return Response(
+        content=csv_data,
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="institutional_student_directory.csv"'},
+    )
+
+
+@router.get("/export/placements-csv")
+def export_placements_report_csv(
+    current_admin: Admin = Depends(require_role(Role.ADMIN)),
+    db: Session = Depends(get_db),
+):
+    """Exports all successfully placed / offered students into a CSV placement report."""
+    offered_apps = (
+        db.query(Application)
+        .filter(Application.status == ApplicationStatus.OFFERED)
+        .order_by(Application.updated_at.desc())
+        .all()
+    )
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Application ID",
+        "Student Name",
+        "Roll Number",
+        "Student Email",
+        "Department / Branch",
+        "CGPA",
+        "Company Name",
+        "Job Title",
+        "Package (LPA)",
+        "Job Location",
+        "Offer Date",
+    ])
+
+    for app in offered_apps:
+        s = app.student
+        j = app.job
+        writer.writerow([
+            app.id,
+            s.full_name if s else "N/A",
+            s.roll_number if s else "N/A",
+            s.email if s else "N/A",
+            s.branch if s else "N/A",
+            s.cgpa if s else "N/A",
+            j.company_name if j else "N/A",
+            j.title if j else "N/A",
+            j.ctc_lpa if j and j.ctc_lpa else "N/A",
+            j.job_location if j and j.job_location else "N/A",
+            app.updated_at.strftime("%Y-%m-%d %H:%M") if app.updated_at else "N/A",
+        ])
+
+    csv_data = output.getvalue()
+    return Response(
+        content=csv_data,
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="institutional_placements_report.csv"'},
     )

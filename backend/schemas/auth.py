@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from backend.core.security import Role
 
 
@@ -25,6 +25,11 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
     role: Role
+
+
+class ChangePasswordRequest(BaseModel):
+    old_password: str = Field(..., min_length=6)
+    new_password: str = Field(..., min_length=6)
 
 
 class TokenResponse(BaseModel):
