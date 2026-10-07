@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { api, setStoredToken, setStoredUser } from "../api";
 
-export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSuccess }) {
+export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", initialRole = "STUDENT", onAuthSuccess }) {
   const [mode, setMode] = useState(initialMode); // LOGIN or REGISTER
-  const [role, setRole] = useState("STUDENT"); // STUDENT, RECRUITER, ADMIN
+  const [role, setRole] = useState(initialRole); // STUDENT, RECRUITER, ADMIN
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Sync role and mode whenever opened or props change
+  React.useEffect(() => {
+    setMode(initialMode);
+    setRole(initialRole);
+    setError("");
+  }, [isOpen, initialMode, initialRole]);
 
   // Form states
   const [email, setEmail] = useState("");
@@ -79,29 +86,31 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl relative text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+      <div className="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-6 shadow-xl relative text-slate-800">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
         >
-          ✕
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
 
-        <h2 className="text-xl font-bold mb-1">
-          {mode === "LOGIN" ? "Sign In to Placement Portal" : "Create Entity Account"}
+        <h2 className="text-xl font-bold text-slate-900 mb-1">
+          {mode === "LOGIN" ? "Sign In to Placement Portal" : "Create Account"}
         </h2>
-        <p className="text-xs text-slate-400 mb-4">
+        <p className="text-xs text-slate-500 mb-4">
           Stateless JWT Authentication with Role-Based Access Control (RBAC).
         </p>
 
         {/* Tab Switcher: Login vs Register */}
-        <div className="grid grid-cols-2 gap-1 p-1 bg-slate-800 rounded-xl mb-4">
+        <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-lg mb-4">
           <button
             type="button"
             onClick={() => { setMode("LOGIN"); setError(""); }}
-            className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
-              mode === "LOGIN" ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-white"
+            className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
+              mode === "LOGIN" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
             }`}
           >
             Sign In
@@ -109,8 +118,8 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
           <button
             type="button"
             onClick={() => { setMode("REGISTER"); setError(""); }}
-            className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
-              mode === "REGISTER" ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-white"
+            className={`py-1.5 text-xs font-semibold rounded-md transition-all ${
+              mode === "REGISTER" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
             }`}
           >
             Register
@@ -119,7 +128,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
 
         {/* Role Selector */}
         <div className="mb-4">
-          <label className="block text-xs font-semibold text-slate-300 mb-1">Select Role Context</label>
+          <label className="block text-xs font-medium text-slate-700 mb-1.5">Select Role Context</label>
           <div className="grid grid-cols-3 gap-2">
             {[
               { id: "STUDENT", label: "Student" },
@@ -131,10 +140,10 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
                 type="button"
                 onClick={() => setRole(r.id)}
                 disabled={mode === "REGISTER" && r.id === "ADMIN"}
-                className={`py-2 px-2 text-xs font-bold rounded-lg border text-center transition-all ${
+                className={`py-2 px-2 text-xs font-semibold rounded-lg border text-center transition-all ${
                   role === r.id
-                    ? "border-indigo-500 bg-indigo-500/20 text-indigo-300"
-                    : "border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600"
+                    ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
                 } ${mode === "REGISTER" && r.id === "ADMIN" ? "opacity-30 cursor-not-allowed" : ""}`}
               >
                 {r.label}
@@ -142,38 +151,38 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
             ))}
           </div>
           {mode === "REGISTER" && role === "ADMIN" && (
-            <p className="text-[11px] text-amber-400 mt-1">Admin accounts are pre-seeded or provisioned by lead authorities.</p>
+            <p className="text-[11px] text-amber-700 mt-1">Admin accounts are pre-seeded or provisioned by institutional authorities.</p>
           )}
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-rose-500/20 border border-rose-500/40 text-xs text-rose-300">
+          <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs text-slate-300 mb-1">Email Address</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={role === "ADMIN" ? "admin@placement.edu" : "user@example.com"}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-slate-300 mb-1">Password</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
           </div>
 
@@ -182,32 +191,32 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
             <>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">Full Name</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="John Doe"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">Roll Number</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Roll Number</label>
                   <input
                     type="text"
                     required
                     value={rollNumber}
                     onChange={(e) => setRollNumber(e.target.value)}
                     placeholder="CS2026_010"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">CGPA</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">CGPA</label>
                   <input
                     type="number"
                     step="0.01"
@@ -215,37 +224,37 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
                     max="10"
                     value={cgpa}
                     onChange={(e) => setCgpa(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">Branch</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Branch</label>
                   <input
                     type="text"
                     value={branch}
                     onChange={(e) => setBranch(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">Batch Year</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Batch Year</label>
                   <input
                     type="number"
                     value={gradYear}
                     onChange={(e) => setGradYear(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-slate-300 mb-1">Resume Link (HttpUrl)</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Resume Link (HttpUrl)</label>
                 <input
                   type="url"
                   value={resumeUrl}
                   onChange={(e) => setResumeUrl(e.target.value)}
                   placeholder="https://drive.google.com/..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
             </>
@@ -254,29 +263,29 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
           {mode === "REGISTER" && role === "RECRUITER" && (
             <>
               <div>
-                <label className="block text-xs text-slate-300 mb-1">Company / Organization</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Company / Organization</label>
                 <input
                   type="text"
                   required
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Acme Corp Global"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-300 mb-1">Lead HR Representative</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Lead HR Representative</label>
                 <input
                   type="text"
                   required
                   value={hrName}
                   onChange={(e) => setHrName(e.target.value)}
                   placeholder="Sarah Jenkins"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
-              <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300">
-                Note: Recruiter accounts begin in <strong>PENDING</strong> state. An admin must verify your company before job creation is unlocked.
+              <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+                Note: Recruiter accounts begin in <strong>PENDING</strong> state. An administrator must verify your company before drive creation is unlocked.
               </div>
             </>
           )}
@@ -284,7 +293,7 @@ export function AuthModal({ isOpen, onClose, initialMode = "LOGIN", onAuthSucces
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 font-bold text-xs shadow-lg shadow-indigo-500/25 transition-all text-white disabled:opacity-50"
+            className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 font-semibold text-xs text-white shadow-sm transition-colors disabled:opacity-50"
           >
             {loading ? "Processing..." : mode === "LOGIN" ? `Sign In as ${role}` : "Complete Registration"}
           </button>

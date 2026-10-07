@@ -47,91 +47,17 @@
       padding: 0;
     }
 
-    /* Enterprise Glassmorphic card styling for dark dashboards */
-    .company-card {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Clean Institutional Portal Card Styling */
+    .company-card, .portal-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
-    .company-card:hover {
-      border-color: rgba(99, 102, 241, 0.35);
-      transform: translateY(-2px);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 20px 0 rgba(99, 102, 241, 0.1);
-    }
-
-    /* Pop-up Micro-interaction on cursor hover with Spring Dynamics */
-    .pop-trigger {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-    }
-    .pop-content {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 9999;
-      white-space: nowrap;
-      filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.9));
-    }
-    /* Pos Top: pops upward with arrow pointing down */
-    .pop-content.pos-top {
-      bottom: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%) translateY(8px) scale(0.9);
-    }
-    .pop-trigger:hover .pop-content.pos-top {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(0) scale(1);
-    }
-    /* Pos Bottom: pops downward with arrow pointing up (crucial for navbar & top header) */
-    .pop-content.pos-bottom {
-      top: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%) translateY(-8px) scale(0.9);
-    }
-    .pop-trigger:hover .pop-content.pos-bottom {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) translateY(0) scale(1);
-    }
-
-    /* Universal Icon cursor hover bouncy pop-up animation */
-    .icon-bounce {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
-      cursor: pointer;
-    }
-    .icon-bounce:hover {
-      transform: scale(1.2) rotate(-4deg);
-    }
-    .icon-bounce:active {
-      transform: scale(0.92);
-    }
-
-    /* Animated interactive button sheen */
-    .btn-shine {
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-shine::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
-      transform: rotate(25deg) translateY(-100%);
-      transition: transform 0.6s ease;
-    }
-    .btn-shine:hover::after {
-      transform: rotate(25deg) translateY(100%);
+    .company-card:hover, .portal-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
     }
 
     /* Custom Scrollbar */
@@ -283,39 +209,11 @@
     };
 
     // --- POPUP HOVER COMPONENT ---
-    // Universal spring physics pop-up on cursor hover/drag for any icon, card, or button
     function HoverPopup({ children, title, subtitle, badge, position = "top", icon = null, className = "" }) {
       return (
-        <div className={`pop-trigger ${className}`}>
+        <span className={`inline-flex ${className}`} title={title ? `${title}${subtitle ? ` - ${subtitle}` : ''}` : undefined}>
           {children}
-          <div className={`pop-content pos-${position}`}>
-            <div className="px-3 py-2 rounded-xl bg-gray-900/95 backdrop-blur-2xl border border-indigo-500/40 text-left shadow-2xl shadow-black flex flex-col gap-0.5">
-              <div className="flex items-center gap-2">
-                {icon && <span className="text-xs">{icon}</span>}
-                <span className="text-xs font-extrabold text-white tracking-wide">{title}</span>
-                {badge && (
-                  <span className="px-1.5 py-0.2 rounded-md bg-indigo-500/25 text-indigo-300 text-[9px] font-extrabold uppercase border border-indigo-500/40">
-                    {badge}
-                  </span>
-                )}
-              </div>
-              {subtitle && <span className="text-[10px] text-gray-300 font-medium">{subtitle}</span>}
-              {/* Directional arrow notch */}
-              {position === "top" && (
-                <div className="w-2 h-2 bg-gray-900 border-r border-b border-indigo-500/40 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
-              )}
-              {position === "bottom" && (
-                <div className="w-2 h-2 bg-gray-900 border-l border-t border-indigo-500/40 rotate-45 absolute -top-1 left-1/2 -translate-x-1/2"></div>
-              )}
-              {position === "left" && (
-                <div className="w-2 h-2 bg-gray-900 border-r border-t border-indigo-500/40 rotate-45 absolute -right-1 top-1/2 -translate-y-1/2"></div>
-              )}
-              {position === "right" && (
-                <div className="w-2 h-2 bg-gray-900 border-l border-b border-indigo-500/40 rotate-45 absolute -left-1 top-1/2 -translate-y-1/2"></div>
-              )}
-            </div>
-          </div>
-        </div>
+        </span>
       );
     }
 
@@ -326,23 +224,21 @@
           {toasts.map((t) => (
             <div
               key={t.id}
-              className={`pointer-events-auto p-4 rounded-2xl shadow-2xl border backdrop-blur-xl flex items-start gap-3 transition-all duration-300 transform translate-y-0 ${
+              className={`pointer-events-auto p-3.5 rounded-lg shadow-lg border bg-white flex items-start gap-3 transition-all ${
                 t.type === "error"
-                  ? "bg-rose-950/90 border-rose-600/40 text-rose-100"
+                  ? "border-red-200 text-red-800"
                   : t.type === "success"
-                  ? "bg-emerald-950/90 border-emerald-600/40 text-emerald-100"
-                  : "bg-gray-900/95 border-gray-700/60 text-gray-100"
+                  ? "border-emerald-200 text-emerald-800"
+                  : "border-slate-200 text-slate-800"
               }`}
             >
-              <div className="text-xl">
-                {t.type === "error" ? "🚨" : t.type === "success" ? "✨" : "💡"}
-              </div>
               <div className="flex-1 text-xs whitespace-pre-line leading-relaxed font-medium">
                 {t.message}
               </div>
               <button
+                type="button"
                 onClick={() => onDismiss(t.id)}
-                className="text-gray-400 hover:text-white text-xs font-bold leading-none p-1"
+                className="text-slate-400 hover:text-slate-600 text-xs font-bold leading-none p-1"
               >
                 ✕
               </button>
@@ -481,27 +377,31 @@
 
       // 2. LOGGED-IN WORKSPACE (Dashboard for Student, Recruiter, Admin unchanged)
       return (
-        <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans relative">
-          {/* Top Enterprise Navigation */}
-          <header className="sticky top-0 z-40 bg-gray-950/80 backdrop-blur-2xl border-b border-white/[0.08] shadow-2xl shadow-black/40">
+      // 2. LOGGED-IN WORKSPACE (Dashboard for Student, Recruiter, Admin)
+      return (
+        <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans relative">
+          {/* Top Institutional Navigation Bar */}
+          <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               
               {/* Brand Logo & Portal Title */}
-              <div className="flex items-center space-x-3 cursor-pointer">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25">
-                  <div className="w-full h-full bg-gray-950 rounded-[11px] flex items-center justify-center">
-                    <span className="text-xs font-black tracking-tight text-white">
-                      CP
-                    </span>
-                  </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                  CP
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5">
+                    <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900">
                       Campus Placement Portal
                     </span>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                      user.role === 'ADMIN'
+                        ? 'bg-purple-50 text-purple-700 border-purple-200'
+                        : user.role === 'RECRUITER'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-blue-50 text-blue-700 border-blue-200'
+                    }`}>
                       {user.role} WORKSPACE
                     </span>
                   </div>
@@ -512,64 +412,57 @@
               <div className="flex items-center space-x-2.5 sm:space-x-3">
                 {/* Student Alert Inbox */}
                 {user.role === "STUDENT" && (
-                  <HoverPopup title="Notification Inbox" subtitle={`${unreadCount} unread system announcements`} position="bottom">
-                    <button
-                      onClick={() => setNotificationsOpen(true)}
-                      className="relative p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
-                    >
-                      🔔
-                      {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-rose-500 text-white font-extrabold text-[9px] rounded-full animate-bounce shadow-md">
-                          {unreadCount}
-                        </span>
-                      )}
-                    </button>
-                  </HoverPopup>
+                  <button
+                    onClick={() => setNotificationsOpen(true)}
+                    className="relative p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-colors"
+                    title="Notifications & Alerts"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 px-1.5 py-0.2 bg-red-600 text-white font-bold text-[9px] rounded-full shadow-sm">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
                 )}
 
-                {/* User Identity Pill */}
-                <HoverPopup
-                  title={user.name || user.email}
-                  subtitle={`Role: ${user.role} • Status: ${user.status || 'Verified'}`}
-                  badge={user.role}
-                  position="bottom"
-                >
-                  <div className="cursor-pointer flex items-center space-x-2.5 bg-gray-900/90 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center font-bold text-white text-xs shadow-md">
-                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                    </div>
-                    <div className="text-right hidden sm:block">
-                      <div className="text-xs font-bold text-white leading-tight">{user.name}</div>
-                      <div className="text-[10px] text-gray-400 font-mono">{user.email}</div>
-                    </div>
+                {/* User Identity Chip */}
+                <div className="flex items-center space-x-2.5 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center font-bold text-white text-xs">
+                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                   </div>
-                </HoverPopup>
+                  <div className="text-right hidden sm:block">
+                    <div className="text-xs font-semibold text-slate-800 leading-tight">{user.name}</div>
+                    <div className="text-[10px] text-slate-500 font-mono">{user.email}</div>
+                  </div>
+                </div>
 
-                {/* Change Password Key */}
-                <HoverPopup title="Security Credentials" subtitle="Update current account password" position="bottom">
-                  <button
-                    onClick={() => setPasswordModalOpen(true)}
-                    className="p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
-                  >
-                    🔑
-                  </button>
-                </HoverPopup>
+                {/* Change Password Button */}
+                <button
+                  onClick={() => setPasswordModalOpen(true)}
+                  className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-colors"
+                  title="Change Password"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                  </svg>
+                </button>
 
                 {/* Sign Out */}
-                <HoverPopup title="End Active Session" subtitle="Safely revoke JWT token and logout" position="bottom">
-                  <button
-                    onClick={handleLogout}
-                    className="text-xs font-bold px-3 py-2 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
-                  >
-                    Sign Out
-                  </button>
-                </HoverPopup>
+                <button
+                  onClick={handleLogout}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-colors"
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
           </header>
 
           {/* Main Workspace Body */}
-          <main className="flex-1 flex flex-col">
+          <main className="flex-1 flex flex-col bg-slate-50">
             {user.role === "STUDENT" ? (
               <StudentView user={user} onRefreshNotifications={loadNotifications} addToast={addToast} />
             ) : user.role === "RECRUITER" ? (
@@ -596,13 +489,14 @@
           <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
           {/* Logged in footer */}
-          <footer className="border-t border-white/[0.08] bg-gray-950/90 py-5 text-xs text-gray-500 text-center">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-              <span>Campus Placement Portal &bull; Institutional Recruitment System</span>
-              <span className="text-gray-400 font-mono text-[11px]">Active Session</span>
+          <footer className="bg-white border-t border-slate-200 py-4 text-xs text-slate-500 text-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+              <span>Campus Placement &amp; Internship Portal &bull; Directorate of Training &amp; Placement</span>
+              <span className="text-slate-400 font-mono text-[11px]">Institutional Portal &bull; Active Session</span>
             </div>
           </footer>
         </div>
+      );
       );
     }
 
@@ -693,6 +587,7 @@
     }
 
     // --- STUDENT VIEW (APPLICANT WORKSPACE) ---
+    // --- STUDENT VIEW (APPLICANT WORKSPACE) ---
     function StudentView({ user, onRefreshNotifications, addToast }) {
       const [profile, setProfile] = useState(null);
       const [jobs, setJobs] = useState([]);
@@ -773,165 +668,130 @@
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
           
-          {/* Student Academic Identity Banner */}
-          <div className="company-card rounded-2xl p-6 shadow-2xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              
-              <div className="flex items-center gap-4">
-                <HoverPopup title="Candidate Avatar" subtitle="Verified Student Identity" badge={profile?.branch || "CSE"}>
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20">
-                    <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center text-2xl font-black text-cyan-300">
-                      {profile ? profile.full_name.charAt(0) : "S"}
-                    </div>
-                  </div>
-                </HoverPopup>
+          {/* Student Profile Header */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-xl font-bold text-blue-600">
+                {profile ? profile.full_name.charAt(0) : "S"}
+              </div>
 
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-white">{profile?.full_name || "Student"}</h2>
-                    
-                    <HoverPopup title="Registration ID" subtitle="Official Institutional Roll Number">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 cursor-pointer">
-                        {profile?.roll_number}
-                      </span>
-                    </HoverPopup>
+              <div>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{profile?.full_name || "Student"}</h1>
+                  <span className="px-2.5 py-0.5 rounded-md text-xs font-mono font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                    {profile?.roll_number}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                    {profile?.branch} &bull; Class of {profile?.graduation_year}
+                  </span>
+                </div>
 
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
-                      {profile?.branch} &bull; Class of {profile?.graduation_year}
-                    </span>
-                  </div>
-
-                  <div className="text-xs text-gray-400 mt-1.5 flex items-center gap-4">
-                    <HoverPopup title="Cumulative Grade Point" subtitle="Official academic score verified by placement cell">
-                      <span className="cursor-pointer">
-                        Academic CGPA: <b className="text-emerald-400 font-bold">{profile?.cgpa ? profile.cgpa.toFixed(2) : "0.00"} / 10.0</b>
-                      </span>
-                    </HoverPopup>
-                    <span>&bull;</span>
-                    <span>Applications: <b className="text-white font-bold">{applications.length}</b></span>
-                  </div>
+                <div className="text-xs text-slate-500 mt-1 flex items-center gap-3">
+                  <span>CGPA: <b className="text-slate-800 font-bold">{profile?.cgpa ? profile.cgpa.toFixed(2) : "0.00"} / 10.0</b></span>
+                  <span>&bull;</span>
+                  <span>Applications: <b className="text-slate-800 font-semibold">{applications.length}</b></span>
                 </div>
               </div>
+            </div>
 
-              {/* S3 Resume Vault Actions */}
-              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleResumeFileUpload}
-                  accept=".pdf"
-                  className="hidden"
-                />
+            {/* Profile Action Controls */}
+            <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleResumeFileUpload}
+                accept=".pdf"
+                className="hidden"
+              />
 
-                <HoverPopup title="Upload Resume PDF" subtitle="Encrypted storage via Amazon S3 bucket" badge="PDF Only">
-                  <button
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    disabled={uploadingResume}
-                    className="btn-shine px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/20 transition-all disabled:opacity-50"
-                  >
-                    {uploadingResume ? (
-                      <>
-                        <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                        Uploading to S3...
-                      </>
-                    ) : (
-                      <>
-                        <span className="icon-bounce">📄</span> Upload Resume
-                      </>
-                    )}
-                  </button>
-                </HoverPopup>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                disabled={uploadingResume}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {uploadingResume ? "Uploading..." : "Upload Resume"}
+              </button>
 
-                {profile?.resume_url && (
-                  <HoverPopup title="View Active Document" subtitle="Open PDF preview in browser">
-                    <a
-                      href={profile.resume_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-3.5 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-200 border border-white/10 font-bold text-xs transition-all flex items-center gap-1.5 hover:border-cyan-500/40"
-                    >
-                      <span className="icon-bounce">👁️</span> Preview
-                    </a>
-                  </HoverPopup>
-                )}
+              {profile?.resume_url && (
+                <a
+                  href={profile.resume_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs shadow-sm transition-colors"
+                >
+                  Preview Resume
+                </a>
+              )}
 
-                <HoverPopup title="Edit Academic Metrics" subtitle="Adjust CGPA, branch, or graduating batch">
-                  <button
-                    onClick={() => setProfileModalOpen(true)}
-                    className="px-3.5 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 border border-white/10 font-bold text-xs transition-all hover:border-indigo-500/40 flex items-center gap-1.5"
-                  >
-                    <span className="icon-bounce">✏️</span> Edit
-                  </button>
-                </HoverPopup>
-              </div>
+              <button
+                type="button"
+                onClick={() => setProfileModalOpen(true)}
+                className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs shadow-sm transition-colors"
+              >
+                Edit Profile
+              </button>
             </div>
           </div>
 
-          {/* Segmented Control Workspace Tabs */}
-          <div className="bg-gray-900/60 p-1 rounded-2xl border border-white/[0.08] inline-flex gap-1.5 backdrop-blur-xl">
+          {/* Navigation / Tabs */}
+          <div className="flex border-b border-slate-200 space-x-2">
             <button
+              type="button"
               onClick={() => setActiveTab("JOBS")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
                 activeTab === "JOBS"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">💼</span>
-              <span>Active Placement Drives</span>
-              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-indigo-200">
-                {jobs.length}
-              </span>
+              Placement Drives ({jobs.length})
             </button>
             <button
+              type="button"
               onClick={() => setActiveTab("APPLICATIONS")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 ${
                 activeTab === "APPLICATIONS"
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">📑</span>
-              <span>Application Funnel & Interviews</span>
-              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-indigo-200">
-                {applications.length}
-              </span>
+              My Applications ({applications.length})
             </button>
           </div>
 
-          {/* TAB 1: SMART JOB BOARD */}
+          {/* TAB 1: PLACEMENT DRIVES */}
           {activeTab === "JOBS" && (
             <div className="space-y-4">
-              {/* Search & Filter Controls */}
-              <div className="company-card p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Search & Filter Bar */}
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="relative w-full sm:w-96">
-                  <span className="absolute left-3.5 top-2.5 text-gray-400 text-xs">🔍</span>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by role, company name, or location..."
-                    className="w-full pl-9 pr-4 py-2 bg-gray-950/80 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                    placeholder="Search by company, role or location..."
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
                   />
                 </div>
 
                 <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-gray-300 cursor-pointer select-none">
+                  <label className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={filterEligibleOnly}
                       onChange={(e) => setFilterEligibleOnly(e.target.checked)}
-                      className="rounded bg-gray-900 border-gray-700 text-cyan-500 focus:ring-0"
+                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                     />
                     <span>Show Eligible Drives Only</span>
                   </label>
                 </div>
               </div>
 
-              {/* Job Grid */}
+              {/* Placement Drive Cards Grid */}
               {filteredJobs.length === 0 ? (
-                <div className="company-card rounded-2xl p-12 text-center text-gray-400 text-xs">
-                  No recruitment drives match your query.
+                <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-400 text-xs shadow-sm">
+                  No placement drives match your search criteria.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -940,96 +800,75 @@
                     return (
                       <div
                         key={job.id}
-                        className="company-card rounded-2xl p-6 flex flex-col justify-between space-y-4 text-left"
+                        className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between space-y-4 text-left"
                       >
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <div className="text-xs font-bold text-gray-400 tracking-wide">{job.company_name}</div>
-                              <h3 className="text-base font-extrabold text-white leading-snug">{job.title}</h3>
+                              <span className="text-xs font-semibold text-slate-500">{job.company_name}</span>
+                              <h3 className="text-base font-bold text-slate-900 leading-snug">{job.title}</h3>
                             </div>
-                            
-                            {/* Compensation Package Tag with Hover Popup */}
                             {job.ctc_lpa > 0 && (
-                              <HoverPopup title="Annual Compensation" subtitle="Annual CTC in Lakhs Per Annum">
-                                <div className="cursor-pointer px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-extrabold text-xs whitespace-nowrap shadow-sm">
-                                  ₹{job.ctc_lpa} LPA
-                                </div>
-                              </HoverPopup>
+                              <span className="px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-xs whitespace-nowrap">
+                                ₹{job.ctc_lpa} LPA
+                              </span>
                             )}
                           </div>
 
-                          <p className="text-xs text-gray-300 line-clamp-2 leading-relaxed">
+                          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                             {job.description}
                           </p>
 
-                          {/* Attribute Tags with Pop-Up Animations */}
-                          <div className="flex flex-wrap items-center gap-2 text-[11px]">
-                            <HoverPopup title="Office Location" subtitle="Recruitment physical work site">
-                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
-                                📍 {job.job_location || "On-site / Hybrid"}
-                              </span>
-                            </HoverPopup>
-
-                            <HoverPopup title="Position Type" subtitle="Engagement mode">
-                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
-                                💼 {job.job_type || "Full-Time"}
-                              </span>
-                            </HoverPopup>
-
-                            <HoverPopup title="CGPA Cutoff" subtitle="Minimum academic grade cutoff required">
-                              <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
-                                📊 Min CGPA: {job.min_cgpa.toFixed(2)}
-                              </span>
-                            </HoverPopup>
-
+                          {/* Attribute Tags */}
+                          <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
+                            <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200">
+                              Location: {job.job_location || "On-site / Hybrid"}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200">
+                              Type: {job.job_type || "Full-Time"}
+                            </span>
+                            <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200">
+                              Min CGPA: {job.min_cgpa.toFixed(2)}
+                            </span>
                             {job.allowed_branches && job.allowed_branches.length > 0 && (
-                              <HoverPopup title="Whitelisted Branches" subtitle="Eligible graduating academic departments">
-                                <span className="cursor-pointer px-2.5 py-1 rounded-lg bg-gray-900 border border-white/5 text-gray-300 font-semibold">
-                                  🎓 [{job.allowed_branches.join(", ")}]
-                                </span>
-                              </HoverPopup>
+                              <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200">
+                                Dept: {job.allowed_branches.join(", ")}
+                              </span>
                             )}
                           </div>
                         </div>
 
                         {/* Bottom Actions Bar */}
-                        <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between gap-3">
-                          
-                          {/* Interactive Eligibility Breakdown Button */}
-                          <HoverPopup title="Eligibility Gatekeeper" subtitle="View deterministic criteria inspection">
-                            <button
-                              onClick={() => setEligibilityModalJob(job)}
-                              className={`text-[11px] font-bold px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 ${
-                                job.is_eligible
-                                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20"
-                                  : "bg-amber-500/10 border-amber-500/30 text-amber-300 hover:bg-amber-500/20"
-                              }`}
-                            >
-                              <span>{job.is_eligible ? "✓ Criteria Met" : "⚠️ Ineligible"}</span>
-                              <span className="text-[10px] underline">(Inspect)</span>
-                            </button>
-                          </HoverPopup>
+                        <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setEligibilityModalJob(job)}
+                            className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-colors ${
+                              job.is_eligible
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                            }`}
+                          >
+                            {job.is_eligible ? "Eligible (View Details)" : "Not Eligible (View Criteria)"}
+                          </button>
 
-                          {/* Apply Action */}
                           {isApplied ? (
-                            <span className="px-4 py-2 rounded-xl bg-gray-900 text-gray-400 font-bold text-xs border border-white/10 flex items-center gap-1.5">
-                              ✓ Application Lodged
+                            <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 font-semibold text-xs border border-slate-200">
+                              Applied
                             </span>
                           ) : (
-                            <HoverPopup title="Apply for Position" subtitle={job.is_eligible ? "Submit your academic profile" : "Criteria unmet"}>
-                              <button
-                                onClick={() => handleApply(job)}
-                                disabled={!job.is_eligible}
-                                className={`btn-shine px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                                  job.is_eligible
-                                    ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30"
-                                    : "bg-gray-900 text-gray-500 cursor-not-allowed border border-white/5"
-                                }`}
-                              >
-                                Submit Application →
-                              </button>
-                            </HoverPopup>
+                            <button
+                              type="button"
+                              onClick={() => handleApply(job)}
+                              disabled={!job.is_eligible}
+                              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-colors shadow-sm ${
+                                job.is_eligible
+                                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                  : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
+                              }`}
+                            >
+                              {job.is_eligible ? "Apply" : "Not Eligible"}
+                            </button>
                           )}
                         </div>
                       </div>
@@ -1040,115 +879,74 @@
             </div>
           )}
 
-          {/* TAB 2: APPLICATION TRACKER & INTERVIEWS */}
+          {/* TAB 2: MY APPLICATIONS */}
           {activeTab === "APPLICATIONS" && (
             <div className="space-y-4">
               {applications.length === 0 ? (
-                <div className="company-card rounded-2xl p-12 text-center text-gray-400 text-xs">
-                  No active job applications found. Explore the smart job board to apply!
+                <div className="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-400 text-xs shadow-sm">
+                  No active job applications found. Explore the placement drives to submit applications.
                 </div>
               ) : (
                 <div className="space-y-4">
                   {applications.map((app) => {
-                    const isOffered = app.status === "OFFERED";
-                    const isRejected = app.status === "REJECTED";
                     const hasInterview = Boolean(app.interview_round && app.interview_scheduled_at);
 
                     return (
                       <div
                         key={app.id}
-                        className={`company-card rounded-2xl p-6 text-left border ${
-                          isOffered
-                            ? "border-emerald-500/40 bg-emerald-950/20"
-                            : isRejected
-                            ? "border-rose-900/40 bg-rose-950/10"
-                            : "border-white/[0.08]"
-                        }`}
+                        className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm text-left space-y-4"
                       >
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                           <div>
-                            <div className="text-xs text-gray-400 font-bold">{app.company_name}</div>
-                            <h3 className="text-base font-extrabold text-white">{app.job_title}</h3>
-                            <div className="text-[11px] text-gray-400 mt-0.5">
-                              Submitted on {new Date(app.applied_at).toLocaleDateString()}
+                            <span className="text-xs font-semibold text-slate-500">{app.company_name}</span>
+                            <h3 className="text-base font-bold text-slate-900">{app.job_title}</h3>
+                            <div className="text-[11px] text-slate-400 mt-0.5">
+                              Applied on {new Date(app.applied_at).toLocaleDateString()}
                             </div>
                           </div>
 
                           <span
-                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border ${
+                            className={`px-3 py-1 rounded-md text-xs font-semibold uppercase tracking-wide border ${
                               app.status === "OFFERED"
-                                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : app.status === "SHORTLISTED"
-                                ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
                                 : app.status === "UNDER_REVIEW"
-                                ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
+                                ? "bg-indigo-50 text-indigo-700 border-indigo-200"
                                 : app.status === "REJECTED"
-                                ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                                : "bg-gray-800 text-gray-300 border-gray-700"
+                                ? "bg-red-50 text-red-700 border-red-200"
+                                : "bg-slate-100 text-slate-700 border-slate-200"
                             }`}
                           >
                             {app.status.replace("_", " ")}
                           </span>
                         </div>
 
-                        {/* Pipeline Progress Stepper */}
-                        <div className="py-4">
-                          <div className="grid grid-cols-4 text-center text-[10px] font-bold text-gray-400 mb-2">
-                            <div className={app.status ? "text-cyan-400" : ""}>1. APPLIED</div>
-                            <div className={["UNDER_REVIEW", "SHORTLISTED", "OFFERED"].includes(app.status) ? "text-cyan-400" : ""}>2. UNDER REVIEW</div>
-                            <div className={["SHORTLISTED", "OFFERED"].includes(app.status) ? "text-cyan-400" : ""}>3. SHORTLISTED</div>
-                            <div className={app.status === "OFFERED" ? "text-emerald-400" : app.status === "REJECTED" ? "text-rose-400" : ""}>
-                              {app.status === "REJECTED" ? "4. REJECTED" : "4. OFFERED"}
-                            </div>
-                          </div>
-                          <div className="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-white/5">
-                            <div
-                              className={`h-full transition-all duration-700 ${
-                                app.status === "OFFERED"
-                                  ? "bg-gradient-to-r from-cyan-500 to-emerald-400 w-full"
-                                  : app.status === "SHORTLISTED"
-                                  ? "bg-gradient-to-r from-cyan-500 to-indigo-500 w-3/4"
-                                  : app.status === "UNDER_REVIEW"
-                                  ? "bg-cyan-500 w-1/2"
-                                  : app.status === "REJECTED"
-                                  ? "bg-rose-500 w-full"
-                                  : "bg-gray-700 w-1/4"
-                              }`}
-                            ></div>
-                          </div>
-                        </div>
-
-                        {/* Scheduled Interview Card */}
+                        {/* Scheduled Interview Callout */}
                         {hasInterview && (
-                          <div className="mt-2 p-4 rounded-xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-gray-900 border border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">🎙️</span>
-                                <span className="text-xs font-bold text-indigo-300 uppercase tracking-wide">
-                                  Interview Scheduled &bull; {app.interview_round}
-                                </span>
+                          <div className="p-3.5 rounded-lg bg-blue-50 border border-blue-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                            <div>
+                              <div className="font-semibold text-blue-900">
+                                Interview Scheduled: {app.interview_round}
                               </div>
-                              <div className="text-xs text-gray-200">
-                                Date & Time: <b>{new Date(app.interview_scheduled_at).toLocaleString()}</b>
+                              <div className="text-slate-600 mt-0.5">
+                                Date &amp; Time: <b>{new Date(app.interview_scheduled_at).toLocaleString()}</b>
                               </div>
                               {app.interview_notes && (
-                                <div className="text-[11px] text-gray-400 italic">
+                                <div className="text-[11px] text-slate-500 italic mt-0.5">
                                   "{app.interview_notes}"
                                 </div>
                               )}
                             </div>
-
                             {app.interview_meeting_link && (
-                              <HoverPopup title="Join Meeting" subtitle="External video link">
-                                <a
-                                  href={app.interview_meeting_link}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="btn-shine px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 whitespace-nowrap"
-                                >
-                                  Join Meeting ↗
-                                </a>
-                              </HoverPopup>
+                              <a
+                                href={app.interview_meeting_link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors whitespace-nowrap"
+                              >
+                                Join Meeting
+                              </a>
                             )}
                           </div>
                         )}
@@ -1162,64 +960,71 @@
 
           {/* ELIGIBILITY DETAILS MODAL */}
           {eligibilityModalJob && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-              <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                  <h3 className="font-extrabold text-base text-white">Server-Side Eligibility Breakdown</h3>
-                  <button onClick={() => setEligibilityModalJob(null)} className="text-gray-400 hover:text-white text-sm">✕</button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+              <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                  <h3 className="font-bold text-base text-slate-900">Eligibility Breakdown</h3>
+                  <button
+                    type="button"
+                    onClick={() => setEligibilityModalJob(null)}
+                    className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+                  >
+                    ✕
+                  </button>
                 </div>
 
                 <div>
-                  <div className="text-xs text-gray-400">{eligibilityModalJob.company_name}</div>
-                  <div className="text-sm font-bold text-white">{eligibilityModalJob.title}</div>
+                  <div className="text-xs text-slate-500 font-semibold">{eligibilityModalJob.company_name}</div>
+                  <div className="text-sm font-bold text-slate-900">{eligibilityModalJob.title}</div>
                 </div>
 
                 <div className="space-y-2.5 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
                     <div>
-                      <div className="font-semibold text-gray-200">CGPA Requirement</div>
-                      <div className="text-[11px] text-gray-400">Your profile: {profile?.cgpa.toFixed(2)}</div>
+                      <div className="font-semibold text-slate-800">CGPA Requirement</div>
+                      <div className="text-[11px] text-slate-500">Your profile: {profile?.cgpa.toFixed(2)}</div>
                     </div>
-                    <span className={`font-bold ${profile?.cgpa >= eligibilityModalJob.min_cgpa ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {eligibilityModalJob.min_cgpa.toFixed(2)} {profile?.cgpa >= eligibilityModalJob.min_cgpa ? '✓' : '✗'}
+                    <span className={`font-bold ${profile?.cgpa >= eligibilityModalJob.min_cgpa ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {eligibilityModalJob.min_cgpa.toFixed(2)} {profile?.cgpa >= eligibilityModalJob.min_cgpa ? '(Passed)' : '(Failed)'}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
                     <div>
-                      <div className="font-semibold text-gray-200">Eligible Departments</div>
-                      <div className="text-[11px] text-gray-400">Your branch: {profile?.branch}</div>
+                      <div className="font-semibold text-slate-800">Eligible Departments</div>
+                      <div className="text-[11px] text-slate-500">Your department: {profile?.branch}</div>
                     </div>
-                    <span className="font-bold text-gray-300 max-w-[140px] truncate text-right">
+                    <span className="font-semibold text-slate-700 max-w-[150px] truncate text-right">
                       [{eligibilityModalJob.allowed_branches.join(", ")}]
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-white/5">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
                     <div>
-                      <div className="font-semibold text-gray-200">Resume Attached</div>
-                      <div className="text-[11px] text-gray-400">AWS S3 or Verified URL</div>
+                      <div className="font-semibold text-slate-800">Resume Status</div>
+                      <div className="text-[11px] text-slate-500">Attached in profile</div>
                     </div>
-                    <span className={`font-bold ${profile?.resume_url ? 'text-emerald-400' : 'text-rose-400'}`}>
-                      {profile?.resume_url ? 'Attached ✓' : 'Missing ✗'}
+                    <span className={`font-bold ${profile?.resume_url ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {profile?.resume_url ? 'Attached' : 'Missing'}
                     </span>
                   </div>
 
                   {!eligibilityModalJob.is_eligible && eligibilityModalJob.reasons && (
-                    <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 text-rose-300 text-[11px] space-y-1">
-                      <div className="font-bold">Reasons for Gating:</div>
+                    <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px] space-y-1">
+                      <div className="font-bold">Reasons for Ineligibility:</div>
                       {eligibilityModalJob.reasons.map((r, idx) => (
-                        <div key={idx}>• {r}</div>
+                        <div key={idx}>&bull; {r}</div>
                       ))}
                     </div>
                   )}
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => setEligibilityModalJob(null)}
-                  className="w-full py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs border border-white/10"
+                  className="w-full py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition-colors"
                 >
-                  Dismiss Breakdown
+                  Close
                 </button>
               </div>
             </div>
@@ -1270,27 +1075,33 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Edit Academic Metrics</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Edit Academic Profile</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Full Name</label>
+                <label className="block text-slate-700 font-semibold mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Academic CGPA (0.00 - 10.00)</label>
+                <label className="block text-slate-700 font-semibold mb-1">Academic CGPA (0.00 - 10.00)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -1299,16 +1110,16 @@
                   required
                   value={cgpa}
                   onChange={(e) => setCgpa(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Department / Branch</label>
+                <label className="block text-slate-700 font-semibold mb-1">Department / Branch</label>
                 <select
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 >
                   <option value="CSE">CSE (Computer Science & Engineering)</option>
                   <option value="ECE">ECE (Electronics & Communication)</option>
@@ -1320,13 +1131,13 @@
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Graduation Batch Year</label>
+                <label className="block text-slate-700 font-semibold mb-1">Graduation Batch Year</label>
                 <input
                   type="number"
                   required
                   value={gradYear}
                   onChange={(e) => setGradYear(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
@@ -1334,14 +1145,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
+                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-shine flex-1 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold disabled:opacity-50"
+                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save Metrics"}
                 </button>
@@ -1353,6 +1164,7 @@
     }
 
     // --- RECRUITER VIEW (ATS COMMAND CENTER) ---
+    // --- RECRUITER VIEW (RECRUITMENT & ATS WORKSPACE) ---
     function RecruiterView({ user, addToast }) {
       const [profile, setProfile] = useState(null);
       const [jobs, setJobs] = useState([]);
@@ -1412,7 +1224,7 @@
         }
         try {
           const res = await api.batchUpdate(selectedJob.id, selectedAppIds, newStatus);
-          addToast(`Atomic Batch Completed: ${res.updated_count} candidate(s) set to ${newStatus}`, "success");
+          addToast(`Batch update completed: ${res.updated_count} candidate(s) set to ${newStatus}`, "success");
           setSelectedAppIds([]);
           selectJobForAts(selectedJob);
         } catch (e) {
@@ -1441,10 +1253,10 @@
       };
 
       const handleDeleteJob = async (jobId) => {
-        if (!confirm("Are you sure you want to soft-delete this job? Applicants will receive automated background notifications.")) return;
+        if (!confirm("Are you sure you want to delete this job posting?")) return;
         try {
           await api.deleteJob(jobId);
-          addToast("Job deleted and background notifications dispatched.", "info");
+          addToast("Job deleted successfully.", "info");
           loadRecruiterData();
         } catch (e) {
           addToast(e.message, "error");
@@ -1468,58 +1280,50 @@
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
           
-          {/* Recruiter Workspace Header */}
-          <div className="company-card rounded-2xl p-6 shadow-2xl">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-white">{profile?.company_name}</h2>
-                  <HoverPopup title="Account Verification" subtitle="Placement cell vetted status">
-                    <span
-                      className={`cursor-pointer px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                        profile?.status === "ACTIVE"
-                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                          : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                      }`}
-                    >
-                      {profile?.status}
-                    </span>
-                  </HoverPopup>
-                </div>
-                <div className="text-xs text-gray-400 mt-1">
-                  HR Representative: <b className="text-gray-200">{profile?.hr_name}</b> &bull; Account: {profile?.email}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <HoverPopup title="New Recruitment Drive" subtitle="Post opening with package & criteria">
-                  <button
-                    onClick={() => setCreateModalOpen(true)}
-                    disabled={profile?.status !== "ACTIVE"}
-                    className="btn-shine px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <span>➕ Post New Job Opening</span>
-                  </button>
-                </HoverPopup>
-              </div>
-            </div>
-
-            {profile?.status === "PENDING" && (
-              <div className="mt-4 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2.5">
-                <span>⏳</span>
-                <span>
-                  Your recruiter organization is pending approval by the Placement Director. Posting jobs is temporarily locked.
+          {/* Company Header */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{profile?.company_name}</h1>
+                <span
+                  className={`px-2.5 py-0.5 rounded-md text-xs font-semibold border ${
+                    profile?.status === "ACTIVE"
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                      : profile?.status === "REJECTED"
+                      ? "bg-red-50 text-red-700 border-red-200"
+                      : "bg-amber-50 text-amber-700 border-amber-200"
+                  }`}
+                >
+                  {profile?.status === "ACTIVE" ? "Approved" : profile?.status === "REJECTED" ? "Rejected" : "Pending Approval"}
                 </span>
               </div>
-            )}
+              <div className="text-xs text-slate-500 mt-1">
+                HR Representative: <b className="text-slate-800">{profile?.hr_name}</b> &bull; Email: {profile?.email}
+              </div>
+
+              {profile?.status === "PENDING" && (
+                <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                  <span>Your organization is awaiting approval from the Placement Cell.</span>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setCreateModalOpen(true)}
+              disabled={profile?.status !== "ACTIVE"}
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              Post New Drive
+            </button>
           </div>
 
-          {/* Drives Grid */}
+          {/* Recruitment Drives Section */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">Recruitment Drives</h3>
+            <h2 className="text-sm font-bold text-slate-800">Recruitment Drives</h2>
             {jobs.length === 0 ? (
-              <div className="company-card rounded-2xl p-8 text-center text-gray-400 text-xs">
-                No active drives posted. Click "Post New Job Opening" to get started!
+              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center text-slate-400 text-xs shadow-sm">
+                No recruitment drives posted. Click "Post New Drive" to create an opening.
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1529,84 +1333,97 @@
                     <div
                       key={job.id}
                       onClick={() => selectJobForAts(job)}
-                      className={`company-card rounded-2xl p-5 text-left border cursor-pointer transition-all flex flex-col justify-between space-y-3 ${
+                      className={`bg-white rounded-xl p-5 text-left border cursor-pointer transition-all flex flex-col justify-between space-y-3 shadow-sm ${
                         isSelected
-                          ? "border-indigo-500 bg-indigo-950/20 ring-1 ring-indigo-500"
-                          : "border-white/[0.08]"
+                          ? "border-blue-600 ring-2 ring-blue-100"
+                          : "border-slate-200 hover:border-slate-300"
                       }`}
                     >
-                      <div className="space-y-1.5">
+                      <div className="space-y-2">
                         <div className="flex items-center justify-between gap-2">
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                            className={`text-[11px] font-semibold px-2 py-0.5 rounded-md border ${
                               job.status === "ACTIVE"
-                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : job.status === "REQUIRES_CHANGES"
-                                ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
+                                ? "bg-red-50 text-red-700 border-red-200"
                                 : job.status === "PENDING_APPROVAL"
-                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                                : "bg-gray-800 text-gray-400"
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
+                                : "bg-slate-100 text-slate-600 border-slate-200"
                             }`}
                           >
                             {job.status.replace("_", " ")}
                           </span>
                           {job.ctc_lpa > 0 && (
-                            <span className="text-xs font-bold text-emerald-400">₹{job.ctc_lpa} LPA</span>
+                            <span className="text-xs font-bold text-emerald-700">₹{job.ctc_lpa} LPA</span>
                           )}
                         </div>
-                        <h4 className="text-sm font-extrabold text-white line-clamp-1">{job.title}</h4>
-                        <div className="text-[11px] text-gray-400">{job.job_location || "On-site / Hybrid"}</div>
+
+                        <h3 className="text-sm font-bold text-slate-900 line-clamp-1">{job.title}</h3>
+                        
+                        <div className="text-[11px] text-slate-500 space-y-0.5">
+                          <div>Location: {job.job_location || "On-site / Hybrid"}</div>
+                          <div>Type: {job.job_type || "Full-Time"} &bull; Min CGPA: {job.min_cgpa.toFixed(2)}</div>
+                          {job.allowed_branches && (
+                            <div className="truncate">Depts: {job.allowed_branches.join(", ")}</div>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Admin Feedback Block */}
+                      {/* Admin Feedback Block if changes required */}
                       {job.status === "REQUIRES_CHANGES" && job.admin_feedback && (
-                        <div className="p-2.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-[11px]">
-                          <b>Admin Feedback:</b> {job.admin_feedback}
+                        <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[11px]">
+                          <b>Placement Cell Feedback:</b> {job.admin_feedback}
                         </div>
                       )}
 
-                      {/* Job Controls Bar */}
-                      <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between gap-2 text-xs">
+                      {/* Controls Bar */}
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-1.5">
                           {["DRAFT", "REQUIRES_CHANGES"].includes(job.status) && (
                             <button
+                              type="button"
                               onClick={(e) => { e.stopPropagation(); handleSubmitJob(job.id); }}
-                              className="px-2.5 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-600/50 text-[10px] font-bold"
+                              className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-[11px] font-semibold"
                             >
                               Submit
                             </button>
                           )}
                           {job.status === "ACTIVE" && (
                             <button
+                              type="button"
                               onClick={(e) => { e.stopPropagation(); handleCloseJob(job.id); }}
-                              className="px-2.5 py-1 rounded-lg bg-gray-900 text-gray-300 hover:bg-gray-800 text-[10px]"
+                              className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 text-[11px] font-semibold"
                             >
                               Close
                             </button>
                           )}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); selectJobForAts(job); }}
+                            className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 text-[11px] font-semibold"
+                          >
+                            Applications
+                          </button>
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          {/* Export CSV with Pop-Up */}
-                          <HoverPopup title="Export Applicants CSV" subtitle="Download candidate spreadsheet">
-                            <a
-                              href={api.exportJobCsvUrl(job.id)}
-                              onClick={(e) => e.stopPropagation()}
-                              download
-                              className="px-2.5 py-1 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-300 text-[10px] font-medium border border-white/5"
-                            >
-                              📥 CSV
-                            </a>
-                          </HoverPopup>
+                          <a
+                            href={api.exportJobCsvUrl(job.id)}
+                            onClick={(e) => e.stopPropagation()}
+                            download
+                            className="px-2 py-1 rounded-md bg-slate-50 hover:bg-slate-100 text-slate-600 text-[11px] font-medium border border-slate-200"
+                          >
+                            CSV
+                          </a>
 
-                          <HoverPopup title="Soft Delete Drive" subtitle="Archive drive and notify candidates">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); handleDeleteJob(job.id); }}
-                              className="px-2 py-1 rounded-lg bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 text-[10px]"
-                            >
-                              🗑️
-                            </button>
-                          </HoverPopup>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleDeleteJob(job.id); }}
+                            className="px-2 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 text-[11px] font-semibold"
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1618,12 +1435,12 @@
 
           {/* ATS Pipeline Table */}
           {selectedJob && (
-            <div className="company-card rounded-2xl p-6 shadow-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div>
-                  <div className="text-xs text-indigo-400 font-bold uppercase tracking-wider">Candidate Tracking System (ATS)</div>
-                  <h3 className="text-lg font-bold text-white">
-                    Applicants for: <span className="text-indigo-200">{selectedJob.title}</span>
+                  <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Applicant Tracking (ATS)</span>
+                  <h3 className="text-base font-bold text-slate-900">
+                    Applicants for: <span className="text-slate-700">{selectedJob.title}</span>
                   </h3>
                 </div>
 
@@ -1632,7 +1449,7 @@
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-3 py-1.5 bg-gray-950 border border-white/10 rounded-xl text-xs text-white"
+                    className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Statuses</option>
                     <option value="APPLIED">Applied</option>
@@ -1645,57 +1462,59 @@
                   <select
                     value={branchFilter}
                     onChange={(e) => setBranchFilter(e.target.value)}
-                    className="px-3 py-1.5 bg-gray-950 border border-white/10 rounded-xl text-xs text-white"
+                    className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="">All Branches</option>
+                    <option value="">All Departments</option>
                     <option value="CSE">CSE</option>
                     <option value="ECE">ECE</option>
                     <option value="IT">IT</option>
                     <option value="ME">ME</option>
                   </select>
 
-                  <HoverPopup title="Candidate Spreadsheet" subtitle="Download candidate table as CSV">
-                    <a
-                      href={api.exportJobCsvUrl(selectedJob.id)}
-                      download
-                      className="px-3 py-1.5 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5"
-                    >
-                      <span>📊 Export CSV</span>
-                    </a>
-                  </HoverPopup>
+                  <a
+                    href={api.exportJobCsvUrl(selectedJob.id)}
+                    download
+                    className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 shadow-sm flex items-center gap-1.5"
+                  >
+                    Export CSV
+                  </a>
                 </div>
               </div>
 
-              {/* Floating Batch Actions Dock */}
+              {/* Batch Actions Bar */}
               {selectedAppIds.length > 0 && (
-                <div className="p-3.5 rounded-2xl bg-indigo-950/60 border border-indigo-500/40 flex items-center justify-between flex-wrap gap-3 animate-fade-in shadow-xl">
-                  <span className="text-xs font-bold text-indigo-200">
-                    {selectedAppIds.length} candidate(s) selected for atomic batch update:
+                <div className="p-3.5 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-between flex-wrap gap-3">
+                  <span className="text-xs font-semibold text-blue-900">
+                    {selectedAppIds.length} candidate(s) selected:
                   </span>
                   <div className="flex items-center gap-2">
                     <button
+                      type="button"
                       onClick={() => handleBatchUpdate("UNDER_REVIEW")}
-                      className="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-sm"
                     >
-                      Mark Under Review
+                      Under Review
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleBatchUpdate("SHORTLISTED")}
-                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm"
                     >
-                      Shortlist All
+                      Shortlist
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleBatchUpdate("OFFERED")}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm"
                     >
-                      Make Offer All
+                      Select / Offer
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleBatchUpdate("REJECTED")}
-                      className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold"
+                      className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-sm"
                     >
-                      Reject All
+                      Reject
                     </button>
                   </div>
                 </div>
@@ -1703,112 +1522,112 @@
 
               {/* Table */}
               {loadingApps ? (
-                <div className="py-12 text-center text-gray-400 text-xs animate-pulse">Loading ATS candidates...</div>
+                <div className="py-12 text-center text-slate-400 text-xs">Loading applicants...</div>
               ) : applications.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 text-xs">
+                <div className="py-12 text-center text-slate-400 text-xs">
                   No applicants matching filter conditions.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px] tracking-wider">
+                      <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
                         <th className="py-3 px-3">
                           <input
                             type="checkbox"
                             checked={selectedAppIds.length === applications.length && applications.length > 0}
                             onChange={toggleSelectAll}
-                            className="rounded bg-gray-900 border-gray-700 text-indigo-500"
+                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                           />
                         </th>
-                        <th className="py-3 px-3">Candidate</th>
-                        <th className="py-3 px-3">Roll & Dept</th>
+                        <th className="py-3 px-3">Student</th>
+                        <th className="py-3 px-3">Registration No.</th>
+                        <th className="py-3 px-3">Department</th>
                         <th className="py-3 px-3">CGPA</th>
                         <th className="py-3 px-3">Resume</th>
-                        <th className="py-3 px-3">Funnel Status</th>
+                        <th className="py-3 px-3">Application Status</th>
                         <th className="py-3 px-3">Interview</th>
                         <th className="py-3 px-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/[0.05]">
+                    <tbody className="divide-y divide-slate-100">
                       {applications.map((app) => {
                         const student = app.student;
                         const isChecked = selectedAppIds.includes(app.id);
                         return (
-                          <tr key={app.id} className="hover:bg-gray-900/40 transition-colors">
-                            <td className="py-3.5 px-3">
+                          <tr key={app.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-3 px-3">
                               <input
                                 type="checkbox"
                                 checked={isChecked}
                                 onChange={() => toggleAppSelection(app.id)}
-                                className="rounded bg-gray-900 border-gray-700 text-indigo-500"
+                                className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                               />
                             </td>
-                            <td className="py-3.5 px-3">
-                              <div className="font-bold text-white">{student?.full_name || "N/A"}</div>
-                              <div className="text-[10px] text-gray-400">{student?.email}</div>
+                            <td className="py-3 px-3">
+                              <div className="font-semibold text-slate-900">{student?.full_name || "N/A"}</div>
+                              <div className="text-[10px] text-slate-500">{student?.email}</div>
                             </td>
-                            <td className="py-3.5 px-3">
-                              <div className="font-semibold text-gray-300">{student?.branch}</div>
-                              <div className="text-[10px] text-gray-400">Class {student?.graduation_year}</div>
+                            <td className="py-3 px-3 font-mono font-semibold text-slate-700">
+                              {student?.roll_number}
                             </td>
-                            <td className="py-3.5 px-3 font-extrabold text-emerald-400">
+                            <td className="py-3 px-3 text-slate-700">
+                              {student?.branch}
+                            </td>
+                            <td className="py-3 px-3 font-bold text-slate-900">
                               {student?.cgpa ? student.cgpa.toFixed(2) : "N/A"}
                             </td>
-                            <td className="py-3.5 px-3">
+                            <td className="py-3 px-3">
                               {student?.resume_url ? (
-                                <HoverPopup title="Open Document" subtitle="Inspect verified applicant resume">
-                                  <a
-                                    href={student.resume_url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/20 font-bold text-[11px]"
-                                  >
-                                    📄 PDF
-                                  </a>
-                                </HoverPopup>
+                                <a
+                                  href={student.resume_url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-blue-600 hover:underline font-semibold"
+                                >
+                                  View PDF
+                                </a>
                               ) : (
-                                <span className="text-gray-500 text-[10px]">None</span>
+                                <span className="text-slate-400">—</span>
                               )}
                             </td>
-                            <td className="py-3.5 px-3">
+                            <td className="py-3 px-3">
                               <span
-                                className={`px-2.5 py-1 rounded-lg font-bold text-[10px] uppercase ${
+                                className={`px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase border ${
                                   app.status === "OFFERED"
-                                    ? "bg-emerald-500/20 text-emerald-300"
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                     : app.status === "SHORTLISTED"
-                                    ? "bg-indigo-500/20 text-indigo-300"
+                                    ? "bg-blue-50 text-blue-700 border-blue-200"
                                     : app.status === "UNDER_REVIEW"
-                                    ? "bg-cyan-500/20 text-cyan-300"
+                                    ? "bg-indigo-50 text-indigo-700 border-indigo-200"
                                     : app.status === "REJECTED"
-                                    ? "bg-rose-500/20 text-rose-300"
-                                    : "bg-gray-800 text-gray-300"
+                                    ? "bg-red-50 text-red-700 border-red-200"
+                                    : "bg-slate-100 text-slate-700 border-slate-200"
                                 }`}
                               >
                                 {app.status.replace("_", " ")}
                               </span>
                             </td>
-                            <td className="py-3.5 px-3">
+                            <td className="py-3 px-3">
                               {app.interview_round ? (
                                 <div>
-                                  <div className="font-bold text-indigo-300">{app.interview_round}</div>
-                                  <div className="text-[10px] text-gray-400">
+                                  <div className="font-semibold text-slate-900">{app.interview_round}</div>
+                                  <div className="text-[10px] text-slate-500">
                                     {new Date(app.interview_scheduled_at).toLocaleDateString()}
                                   </div>
                                 </div>
                               ) : (
-                                <span className="text-gray-500 text-[10px]">—</span>
+                                <span className="text-slate-400">—</span>
                               )}
                             </td>
-                            <td className="py-3.5 px-3 text-right">
-                              <HoverPopup title="Schedule Round" subtitle="Dispatch video invitation + AWS SES email">
-                                <button
-                                  onClick={() => setInterviewModalApp(app)}
-                                  className="px-3 py-1.5 rounded-xl bg-purple-600/30 text-purple-200 border border-purple-500/40 hover:bg-purple-600/50 font-bold text-[11px]"
-                                >
-                                  🎙️ Interview
-                                </button>
-                              </HoverPopup>
+                            <td className="py-3 px-3 text-right">
+                              <button
+                                type="button"
+                                onClick={() => setInterviewModalApp(app)}
+                                className="px-2.5 py-1 rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-[11px] shadow-sm"
+                              >
+                                Interview
+                              </button>
                             </td>
                           </tr>
                         );
@@ -1841,7 +1660,7 @@
               onClose={() => setInterviewModalApp(null)}
               onSuccess={() => {
                 setInterviewModalApp(null);
-                addToast("Candidate interview invitation scheduled & dispatched!", "success");
+                addToast("Candidate interview invitation scheduled successfully!", "success");
                 selectJobForAts(selectedJob);
               }}
               addToast={addToast}
@@ -1892,41 +1711,47 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-lg w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Post New Recruitment Opening</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6 text-left border border-slate-200 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Post New Recruitment Opening</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Job Title</label>
+                <label className="block text-slate-700 font-semibold mb-1">Job Title</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Cloud Solutions Engineer (AWS)"
+                  placeholder="e.g. Software Development Engineer"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Role Description</label>
+                <label className="block text-slate-700 font-semibold mb-1">Role Description</label>
                 <textarea
                   required
                   rows={3}
-                  placeholder="Detail tech stack, responsibilities, and qualifications..."
+                  placeholder="Detail responsibilities, tech stack, and qualifications..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Package (LPA)</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Package (LPA)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -1934,11 +1759,11 @@
                     required
                     value={ctcLpa}
                     onChange={(e) => setCtcLpa(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Minimum CGPA</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Minimum CGPA</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1947,28 +1772,28 @@
                     required
                     value={minCgpa}
                     onChange={(e) => setMinCgpa(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Location</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Location</label>
                   <input
                     type="text"
                     required
                     value={jobLocation}
                     onChange={(e) => setJobLocation(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Type</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Employment Type</label>
                   <select
                     value={jobType}
                     onChange={(e) => setJobType(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                   >
                     <option value="Full-Time">Full-Time</option>
                     <option value="Internship">Internship</option>
@@ -1978,17 +1803,17 @@
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Eligible Academic Departments</label>
+                <label className="block text-slate-700 font-semibold mb-1">Eligible Academic Departments</label>
                 <div className="flex flex-wrap gap-2 pt-1">
                   {["CSE", "ECE", "IT", "ME", "CE", "EEE"].map((branch) => (
                     <button
                       type="button"
                       key={branch}
                       onClick={() => handleBranchToggle(branch)}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                      className={`px-3 py-1.5 rounded-lg font-semibold text-xs transition-colors border ${
                         allowedBranches.includes(branch)
-                          ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                          : "bg-gray-900 text-gray-400 hover:text-white"
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
                       }`}
                     >
                       {branch}
@@ -2001,16 +1826,16 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
+                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-shine flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
+                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
                 >
-                  {submitting ? "Creating..." : "Save Draft"}
+                  {submitting ? "Saving..." : "Save Draft"}
                 </button>
               </div>
             </form>
@@ -2021,9 +1846,9 @@
 
     // --- SCHEDULE INTERVIEW MODAL ---
     function ScheduleInterviewModal({ app, jobId, onClose, onSuccess, addToast }) {
-      const [round, setRound] = useState("Technical Round 1: Cloud Architecture");
+      const [round, setRound] = useState("Technical Round 1");
       const [dateTime, setDateTime] = useState("");
-      const [meetingLink, setMeetingLink] = useState("https://meet.google.com/aws-interview");
+      const [meetingLink, setMeetingLink] = useState("https://meet.google.com/interview");
       const [notes, setNotes] = useState("");
       const [scheduling, setScheduling] = useState(false);
 
@@ -2053,61 +1878,67 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Schedule Candidate Interview</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Schedule Interview</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-gray-900 border border-white/5 text-xs">
-              <div className="text-gray-400">Target Candidate:</div>
-              <div className="font-bold text-white text-sm">{app.student?.full_name} ({app.student?.roll_number})</div>
-              <div className="text-[11px] text-gray-400">{app.student?.email}</div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs">
+              <div className="text-slate-500 font-medium">Candidate:</div>
+              <div className="font-bold text-slate-900">{app.student?.full_name} ({app.student?.roll_number})</div>
+              <div className="text-[11px] text-slate-500">{app.student?.email}</div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Interview Round Title</label>
+                <label className="block text-slate-700 font-semibold mb-1">Interview Round Title</label>
                 <input
                   type="text"
                   required
                   value={round}
                   onChange={(e) => setRound(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Scheduled Date & Time</label>
+                <label className="block text-slate-700 font-semibold mb-1">Scheduled Date &amp; Time</label>
                 <input
                   type="datetime-local"
                   required
                   value={dateTime}
                   onChange={(e) => setDateTime(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Meeting Link (Google Meet / Zoom / Chime)</label>
+                <label className="block text-slate-700 font-semibold mb-1">Meeting Link (Google Meet / Zoom)</label>
                 <input
                   type="url"
                   required
                   value={meetingLink}
                   onChange={(e) => setMeetingLink(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Candidate Preparation Notes</label>
+                <label className="block text-slate-700 font-semibold mb-1">Candidate Preparation Notes</label>
                 <textarea
                   rows={2}
-                  placeholder="Topics to prepare, assessment format, etc."
+                  placeholder="Topics, round format, or instructions..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
@@ -2115,16 +1946,16 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
+                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={scheduling}
-                  className="btn-shine flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold disabled:opacity-50"
+                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
                 >
-                  {scheduling ? "Scheduling..." : "Send Invite →"}
+                  {scheduling ? "Scheduling..." : "Schedule Interview"}
                 </button>
               </div>
             </form>
@@ -2134,6 +1965,7 @@
     }
 
     // --- ADMIN VIEW (GOVERNANCE SUITE) ---
+    // --- ADMIN VIEW (PLACEMENT CELL ADMINISTRATION) ---
     function AdminView({ user, addToast }) {
       const [metrics, setMetrics] = useState(null);
       const [pendingRecruiters, setPendingRecruiters] = useState([]);
@@ -2141,8 +1973,9 @@
       const [students, setStudents] = useState([]);
       const [recruiters, setRecruiters] = useState([]);
       const [auditLogs, setAuditLogs] = useState([]);
-      const [activeTab, setActiveTab] = useState("VETTING");
+      const [activeTab, setActiveTab] = useState("RECRUITER_APPROVALS");
       const [feedbackModalJob, setFeedbackModalJob] = useState(null);
+      const [studentSearch, setStudentSearch] = useState("");
 
       useEffect(() => {
         loadAdminData();
@@ -2172,7 +2005,7 @@
       const handleApproveRecruiter = async (id) => {
         try {
           await api.approveRecruiter(id);
-          addToast("Recruiter approved and activated in directory.", "success");
+          addToast("Recruiter approved and activated.", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
@@ -2192,306 +2025,318 @@
       const handleApproveJob = async (id) => {
         try {
           await api.approveJob(id);
-          addToast("Job verified and unlocked for student applicants!", "success");
+          addToast("Placement drive approved and published.", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
         }
       };
 
+      const filteredStudents = useMemo(() => {
+        if (!studentSearch.trim()) return students;
+        const q = studentSearch.toLowerCase();
+        return students.filter(
+          (s) =>
+            s.full_name?.toLowerCase().includes(q) ||
+            s.roll_number?.toLowerCase().includes(q) ||
+            s.branch?.toLowerCase().includes(q)
+        );
+      }, [students, studentSearch]);
+
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
           
-          {/* Admin Command Header */}
-          <div className="company-card rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* Header */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-purple-400">Institutional Governance Console</div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-white">Central Placement Cell Operations</h2>
-              <div className="text-xs text-gray-400 mt-1">Superuser Clearance &bull; Permanent Audit Logging Active</div>
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Placement Cell Administration</h1>
+              <p className="text-xs text-slate-500 mt-1">
+                Manage students, recruiters, placement drives and applications.
+              </p>
             </div>
 
-            <div className="flex items-center gap-3 flex-wrap">
-              <HoverPopup title="Student Database" subtitle="Export complete student metrics to CSV">
-                <a
-                  href={api.exportStudentsCsvUrl()}
-                  download
-                  className="px-3.5 py-2 rounded-xl bg-purple-600/20 text-purple-200 border border-purple-500/40 text-xs font-bold hover:bg-purple-600/30 flex items-center gap-1.5 transition-all"
-                >
-                  <span className="icon-bounce">📥</span> Student Registry (CSV)
-                </a>
-              </HoverPopup>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <a
+                href={api.exportStudentsCsvUrl()}
+                download
+                className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 shadow-sm transition-colors"
+              >
+                Export Students (CSV)
+              </a>
 
-              <HoverPopup title="Placement Record" subtitle="Export all offered students and CTC to CSV">
-                <a
-                  href={api.exportPlacementsCsvUrl()}
-                  download
-                  className="px-3.5 py-2 rounded-xl bg-emerald-600/20 text-emerald-200 border border-emerald-500/40 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5 transition-all"
-                >
-                  <span className="icon-bounce">🏆</span> Placements Report (CSV)
-                </a>
-              </HoverPopup>
+              <a
+                href={api.exportPlacementsCsvUrl()}
+                download
+                className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 shadow-sm transition-colors"
+              >
+                Export Placements (CSV)
+              </a>
             </div>
           </div>
 
-          {/* KPI Cards */}
+          {/* Summary Cards */}
           {metrics && (
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-3.5">
-              <HoverPopup title="Student Cohort" subtitle="Total verified student signups">
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Total Students</div>
-                  <div className="text-2xl font-black text-white mt-1">{metrics.total_students}</div>
-                </div>
-              </HoverPopup>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Total Students</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_students}</div>
+              </div>
 
-              <HoverPopup title="Corporate Network" subtitle={`${metrics.pending_recruiters} awaiting administrative vetting`}>
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Recruiters</div>
-                  <div className="text-2xl font-black text-cyan-400 mt-1">{metrics.total_recruiters}</div>
-                  <div className="text-[10px] text-gray-400">{metrics.pending_recruiters} Pending</div>
-                </div>
-              </HoverPopup>
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Registered Companies</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_recruiters}</div>
+                {metrics.pending_recruiters > 0 && (
+                  <div className="text-[11px] text-amber-700 font-medium mt-0.5">{metrics.pending_recruiters} Pending</div>
+                )}
+              </div>
 
-              <HoverPopup title="Drives Live" subtitle={`${metrics.pending_jobs} drives in review queue`}>
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Active Drives</div>
-                  <div className="text-2xl font-black text-indigo-400 mt-1">{metrics.active_jobs}</div>
-                  <div className="text-[10px] text-gray-400">{metrics.pending_jobs} In Review</div>
-                </div>
-              </HoverPopup>
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Active Placement Drives</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.active_jobs}</div>
+                {metrics.pending_jobs > 0 && (
+                  <div className="text-[11px] text-amber-700 font-medium mt-0.5">{metrics.pending_jobs} In Review</div>
+                )}
+              </div>
 
-              <HoverPopup title="Total Applications" subtitle="Submissions evaluated server-side">
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Applications</div>
-                  <div className="text-2xl font-black text-purple-400 mt-1">{metrics.total_applications}</div>
-                </div>
-              </HoverPopup>
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Applications</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_applications}</div>
+              </div>
 
-              <HoverPopup title="Offers Confirmed" subtitle="Successful candidate selections">
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Offers Released</div>
-                  <div className="text-2xl font-black text-emerald-400 mt-1">{metrics.total_offered}</div>
-                </div>
-              </HoverPopup>
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Offers Released</div>
+                <div className="text-2xl font-bold text-emerald-600 mt-1">{metrics.total_offered}</div>
+              </div>
 
-              <HoverPopup title="Placement Efficiency" subtitle="Candidate offer conversion ratio">
-                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
-                  <div className="text-xs text-gray-400 font-bold">Conversion Rate</div>
-                  <div className="text-2xl font-black text-amber-400 mt-1">{metrics.conversion_rate_percentage}%</div>
-                </div>
-              </HoverPopup>
+              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
+                <div className="text-xs font-semibold text-slate-500">Conversion Rate</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.conversion_rate_percentage}%</div>
+              </div>
             </div>
           )}
 
-          {/* Segmented Control Admin Tabs */}
-          <div className="bg-gray-900/60 p-1 rounded-2xl border border-white/[0.08] inline-flex gap-1.5 backdrop-blur-xl overflow-x-auto">
+          {/* Admin Navigation Tabs */}
+          <div className="flex border-b border-slate-200 space-x-2 overflow-x-auto">
             <button
-              onClick={() => setActiveTab("VETTING")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                activeTab === "VETTING"
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "text-gray-400 hover:text-white"
+              type="button"
+              onClick={() => setActiveTab("RECRUITER_APPROVALS")}
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                activeTab === "RECRUITER_APPROVALS"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">⚖️</span>
-              <span>Vetting Queues</span>
-              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
-                {pendingRecruiters.length + pendingJobs.length}
-              </span>
+              Recruiter Approvals ({pendingRecruiters.length})
             </button>
             <button
+              type="button"
+              onClick={() => setActiveTab("JOBS")}
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                activeTab === "JOBS"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              Placement Drives ({pendingJobs.length})
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("STUDENTS")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
                 activeTab === "STUDENTS"
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">🎓</span>
-              <span>Student Directory</span>
-              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
-                {students.length}
-              </span>
+              Students ({students.length})
             </button>
             <button
-              onClick={() => setActiveTab("RECRUITERS")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                activeTab === "RECRUITERS"
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "text-gray-400 hover:text-white"
+              type="button"
+              onClick={() => setActiveTab("COMPANIES")}
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                activeTab === "COMPANIES"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">🏢</span>
-              <span>Partner Directory</span>
-              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
-                {recruiters.length}
-              </span>
+              Companies ({recruiters.length})
             </button>
             <button
+              type="button"
               onClick={() => setActiveTab("AUDIT")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
                 activeTab === "AUDIT"
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-blue-600 text-blue-600 font-bold"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <span className="icon-bounce">📜</span>
-              <span>Audit Trail</span>
+              Audit Logs
             </button>
           </div>
 
-          {/* TAB 1: VETTING QUEUES */}
-          {activeTab === "VETTING" && (
-            <div className="space-y-6">
-              
-              {/* Recruiter Vetting */}
-              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-                    <span>🏢 Recruiter Verification Queue</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-bold">
-                      {pendingRecruiters.length} Pending
-                    </span>
-                  </h3>
-                </div>
-
-                {pendingRecruiters.length === 0 ? (
-                  <div className="py-6 text-center text-gray-400 text-xs">
-                    All partner organizations verified. No pending reviews in queue!
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {pendingRecruiters.map((r) => (
-                      <div
-                        key={r.id}
-                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex items-center justify-between gap-4"
-                      >
-                        <div>
-                          <div className="font-bold text-white">{r.company_name}</div>
-                          <div className="text-xs text-gray-400">
-                            HR Partner: <b className="text-gray-300">{r.hr_name}</b> &bull; {r.email}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <HoverPopup title="Authorize Recruiter" subtitle="Grant immediate job posting permissions">
-                            <button
-                              onClick={() => handleApproveRecruiter(r.id)}
-                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
-                            >
-                              Approve
-                            </button>
-                          </HoverPopup>
-                          <HoverPopup title="Decline Account" subtitle="Mark recruiter as rejected">
-                            <button
-                              onClick={() => handleRejectRecruiter(r.id)}
-                              className="px-3 py-1.5 rounded-xl bg-rose-600/30 text-rose-300 border border-rose-500/40 hover:bg-rose-600/50 text-xs font-bold"
-                            >
-                              Reject
-                            </button>
-                          </HoverPopup>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+          {/* TAB 1: RECRUITER APPROVALS */}
+          {activeTab === "RECRUITER_APPROVALS" && (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-sm font-bold text-slate-900">Pending Recruiter Approvals</h2>
+                <span className="text-xs text-slate-500">{pendingRecruiters.length} awaiting review</span>
               </div>
 
-              {/* Job Draft Vetting */}
-              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
-                    <span>📋 Job Opening Approval Queue</span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-indigo-500/20 text-indigo-300 font-bold">
-                      {pendingJobs.length} In Review
-                    </span>
-                  </h3>
+              {pendingRecruiters.length === 0 ? (
+                <div className="py-8 text-center text-slate-400 text-xs">
+                  No pending recruiter accounts awaiting approval.
                 </div>
-
-                {pendingJobs.length === 0 ? (
-                  <div className="py-6 text-center text-gray-400 text-xs">
-                    No job drafts awaiting placement cell vetting.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {pendingJobs.map((j) => (
-                      <div
-                        key={j.id}
-                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-                      >
-                        <div className="space-y-1">
-                          <div className="text-xs font-bold text-gray-400">{j.company_name}</div>
-                          <div className="text-sm font-bold text-white">{j.title}</div>
-                          <div className="text-xs text-gray-300">
-                            Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Whitelist: [{j.allowed_branches.join(", ")}]
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <HoverPopup title="Approve Opening" subtitle="Make visible to eligible students">
-                            <button
-                              onClick={() => handleApproveJob(j.id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
-                            >
-                              Approve Drive
-                            </button>
-                          </HoverPopup>
-                          <HoverPopup title="Request Modifications" subtitle="Append feedback & return to recruiter">
-                            <button
-                              onClick={() => setFeedbackModalJob(j)}
-                              className="px-3.5 py-1.5 rounded-xl bg-amber-600/30 text-amber-200 border border-amber-500/40 hover:bg-amber-600/50 font-bold text-xs"
-                            >
-                              Request Changes
-                            </button>
-                          </HoverPopup>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
+                        <th className="py-3 px-3">Company</th>
+                        <th className="py-3 px-3">HR Representative</th>
+                        <th className="py-3 px-3">Email</th>
+                        <th className="py-3 px-3">Status</th>
+                        <th className="py-3 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {pendingRecruiters.map((r) => (
+                        <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="py-3 px-3 font-semibold text-slate-900">{r.company_name}</td>
+                          <td className="py-3 px-3 text-slate-700">{r.hr_name}</td>
+                          <td className="py-3 px-3 text-slate-500 font-mono">{r.email}</td>
+                          <td className="py-3 px-3">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                              Pending
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-right">
+                            <div className="inline-flex gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleApproveRecruiter(r.id)}
+                                className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRejectRecruiter(r.id)}
+                                className="px-3 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 font-semibold text-xs"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
 
-          {/* TAB 2: STUDENT DIRECTORY */}
+          {/* TAB 2: PLACEMENT DRIVES APPROVAL */}
+          {activeTab === "JOBS" && (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-sm font-bold text-slate-900">Placement Drive Vetting Queue</h2>
+                <span className="text-xs text-slate-500">{pendingJobs.length} In Review</span>
+              </div>
+
+              {pendingJobs.length === 0 ? (
+                <div className="py-8 text-center text-slate-400 text-xs">
+                  No placement drive postings awaiting verification.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {pendingJobs.map((j) => (
+                    <div
+                      key={j.id}
+                      className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1">
+                        <span className="text-xs font-semibold text-slate-500">{j.company_name}</span>
+                        <h3 className="text-sm font-bold text-slate-900">{j.title}</h3>
+                        <div className="text-xs text-slate-600">
+                          Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Departments: [{j.allowed_branches.join(", ")}]
+                          {j.ctc_lpa > 0 && ` • Package: ₹${j.ctc_lpa} LPA`}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleApproveJob(j.id)}
+                          className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm"
+                        >
+                          Approve Drive
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFeedbackModalJob(j)}
+                          className="px-3.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs shadow-sm"
+                        >
+                          Request Changes
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 3: STUDENT DIRECTORY */}
           {activeTab === "STUDENTS" && (
-            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <h3 className="font-extrabold text-white text-sm">University Student Cohort Directory</h3>
-                <span className="text-xs text-gray-400 font-mono">{students.length} Registered</span>
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">Student Directory</h2>
+                  <span className="text-xs text-slate-500">{students.length} Registered Candidates</span>
+                </div>
+
+                <input
+                  type="text"
+                  value={studentSearch}
+                  onChange={(e) => setStudentSearch(e.target.value)}
+                  placeholder="Search by name, roll number, or branch..."
+                  className="w-full sm:w-72 px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
-                      <th className="py-2.5 px-3">Roll Number</th>
-                      <th className="py-2.5 px-3">Full Name</th>
-                      <th className="py-2.5 px-3">Department</th>
-                      <th className="py-2.5 px-3">CGPA</th>
-                      <th className="py-2.5 px-3">Batch</th>
-                      <th className="py-2.5 px-3">Resume</th>
+                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
+                      <th className="py-3 px-3">Registration Number</th>
+                      <th className="py-3 px-3">Student Name</th>
+                      <th className="py-3 px-3">Department</th>
+                      <th className="py-3 px-3">CGPA</th>
+                      <th className="py-3 px-3">Batch</th>
+                      <th className="py-3 px-3">Resume</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.05]">
-                    {students.map((s) => (
-                      <tr key={s.id} className="hover:bg-gray-900/40">
-                        <td className="py-3 px-3 font-mono font-bold text-cyan-400">{s.roll_number}</td>
-                        <td className="py-3 px-3 font-semibold text-white">{s.full_name}</td>
-                        <td className="py-3 px-3 text-gray-300">{s.branch}</td>
-                        <td className="py-3 px-3 font-bold text-emerald-400">{s.cgpa.toFixed(2)}</td>
-                        <td className="py-3 px-3 text-gray-400">{s.graduation_year}</td>
+                  <tbody className="divide-y divide-slate-100">
+                    {filteredStudents.map((s) => (
+                      <tr key={s.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-3 font-mono font-semibold text-slate-700">{s.roll_number}</td>
+                        <td className="py-3 px-3 font-semibold text-slate-900">{s.full_name}</td>
+                        <td className="py-3 px-3 text-slate-700">{s.branch}</td>
+                        <td className="py-3 px-3 font-bold text-slate-900">{s.cgpa.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-slate-500">{s.graduation_year}</td>
                         <td className="py-3 px-3">
                           {s.resume_url ? (
                             <a
                               href={s.resume_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-indigo-400 hover:underline font-bold"
+                              className="text-blue-600 hover:underline font-semibold"
                             >
-                              View PDF ↗
+                              View PDF
                             </a>
                           ) : (
-                            <span className="text-gray-500">—</span>
+                            <span className="text-slate-400">—</span>
                           )}
                         </td>
                       </tr>
@@ -2502,43 +2347,43 @@
             </div>
           )}
 
-          {/* TAB 3: PARTNER DIRECTORY */}
-          {activeTab === "RECRUITERS" && (
-            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <h3 className="font-extrabold text-white text-sm">Corporate Recruitment Partners</h3>
-                <span className="text-xs text-gray-400 font-mono">{recruiters.length} Organizations</span>
+          {/* TAB 4: COMPANY DIRECTORY */}
+          {activeTab === "COMPANIES" && (
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-sm font-bold text-slate-900">Company Directory</h2>
+                <span className="text-xs text-slate-500">{recruiters.length} Partner Organizations</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
-                      <th className="py-2.5 px-3">Company</th>
-                      <th className="py-2.5 px-3">HR Lead</th>
-                      <th className="py-2.5 px-3">Email</th>
-                      <th className="py-2.5 px-3">Status</th>
-                      <th className="py-2.5 px-3">Active Drives</th>
+                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
+                      <th className="py-3 px-3">Company</th>
+                      <th className="py-3 px-3">HR Representative</th>
+                      <th className="py-3 px-3">Email</th>
+                      <th className="py-3 px-3">Approval Status</th>
+                      <th className="py-3 px-3">Active Drives</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.05]">
+                  <tbody className="divide-y divide-slate-100">
                     {recruiters.map((r) => (
-                      <tr key={r.id} className="hover:bg-gray-900/40">
-                        <td className="py-3 px-3 font-bold text-white">{r.company_name}</td>
-                        <td className="py-3 px-3 text-gray-300">{r.hr_name}</td>
-                        <td className="py-3 px-3 text-gray-400">{r.email}</td>
+                      <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-3 font-semibold text-slate-900">{r.company_name}</td>
+                        <td className="py-3 px-3 text-slate-700">{r.hr_name}</td>
+                        <td className="py-3 px-3 text-slate-500 font-mono">{r.email}</td>
                         <td className="py-3 px-3">
                           <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
                               r.status === "ACTIVE"
-                                ? "bg-emerald-500/20 text-emerald-300"
-                                : "bg-amber-500/20 text-amber-300"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-amber-50 text-amber-700 border-amber-200"
                             }`}
                           >
-                            {r.status}
+                            {r.status === "ACTIVE" ? "Approved" : "Pending"}
                           </span>
                         </td>
-                        <td className="py-3 px-3 font-bold text-indigo-400">{r.jobs_count || 0}</td>
+                        <td className="py-3 px-3 font-semibold text-slate-900">{r.jobs_count || 0}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2547,33 +2392,33 @@
             </div>
           )}
 
-          {/* TAB 4: AUDIT TRAIL */}
+          {/* TAB 5: AUDIT LOGS */}
           {activeTab === "AUDIT" && (
-            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                <h3 className="font-extrabold text-white text-sm">Cryptographic Application-Level Audit Logs</h3>
-                <span className="text-[11px] text-gray-400 font-mono">APPEND-ONLY INTEGRITY</span>
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h2 className="text-sm font-bold text-slate-900">Administrative Audit Trail</h2>
+                <span className="text-xs text-slate-400 font-mono">IMMUTABLE LOGS</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
-                      <th className="py-2.5 px-3">Timestamp</th>
-                      <th className="py-2.5 px-3">Admin</th>
-                      <th className="py-2.5 px-3">Action</th>
-                      <th className="py-2.5 px-3">Entity</th>
-                      <th className="py-2.5 px-3">Details</th>
+                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
+                      <th className="py-3 px-3">Timestamp</th>
+                      <th className="py-3 px-3">Performed By</th>
+                      <th className="py-3 px-3">Action</th>
+                      <th className="py-3 px-3">Entity</th>
+                      <th className="py-3 px-3">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/[0.05] font-mono text-[11px]">
+                  <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
                     {auditLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-gray-900/40">
-                        <td className="py-2.5 px-3 text-gray-400">{new Date(log.timestamp).toLocaleString()}</td>
-                        <td className="py-2.5 px-3 text-purple-300">{log.admin_email}</td>
-                        <td className="py-2.5 px-3 font-bold text-white">{log.action}</td>
-                        <td className="py-2.5 px-3 text-cyan-400">{log.target_entity} #{log.target_id}</td>
-                        <td className="py-2.5 px-3 text-gray-300 font-sans">{log.details}</td>
+                      <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-2.5 px-3 text-slate-500">{new Date(log.timestamp).toLocaleString()}</td>
+                        <td className="py-2.5 px-3 text-blue-700 font-sans">{log.admin_email}</td>
+                        <td className="py-2.5 px-3 font-bold text-slate-900 font-sans">{log.action}</td>
+                        <td className="py-2.5 px-3 text-slate-600">{log.target_entity} #{log.target_id}</td>
+                        <td className="py-2.5 px-3 text-slate-600 font-sans">{log.details}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2618,25 +2463,31 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Request Job Corrections</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Request Drive Modifications</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">
-                  Mandatory Correction Feedback for {job.company_name}
+                <label className="block text-slate-700 font-semibold mb-1">
+                  Required Changes for {job.company_name} ({job.title})
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Explain requested corrections (e.g. adjust minimum CGPA, clarify branch requirements)..."
+                  placeholder="Detail changes required before approval..."
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
@@ -2644,14 +2495,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
+                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="btn-shine flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-50"
+                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
                 >
                   {sending ? "Sending..." : "Submit Feedback"}
                 </button>
@@ -2685,34 +2536,40 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-sm w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Change Password</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-sm w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Change Password</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Current Password</label>
+                <label className="block text-slate-700 font-semibold mb-1">Current Password</label>
                 <input
                   type="password"
                   required
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">New Password (Min 6 characters)</label>
+                <label className="block text-slate-700 font-semibold mb-1">New Password (Min 6 characters)</label>
                 <input
                   type="password"
                   required
                   minLength={6}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
@@ -2720,14 +2577,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
+                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-shine flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
+                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
                 >
                   {saving ? "Updating..." : "Confirm Update"}
                 </button>
@@ -2750,39 +2607,46 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">Student Alert Inbox</h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">Student Notifications</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
               {notifications.length === 0 ? (
-                <div className="py-8 text-center text-gray-400 text-xs">No alerts in your inbox.</div>
+                <div className="py-8 text-center text-slate-400 text-xs">No alerts in your inbox.</div>
               ) : (
                 notifications.map((n) => (
                   <div
                     key={n.id}
-                    className={`p-3.5 rounded-xl border text-xs space-y-1.5 transition-all ${
+                    className={`p-3.5 rounded-lg border text-xs space-y-1 transition-all ${
                       n.is_read
-                        ? "bg-gray-900/40 border-gray-800 text-gray-400"
-                        : "bg-indigo-950/40 border-indigo-700/50 text-gray-200"
+                        ? "bg-slate-50 border-slate-200 text-slate-500"
+                        : "bg-blue-50 border-blue-200 text-slate-800"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="font-bold text-white text-xs">{n.title}</div>
+                      <div className="font-bold text-slate-900 text-xs">{n.title}</div>
                       {!n.is_read && (
                         <button
+                          type="button"
                           onClick={() => handleMarkRead(n.id)}
-                          className="text-[10px] text-cyan-400 hover:underline font-bold"
+                          className="text-[10px] text-blue-600 hover:underline font-semibold"
                         >
                           Mark as read
                         </button>
                       )}
                     </div>
-                    <div className="text-[11px] leading-relaxed">{n.message}</div>
-                    <div className="text-[10px] text-gray-500 font-mono">
+                    <div className="text-[11px] leading-relaxed text-slate-600">{n.message}</div>
+                    <div className="text-[10px] text-slate-400 font-mono">
                       {new Date(n.created_at).toLocaleString()}
                     </div>
                   </div>

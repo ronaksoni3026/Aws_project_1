@@ -177,23 +177,29 @@ export function RecruiterDashboard({ user }) {
   const isPending = profile?.status === "PENDING";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Recruiter Header */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">{profile?.company_name || user.name}</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Recruiter Portal | HR Representative: <strong className="text-white">{profile?.hr_name}</strong> | Account Status:{" "}
+          <div className="flex items-center space-x-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+              {profile?.company_name || user.name || "Recruiter Workspace"}
+            </h1>
             <span
-              className={`font-bold uppercase px-2 py-0.5 rounded text-[11px] ${
+              className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
                 profile?.status === "ACTIVE"
-                  ? "bg-emerald-500/20 text-emerald-300"
-                  : "bg-amber-500/20 text-amber-300"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-amber-50 text-amber-700 border-amber-200"
               }`}
             >
-              {profile?.status}
+              {profile?.status === "ACTIVE" ? "Approved" : "Pending Approval"}
             </span>
-          </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 mt-2">
+            <span>HR Representative: <strong className="text-slate-900">{profile?.hr_name || "N/A"}</strong></span>
+            <span>&bull;</span>
+            <span>Email: <strong className="text-slate-900 font-mono">{user.email}</strong></span>
+          </div>
         </div>
 
         {/* Action Button */}
@@ -208,10 +214,10 @@ export function RecruiterDashboard({ user }) {
             setIsCreatingJob(true);
           }}
           disabled={isPending}
-          className={`py-2 px-4 rounded-xl text-xs font-bold shadow-lg transition-all ${
+          className={`py-2 px-4 rounded-lg text-xs font-semibold shadow-sm transition-colors ${
             isPending
-              ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30"
+              ? "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700 text-white"
           }`}
         >
           + Draft New Position
@@ -220,22 +226,22 @@ export function RecruiterDashboard({ user }) {
 
       {/* Admin Staging Gating Alert */}
       {isPending && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center space-x-3 text-amber-300 text-xs">
-          <span className="text-lg">⏳</span>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center space-x-3 text-amber-800 text-xs">
+          <svg className="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
           <div>
-            <strong>Account Pending Administrative Verification:</strong> Your recruiter account has been registered
-            and placed in the Placement Cell staging queue. Job creation and publishing endpoints are locked with HTTP
-            403 until approved by an administrator.
+            <strong>Organization Awaiting Approval:</strong> Your recruiter account has been registered and is pending approval from the Placement Cell. Job creation and publishing will unlock once approved.
           </div>
         </div>
       )}
 
       {actionMsg.text && (
         <div
-          className={`p-4 rounded-xl border text-xs whitespace-pre-line ${
+          className={`p-3.5 rounded-lg border text-xs whitespace-pre-line ${
             actionMsg.type === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-red-50 border-red-200 text-red-700"
           }`}
         >
           {actionMsg.text}
@@ -246,11 +252,11 @@ export function RecruiterDashboard({ user }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Job Pipeline Management */}
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white">Your Job Drives ({jobs.length})</h2>
+          <h2 className="text-base font-bold text-slate-900">Placement Drives ({jobs.length})</h2>
 
           {jobs.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center text-slate-400 text-xs">
-              No jobs drafted yet. Click "+ Draft New Position" above to begin.
+            <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-xs">
+              No placement drives drafted yet. Click "+ Draft New Position" above to begin.
             </div>
           ) : (
             <div className="space-y-3">
@@ -260,49 +266,53 @@ export function RecruiterDashboard({ user }) {
                   <div
                     key={job.id}
                     onClick={() => { setSelectedJob(job); setAtsPage(1); }}
-                    className={`bg-slate-900 border rounded-2xl p-4 cursor-pointer transition-all ${
+                    className={`bg-white border rounded-xl p-4 cursor-pointer transition-all shadow-sm ${
                       isSelected
-                        ? "border-indigo-500 bg-slate-800/60 shadow-lg shadow-indigo-500/10"
-                        : "border-slate-800 hover:border-slate-700"
+                        ? "border-blue-600 ring-1 ring-blue-600 bg-blue-50/20"
+                        : "border-slate-200 hover:border-slate-300"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-bold text-white text-sm">{job.title}</h3>
+                      <h3 className="font-bold text-slate-900 text-sm">{job.title}</h3>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
                           job.status === "ACTIVE"
-                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                             : job.status === "PENDING_APPROVAL"
-                            ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
                             : job.status === "REQUIRES_CHANGES"
-                            ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
+                            ? "bg-red-50 text-red-700 border-red-200"
                             : job.status === "CLOSED"
-                            ? "bg-slate-700 text-slate-400 border-slate-600"
-                            : "bg-sky-500/20 text-sky-300 border-sky-500/40"
+                            ? "bg-slate-100 text-slate-700 border-slate-200"
+                            : "bg-blue-50 text-blue-700 border-blue-200"
                         }`}
                       >
-                        {job.status}
+                        {job.status === "PENDING_APPROVAL"
+                          ? "Pending Approval"
+                          : job.status === "REQUIRES_CHANGES"
+                          ? "Changes Requested"
+                          : job.status}
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-slate-400 mt-1 line-clamp-2">{job.description}</p>
+                    <p className="text-[11px] text-slate-600 mt-1 line-clamp-2">{job.description}</p>
 
                     {/* Criteria Snippet */}
-                    <div className="text-[10px] text-slate-400 mt-2">
-                      CGPA &ge; {job.min_cgpa.toFixed(1)} | {job.allowed_branches?.join(", ") || "All"}
+                    <div className="text-[10px] text-slate-500 mt-2 font-mono">
+                      CGPA &ge; {job.min_cgpa.toFixed(1)} | {job.allowed_branches?.join(", ") || "All Branches"}
                     </div>
 
                     {/* Admin Feedback Loop Callout */}
                     {job.status === "REQUIRES_CHANGES" && job.admin_feedback && (
-                      <div className="mt-2.5 p-2 bg-rose-500/10 border border-rose-500/30 rounded-lg text-[11px] text-rose-300">
-                        <strong>Admin Feedback:</strong> {job.admin_feedback}
+                      <div className="mt-2.5 p-2 bg-red-50 border border-red-200 rounded-lg text-[11px] text-red-700">
+                        <strong>Placement Cell Note:</strong> {job.admin_feedback}
                       </div>
                     )}
 
                     {/* State Transitions Toolbar */}
-                    <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between gap-1 text-[11px]">
+                    <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-1 text-[11px]">
                       {(job.status === "DRAFT" || job.status === "REQUIRES_CHANGES") && (
-                        <div className="flex space-x-1">
+                        <div className="flex space-x-1.5">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -314,7 +324,7 @@ export function RecruiterDashboard({ user }) {
                               setAllowedYears(job.allowed_graduation_years?.join(", ") || "");
                               setIsCreatingJob(true);
                             }}
-                            className="px-2 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-300 font-semibold"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 font-medium border border-slate-200 transition-colors"
                           >
                             Edit
                           </button>
@@ -323,7 +333,7 @@ export function RecruiterDashboard({ user }) {
                               e.stopPropagation();
                               handleSubmitForApproval(job.id);
                             }}
-                            className="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 rounded text-white font-bold"
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 rounded text-white font-semibold transition-colors"
                           >
                             Submit
                           </button>
@@ -336,9 +346,9 @@ export function RecruiterDashboard({ user }) {
                             e.stopPropagation();
                             handleCloseJob(job.id);
                           }}
-                          className="px-2 py-1 bg-amber-600/30 hover:bg-amber-600/50 text-amber-200 border border-amber-500/30 rounded font-semibold"
+                          className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded font-medium transition-colors"
                         >
-                          Close Pipeline
+                          Close Drive
                         </button>
                       )}
 
@@ -347,8 +357,8 @@ export function RecruiterDashboard({ user }) {
                           e.stopPropagation();
                           handleDeleteJob(job.id);
                         }}
-                        className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded ml-auto"
-                        title="Soft delete with background applicant notification"
+                        className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded ml-auto transition-colors"
+                        title="Archive placement drive"
                       >
                         Archive
                       </button>
@@ -364,38 +374,38 @@ export function RecruiterDashboard({ user }) {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h2 className="text-lg font-bold text-white">Applicant Tracking System (ATS) Pipeline</h2>
+              <h2 className="text-base font-bold text-slate-900">Applicant Tracking System</h2>
               {selectedJob && (
-                <p className="text-xs text-indigo-400 font-medium">Viewing candidates for: {selectedJob.title}</p>
+                <p className="text-xs text-blue-600 font-medium">Viewing candidates for: {selectedJob.title}</p>
               )}
             </div>
 
             {/* Batch Action Toolbar */}
             {selectedJob && (
               <div className="flex items-center space-x-2">
-                <span className="text-xs text-slate-400">
-                  {selectedAppIds.length} candidate(s) selected
+                <span className="text-xs text-slate-500">
+                  {selectedAppIds.length} selected
                 </span>
                 <button
                   onClick={() => handleBatchUpdate("SHORTLISTED")}
                   disabled={selectedAppIds.length === 0 || batchLoading}
-                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg disabled:opacity-40"
+                  className="px-2.5 py-1.5 bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 font-semibold text-xs rounded-lg disabled:opacity-40 transition-colors"
                 >
-                  Shortlist All
+                  Shortlist
                 </button>
                 <button
                   onClick={() => handleBatchUpdate("OFFERED")}
                   disabled={selectedAppIds.length === 0 || batchLoading}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg disabled:opacity-40"
+                  className="px-2.5 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-semibold text-xs rounded-lg disabled:opacity-40 transition-colors"
                 >
-                  Offer All
+                  Select / Offer
                 </button>
                 <button
                   onClick={() => handleBatchUpdate("REJECTED")}
                   disabled={selectedAppIds.length === 0 || batchLoading}
-                  className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-lg disabled:opacity-40"
+                  className="px-2.5 py-1.5 bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 font-semibold text-xs rounded-lg disabled:opacity-40 transition-colors"
                 >
-                  Reject All
+                  Reject
                 </button>
               </div>
             )}
@@ -403,12 +413,12 @@ export function RecruiterDashboard({ user }) {
 
           {/* Filters Bar */}
           {selectedJob && (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center gap-3 text-xs">
-              <span className="font-semibold text-slate-400">Filter Applicants:</span>
+            <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-wrap items-center gap-3 text-xs shadow-sm">
+              <span className="font-medium text-slate-600">Filters:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value); setAtsPage(1); }}
-                className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-white focus:outline-none"
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-slate-800 focus:outline-none focus:border-blue-600"
               >
                 <option value="">All ATS Stages</option>
                 <option value="APPLIED">Applied</option>
@@ -423,100 +433,115 @@ export function RecruiterDashboard({ user }) {
                 value={branchFilter}
                 onChange={(e) => { setBranchFilter(e.target.value); setAtsPage(1); }}
                 placeholder="Filter by branch (e.g. CSE)"
-                className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1 text-white focus:outline-none placeholder-slate-500"
+                className="bg-white border border-slate-300 rounded-lg px-3 py-1 text-slate-800 focus:outline-none focus:border-blue-600 placeholder-slate-400"
               />
 
-              <span className="ml-auto text-slate-400">Total Applicants: {atsTotal}</span>
+              <span className="ml-auto text-slate-500">Total Applicants: <strong>{atsTotal}</strong></span>
             </div>
           )}
 
           {/* ATS Data Table */}
           {!selectedJob ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
-              Select a job drive on the left to inspect applicant candidates.
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-xs shadow-sm">
+              Select a placement drive on the left to inspect applicant candidates.
             </div>
           ) : applications.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400 text-xs">
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-xs shadow-sm">
               No applicants found matching this filter criteria.
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-800/80 text-slate-400 font-semibold border-b border-slate-700">
-                  <tr>
-                    <th className="p-3 w-8">
-                      <input
-                        type="checkbox"
-                        onChange={toggleSelectAll}
-                        checked={selectedAppIds.length === applications.length && applications.length > 0}
-                        className="rounded border-slate-700"
-                      />
-                    </th>
-                    <th className="p-3">Applicant Name</th>
-                    <th className="p-3">CGPA</th>
-                    <th className="p-3">Branch</th>
-                    <th className="p-3">Resume</th>
-                    <th className="p-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {applications.map((app) => {
-                    const isChecked = selectedAppIds.includes(app.id);
-                    return (
-                      <tr key={app.id} className={`hover:bg-slate-800/40 ${isChecked ? "bg-indigo-950/20" : ""}`}>
-                        <td className="p-3">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => toggleSelectOne(app.id)}
-                            className="rounded border-slate-700"
-                          />
-                        </td>
-                        <td className="p-3">
-                          <div className="font-bold text-white">{app.student?.full_name || "Applicant"}</div>
-                          <div className="text-[10px] text-slate-400">{app.student?.roll_number}</div>
-                        </td>
-                        <td className="p-3 font-semibold text-emerald-400">{app.student?.cgpa.toFixed(2)}</td>
-                        <td className="p-3">{app.student?.branch}</td>
-                        <td className="p-3">
-                          {app.student?.resume_url ? (
-                            <a
-                              href={app.student.resume_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-indigo-400 hover:text-indigo-300 underline font-medium"
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                    <tr>
+                      <th className="p-3 w-8">
+                        <input
+                          type="checkbox"
+                          onChange={toggleSelectAll}
+                          checked={selectedAppIds.length === applications.length && applications.length > 0}
+                          className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                        />
+                      </th>
+                      <th className="p-3">Student Name</th>
+                      <th className="p-3">Roll No.</th>
+                      <th className="p-3">CGPA</th>
+                      <th className="p-3">Department</th>
+                      <th className="p-3">Resume</th>
+                      <th className="p-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {applications.map((app) => {
+                      const isChecked = selectedAppIds.includes(app.id);
+                      return (
+                        <tr key={app.id} className={`hover:bg-slate-50/80 transition-colors ${isChecked ? "bg-blue-50/40" : ""}`}>
+                          <td className="p-3">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => toggleSelectOne(app.id)}
+                              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            />
+                          </td>
+                          <td className="p-3 font-semibold text-slate-900">
+                            {app.student?.full_name || "Applicant"}
+                          </td>
+                          <td className="p-3 font-mono text-slate-500">
+                            {app.student?.roll_number}
+                          </td>
+                          <td className="p-3 font-bold text-emerald-700">
+                            {app.student?.cgpa !== undefined ? Number(app.student.cgpa).toFixed(2) : "N/A"}
+                          </td>
+                          <td className="p-3 text-slate-600">{app.student?.branch}</td>
+                          <td className="p-3">
+                            {app.student?.resume_url ? (
+                              <a
+                                href={app.student.resume_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                              >
+                                View PDF
+                              </a>
+                            ) : (
+                              <span className="text-slate-400">None</span>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                                app.status === "OFFERED" || app.status === "SELECTED"
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : app.status === "SHORTLISTED" || app.status === "INTERVIEW_SCHEDULED"
+                                  ? "bg-purple-50 text-purple-700 border-purple-200"
+                                  : app.status === "UNDER_REVIEW"
+                                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                                  : app.status === "REJECTED"
+                                  ? "bg-red-50 text-red-700 border-red-200"
+                                  : "bg-slate-100 text-slate-700 border-slate-200"
+                              }`}
                             >
-                              View PDF
-                            </a>
-                          ) : (
-                            <span className="text-slate-500">None</span>
-                          )}
-                        </td>
-                        <td className="p-3">
-                          <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                              app.status === "OFFERED"
-                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                              {app.status === "UNDER_REVIEW"
+                                ? "Under Review"
                                 : app.status === "SHORTLISTED"
-                                ? "bg-purple-500/20 text-purple-300 border border-purple-500/40"
-                                : app.status === "UNDER_REVIEW"
-                                ? "bg-sky-500/20 text-sky-300 border border-sky-500/40"
+                                ? "Shortlisted"
+                                : app.status === "OFFERED"
+                                ? "Offered"
                                 : app.status === "REJECTED"
-                                ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
-                                : "bg-slate-700 text-slate-300"
-                            }`}
-                          >
-                            {app.status}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                                ? "Rejected"
+                                : app.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Pagination Controls */}
-              <div className="p-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <div className="p-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
                 <span>
                   Page {atsPage} of {atsTotalPages}
                 </span>
@@ -524,14 +549,14 @@ export function RecruiterDashboard({ user }) {
                   <button
                     onClick={() => setAtsPage((p) => Math.max(1, p - 1))}
                     disabled={atsPage <= 1}
-                    className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-white disabled:opacity-40"
+                    className="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition-colors"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setAtsPage((p) => Math.min(atsTotalPages, p + 1))}
                     disabled={atsPage >= atsTotalPages}
-                    className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-white disabled:opacity-40"
+                    className="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition-colors"
                   >
                     Next
                   </button>
@@ -544,50 +569,52 @@ export function RecruiterDashboard({ user }) {
 
       {/* Modal: Job Draft / Edit */}
       {isCreatingJob && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+          <div className="bg-white border border-slate-200 w-full max-w-lg rounded-2xl p-6 shadow-xl relative text-slate-800">
             <button
               onClick={() => { setIsCreatingJob(false); setEditingJob(null); }}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
             >
-              ✕
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
 
-            <h2 className="text-xl font-bold mb-1">
-              {editingJob ? "Edit Job Specifications" : "Targeted Job Creator"}
+            <h2 className="text-xl font-bold text-slate-900 mb-1">
+              {editingJob ? "Edit Placement Drive" : "Create Placement Drive"}
             </h2>
-            <p className="text-xs text-slate-400 mb-4">
-              Configure hard rules and server-side eligibility parameters.
+            <p className="text-xs text-slate-500 mb-4">
+              Specify job details and candidate eligibility thresholds.
             </p>
 
             <form onSubmit={handleSaveJob} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Position Title</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Position Title</label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Distributed Systems Engineer"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  placeholder="e.g. Graduate Software Engineer"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Role Description</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Role Description</label>
                 <textarea
                   required
                   rows="3"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Responsibilities, requirements, technology stack..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Min CGPA</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Min CGPA</label>
                   <input
                     type="number"
                     step="0.1"
@@ -595,23 +622,23 @@ export function RecruiterDashboard({ user }) {
                     max="10"
                     value={minCgpa}
                     onChange={(e) => setMinCgpa(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Allowed Batches</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Allowed Batches</label>
                   <input
                     type="text"
                     value={allowedYears}
                     onChange={(e) => setAllowedYears(e.target.value)}
                     placeholder="2025, 2026"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-slate-700 mb-1">
                   Allowed Branches (comma separated)
                 </label>
                 <input
@@ -619,22 +646,22 @@ export function RecruiterDashboard({ user }) {
                   value={allowedBranches}
                   onChange={(e) => setAllowedBranches(e.target.value)}
                   placeholder="CSE, ECE, IT, Mechanical"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 />
-                <p className="text-[10px] text-slate-500 mt-1">Leave empty to open to all university branches.</p>
+                <p className="text-[10px] text-slate-400 mt-1">Leave empty to open to all departments.</p>
               </div>
 
               <div className="flex space-x-2 pt-2">
                 <button
                   type="button"
                   onClick={() => { setIsCreatingJob(false); setEditingJob(null); }}
-                  className="w-1/2 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
+                  className="w-1/2 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="w-1/2 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg"
+                  className="w-1/2 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors"
                 >
                   {editingJob ? "Save Changes" : "Save as Draft"}
                 </button>

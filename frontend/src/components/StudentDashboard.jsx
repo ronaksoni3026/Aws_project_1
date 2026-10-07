@@ -16,6 +16,9 @@ export function StudentDashboard({ user }) {
   const [resumeUrl, setResumeUrl] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterEligibleOnly, setFilterEligibleOnly] = useState(false);
+
   useEffect(() => {
     loadAllData();
   }, []);
@@ -86,117 +89,183 @@ export function StudentDashboard({ user }) {
 
   const appliedJobIds = new Set(applications.map((a) => a.job_id));
 
+  const filteredJobs = jobs.filter((job) => {
+    const matchesSearch =
+      !searchTerm ||
+      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesEligible = !filterEligibleOnly || job.is_eligible;
+    return matchesSearch && matchesEligible;
+  });
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
-      {/* Top Banner / Student Metrics */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* Student Profile Header */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Student Applicant Dashboard</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Roll Number: <span className="text-indigo-400 font-mono">{profile?.roll_number}</span> |
-            Live CGPA: <span className="text-emerald-400 font-bold">{profile?.cgpa}</span> |
-            Branch: <span className="text-sky-400 font-semibold">{profile?.branch}</span> |
-            Batch: <span className="text-purple-400 font-semibold">{profile?.graduation_year}</span>
-          </p>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+              {user.name || "Student Applicant"}
+            </h1>
+            <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-50 text-blue-700 border border-blue-200">
+              Candidate
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 mt-2 font-mono">
+            <span>Roll No: <strong className="text-slate-900">{profile?.roll_number || "N/A"}</strong></span>
+            <span>&bull;</span>
+            <span>Department: <strong className="text-slate-900">{profile?.branch || "N/A"}</strong></span>
+            <span>&bull;</span>
+            <span>CGPA: <strong className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200">{profile?.cgpa !== undefined ? Number(profile.cgpa).toFixed(2) : "0.00"}</strong></span>
+            <span>&bull;</span>
+            <span>Batch: <strong className="text-slate-900">{profile?.graduation_year || "N/A"}</strong></span>
+          </div>
         </div>
 
-        {/* Tab Controls */}
-        <div className="flex space-x-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700">
-          <button
-            onClick={() => setActiveTab("JOBS")}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
-              activeTab === "JOBS" ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Smart Job Board ({jobs.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("APPLICATIONS")}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
-              activeTab === "APPLICATIONS" ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-white"
-            }`}
-          >
-            My Applications ({applications.length})
-          </button>
+        <div className="flex items-center space-x-2">
+          {profile?.resume_url && (
+            <a
+              href={profile.resume_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-semibold px-3.5 py-2 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200 transition-colors"
+            >
+              View Resume
+            </a>
+          )}
           <button
             onClick={() => setActiveTab("PROFILE")}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
-              activeTab === "PROFILE" ? "bg-indigo-600 text-white shadow" : "text-slate-400 hover:text-white"
-            }`}
+            className="text-xs font-semibold px-3.5 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-colors"
           >
-            Academic Profile
+            Edit Profile
           </button>
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex border-b border-slate-200 gap-6">
+        <button
+          onClick={() => setActiveTab("JOBS")}
+          className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
+            activeTab === "JOBS"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          Placement Drives ({jobs.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("APPLICATIONS")}
+          className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
+            activeTab === "APPLICATIONS"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          My Applications ({applications.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("PROFILE")}
+          className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
+            activeTab === "PROFILE"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          Academic Profile
+        </button>
+      </div>
+
       {actionMsg.text && (
         <div
-          className={`p-4 rounded-xl border text-xs whitespace-pre-line ${
+          className={`p-3.5 rounded-lg border text-xs whitespace-pre-line ${
             actionMsg.type === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
-              : "bg-rose-500/10 border-rose-500/30 text-rose-300"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-red-50 border-red-200 text-red-700"
           }`}
         >
           {actionMsg.text}
         </div>
       )}
 
-      {/* Tab: Smart Job Board */}
+      {/* Tab: Placement Drives */}
       {activeTab === "JOBS" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-white">Active Campus Recruitment Drives</h2>
-            <span className="text-xs text-slate-400">Server-Side Eligibility Gating Enabled</span>
+          {/* Search & Filter Bar */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="relative w-full sm:w-96">
+              <input
+                type="text"
+                placeholder="Search by company, role or location..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-600 focus:bg-white transition-colors"
+              />
+              <svg className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            <label className="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer self-start sm:self-center">
+              <input
+                type="checkbox"
+                checked={filterEligibleOnly}
+                onChange={(e) => setFilterEligibleOnly(e.target.checked)}
+                className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span>Show Eligible Drives Only</span>
+            </label>
           </div>
 
-          {jobs.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
-              No active job postings found at this moment.
+          {filteredJobs.length === 0 ? (
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-xs">
+              No placement drives found matching your criteria.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {jobs.map((job) => {
+              {filteredJobs.map((job) => {
                 const hasApplied = appliedJobIds.has(job.id);
                 return (
                   <div
                     key={job.id}
-                    className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between hover:border-slate-700 transition-all"
+                    className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h3 className="font-bold text-white text-base leading-snug">{job.title}</h3>
-                          <div className="text-xs font-semibold text-indigo-400 mt-0.5">{job.company_name}</div>
+                          <h3 className="font-bold text-slate-900 text-base leading-snug">{job.title}</h3>
+                          <div className="text-xs font-semibold text-blue-600 mt-0.5">{job.company_name}</div>
                         </div>
 
-                        {/* Real-time Server-Side Eligibility Badge */}
+                        {/* Status Label */}
                         <span
-                          className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
                             job.is_eligible
-                              ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                              : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : "bg-amber-50 text-amber-700 border-amber-200"
                           }`}
                         >
-                          {job.is_eligible ? "✓ Eligible" : "⚠ Ineligible"}
+                          {job.is_eligible ? "Eligible" : "Criteria Not Met"}
                         </span>
                       </div>
 
-                      <p className="text-xs text-slate-300 mt-3 line-clamp-3">{job.description}</p>
+                      <p className="text-xs text-slate-600 mt-3 line-clamp-3">{job.description}</p>
 
                       {/* Criteria Constraints */}
-                      <div className="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-2 text-[11px]">
-                        <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">
-                          Min CGPA: <strong className="text-white">{job.min_cgpa.toFixed(1)}</strong>
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-[11px]">
+                        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
+                          Min CGPA: <strong>{job.min_cgpa.toFixed(1)}</strong>
                         </span>
-                        <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">
+                        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
                           Branches:{" "}
-                          <strong className="text-white">
+                          <strong>
                             {job.allowed_branches?.length ? job.allowed_branches.join(", ") : "All"}
                           </strong>
                         </span>
-                        <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">
+                        <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
                           Batches:{" "}
-                          <strong className="text-white">
+                          <strong>
                             {job.allowed_graduation_years?.length ? job.allowed_graduation_years.join(", ") : "All"}
                           </strong>
                         </span>
@@ -204,8 +273,8 @@ export function StudentDashboard({ user }) {
 
                       {/* If ineligible, show server feedback explanation */}
                       {!job.is_eligible && job.reasons && job.reasons.length > 0 && (
-                        <div className="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-200/90">
-                          <div className="font-semibold text-amber-300 mb-1">Eligibility Criteria Unmet:</div>
+                        <div className="mt-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
+                          <div className="font-semibold text-amber-900 mb-1">Eligibility Criteria Unmet:</div>
                           <ul className="list-disc list-inside space-y-0.5 text-[10px]">
                             {job.reasons.map((r, i) => (
                               <li key={i}>{r}</li>
@@ -215,27 +284,26 @@ export function StudentDashboard({ user }) {
                       )}
                     </div>
 
-                    <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-500">
+                    <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400">
                         Posted {new Date(job.created_at).toLocaleDateString()}
                       </span>
 
                       {hasApplied ? (
-                        <span className="text-xs font-bold text-sky-400 bg-sky-500/10 border border-sky-500/30 px-3 py-1.5 rounded-lg">
-                          ✓ Application Submitted
+                        <span className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg">
+                          ✓ Applied
                         </span>
                       ) : (
                         <button
                           onClick={() => handleApply(job.id)}
                           disabled={!job.is_eligible}
-                          className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                          className={`text-xs font-semibold px-4 py-2 rounded-lg transition-colors ${
                             job.is_eligible
-                              ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30"
-                              : "bg-slate-800 text-slate-500 border border-slate-700/50 cursor-not-allowed"
+                              ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                              : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
                           }`}
-                          title={job.is_eligible ? "Submit application" : "Blocked by eligibility gatekeeper"}
                         >
-                          {job.is_eligible ? "Apply for Role" : "Criteria Not Met"}
+                          {job.is_eligible ? "Apply" : "Not Eligible"}
                         </button>
                       )}
                     </div>
@@ -250,49 +318,61 @@ export function StudentDashboard({ user }) {
       {/* Tab: My Applications */}
       {activeTab === "APPLICATIONS" && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white">Application Macro-Funnel Tracker</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-slate-900">Application Status Tracker</h2>
+          </div>
           {applications.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-500 text-xs">
               You have not submitted applications to any position yet.
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-              <table className="w-full text-left text-xs text-slate-300">
-                <thead className="bg-slate-800/70 text-slate-400 font-semibold border-b border-slate-700">
-                  <tr>
-                    <th className="p-3.5">Position Title</th>
-                    <th className="p-3.5">Organization</th>
-                    <th className="p-3.5">Applied Timestamp</th>
-                    <th className="p-3.5">ATS Stage</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800">
-                  {applications.map((app) => (
-                    <tr key={app.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-bold text-white">{app.job_title}</td>
-                      <td className="p-3.5 text-indigo-300">{app.company_name}</td>
-                      <td className="p-3.5 text-slate-400">{new Date(app.applied_at).toLocaleString()}</td>
-                      <td className="p-3.5">
-                        <span
-                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold ${
-                            app.status === "OFFERED"
-                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                              : app.status === "SHORTLISTED"
-                              ? "bg-purple-500/20 text-purple-300 border border-purple-500/40"
-                              : app.status === "UNDER_REVIEW"
-                              ? "bg-sky-500/20 text-sky-300 border border-sky-500/40"
-                              : app.status === "REJECTED"
-                              ? "bg-rose-500/20 text-rose-300 border border-rose-500/40"
-                              : "bg-slate-700 text-slate-300 border border-slate-600"
-                          }`}
-                        >
-                          {app.status}
-                        </span>
-                      </td>
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-700">
+                  <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                    <tr>
+                      <th className="p-3.5">Company</th>
+                      <th className="p-3.5">Job Role</th>
+                      <th className="p-3.5">Applied Date</th>
+                      <th className="p-3.5">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {applications.map((app) => (
+                      <tr key={app.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="p-3.5 font-semibold text-blue-600">{app.company_name}</td>
+                        <td className="p-3.5 font-bold text-slate-900">{app.job_title}</td>
+                        <td className="p-3.5 text-slate-500">{new Date(app.applied_at).toLocaleDateString()}</td>
+                        <td className="p-3.5">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+                              app.status === "OFFERED" || app.status === "SELECTED"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : app.status === "SHORTLISTED" || app.status === "INTERVIEW_SCHEDULED"
+                                ? "bg-purple-50 text-purple-700 border-purple-200"
+                                : app.status === "UNDER_REVIEW"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                : app.status === "REJECTED"
+                                ? "bg-red-50 text-red-700 border-red-200"
+                                : "bg-slate-100 text-slate-700 border-slate-200"
+                            }`}
+                          >
+                            {app.status === "UNDER_REVIEW"
+                              ? "Under Review"
+                              : app.status === "SHORTLISTED"
+                              ? "Shortlisted"
+                              : app.status === "OFFERED"
+                              ? "Selected"
+                              : app.status === "REJECTED"
+                              ? "Rejected"
+                              : app.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
@@ -300,15 +380,15 @@ export function StudentDashboard({ user }) {
 
       {/* Tab: Academic Profile */}
       {activeTab === "PROFILE" && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-xl">
-          <h2 className="text-lg font-bold text-white mb-1">Academic Profile Management</h2>
-          <p className="text-xs text-slate-400 mb-4">
-            Changes here directly influence server-side eligibility checks across the smart job board.
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm max-w-xl">
+          <h2 className="text-base font-bold text-slate-900 mb-1">Academic Profile Management</h2>
+          <p className="text-xs text-slate-500 mb-5">
+            Keep your credentials updated to maintain placement drive eligibility.
           </p>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Cumulative GPA (0.0 - 10.0)</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Cumulative GPA (0.0 - 10.0)</label>
               <input
                 type="number"
                 step="0.01"
@@ -316,49 +396,49 @@ export function StudentDashboard({ user }) {
                 max="10"
                 value={cgpa}
                 onChange={(e) => setCgpa(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Academic Department / Branch</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Academic Department / Branch</label>
               <input
                 type="text"
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
                 placeholder="e.g. CSE, ECE, Mechanical, IT"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Graduation Batch Year</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Graduation Batch Year</label>
               <input
                 type="number"
                 value={gradYear}
                 onChange={(e) => setGradYear(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Resume Link (HttpUrl Format)</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Resume Link (HttpUrl Format)</label>
               <input
                 type="url"
                 value={resumeUrl}
                 onChange={(e) => setResumeUrl(e.target.value)}
                 placeholder="https://drive.google.com/resume.pdf"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
               />
-              <p className="text-[10px] text-slate-500 mt-1">
-                Validated server-side using Pydantic HttpUrl to prevent security injection attacks.
+              <p className="text-[10px] text-slate-400 mt-1">
+                Provide a shareable public link to your updated PDF resume.
               </p>
             </div>
 
             <button
               type="submit"
               disabled={savingProfile}
-              className="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
+              className="py-2.5 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
             >
               {savingProfile ? "Saving Profile..." : "Save Academic Profile"}
             </button>
