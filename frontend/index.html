@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apex • Institutional Campus Placement Portal & Recruitment OS</title>
+  <title>Campus Placement & Internship Portal</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -25,21 +25,6 @@
               900: '#312e81',
               950: '#1e1b4b',
             }
-          },
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 4s ease-in-out infinite',
-            'shimmer': 'shimmer 2s linear infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-6px)' },
-            },
-            shimmer: {
-              '0%': { backgroundPosition: '-200% 0' },
-              '100%': { backgroundPosition: '200% 0' },
-            }
           }
         }
       }
@@ -53,32 +38,16 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
     
-    :root {
-      --bg-main: #030712;
-      --card-bg: rgba(17, 24, 39, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover-border: rgba(99, 102, 241, 0.4);
-    }
-    
     body {
-      background-color: var(--bg-main);
-      color: #f3f4f6;
+      background-color: #f8fafc;
+      color: #1e293b;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Subtle grid background like Linear/Vercel */
-    .bg-grid-pattern {
-      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-
-    /* Ambient spotlight glow */
-    .spotlight {
-      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.05) 45%, transparent 70%);
-    }
-
-    /* Enterprise Glassmorphic card styling */
+    /* Enterprise Glassmorphic card styling for dark dashboards */
     .company-card {
       background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(16px);
@@ -129,30 +98,8 @@
       pointer-events: auto;
       transform: translateX(-50%) translateY(0) scale(1);
     }
-    /* Pos Left */
-    .pop-content.pos-left {
-      right: calc(100% + 10px);
-      top: 50%;
-      transform: translateY(-50%) translateX(8px) scale(0.9);
-    }
-    .pop-trigger:hover .pop-content.pos-left {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(-50%) translateX(0) scale(1);
-    }
-    /* Pos Right */
-    .pop-content.pos-right {
-      left: calc(100% + 10px);
-      top: 50%;
-      transform: translateY(-50%) translateX(-8px) scale(0.9);
-    }
-    .pop-trigger:hover .pop-content.pos-right {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(-50%) translateX(0) scale(1);
-    }
 
-    /* Universal Icon cursor drag / hover bouncy pop-up animation */
+    /* Universal Icon cursor hover bouncy pop-up animation */
     .icon-bounce {
       display: inline-flex;
       align-items: center;
@@ -161,8 +108,7 @@
       cursor: pointer;
     }
     .icon-bounce:hover {
-      transform: scale(1.24) rotate(-5deg);
-      filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.8));
+      transform: scale(1.2) rotate(-4deg);
     }
     .icon-bounce:active {
       transform: scale(0.92);
@@ -190,29 +136,23 @@
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #030712;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1f2937;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #374151;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="bg-gray-950 text-gray-100 antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col relative bg-grid-pattern">
-  <!-- Top ambient aura spotlight -->
-  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] spotlight pointer-events-none -z-10"></div>
-
-  <!-- Interactive Dynamic Cursor Aura Follower -->
-  <div id="cursor-glow" class="fixed pointer-events-none -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-cyan-500/5 blur-3xl transition-transform duration-75 ease-out -z-10"></div>
-  
-  <div id="root" class="flex-1 flex flex-col z-10"></div>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col relative">
+  <div id="root" class="flex-1 flex flex-col"></div>
 
   <!-- React Application Core -->
   <script type="text/babel">
@@ -417,10 +357,10 @@
       const [user, setUser] = useState(null);
       const [authModalOpen, setAuthModalOpen] = useState(false);
       const [authModalMode, setAuthModalMode] = useState("LOGIN");
+      const [authModalRole, setAuthModalRole] = useState("STUDENT");
       const [passwordModalOpen, setPasswordModalOpen] = useState(false);
       const [notificationsOpen, setNotificationsOpen] = useState(false);
       const [notifications, setNotifications] = useState([]);
-      const [awsStatus, setAwsStatus] = useState(null);
       const [loading, setLoading] = useState(true);
       const [toasts, setToasts] = useState([]);
 
@@ -443,27 +383,8 @@
           setUser(u);
           if (u.role === "STUDENT") loadNotifications();
         }
-        loadAwsStatus();
         setLoading(false);
-
-        const handleMouseMove = (e) => {
-          const glow = document.getElementById("cursor-glow");
-          if (glow) {
-            glow.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
-          }
-        };
-        window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
       }, []);
-
-      const loadAwsStatus = async () => {
-        try {
-          const s = await api.getAwsStatus();
-          setAwsStatus(s);
-        } catch (e) {
-          console.error("AWS status check:", e);
-        }
-      };
 
       const loadNotifications = async () => {
         try {
@@ -479,159 +400,177 @@
         addToast("Signed out of session safely.", "info");
       };
 
-      const handleQuickLogin = async (email, password, role) => {
-        try {
-          const res = await api.login({ email, password, role });
-          setStoredToken(res.access_token);
-          const u = { id: res.user_id, email: res.email, name: res.name, role: res.role, status: res.status };
-          setStoredUser(u);
-          setUser(u);
-          if (u.role === "STUDENT") loadNotifications();
-          addToast(`Authenticated as ${u.name} (${u.role})`, "success");
-        } catch (e) {
-          addToast(`Authentication failed: ${e.message}`, "error");
-        }
+      const handleOpenAuth = (mode = "LOGIN", role = "STUDENT") => {
+        setAuthModalMode(mode);
+        setAuthModalRole(role);
+        setAuthModalOpen(true);
       };
 
       const unreadCount = notifications.filter((n) => !n.is_read).length;
 
       if (loading) {
         return (
-          <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center text-indigo-400 gap-4">
-            <div className="relative">
-              <div className="w-12 h-12 border-2 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-              <div className="w-6 h-6 border-2 border-cyan-400/30 border-b-cyan-400 rounded-full animate-spin absolute inset-3"></div>
-            </div>
-            <div className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-              Loading Apex Institutional Engine...
+          <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-blue-600 gap-3">
+            <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Loading Campus Placement Portal...
             </div>
           </div>
         );
       }
 
+      // 1. FIRST / LANDING PAGE: Clean, professional, and light-themed (VTOP-inspired)
+      if (!user) {
+        return (
+          <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+            {/* Clean Professional Institutional Header */}
+            <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-sm">
+                    🏛️
+                  </div>
+                  <div>
+                    <span className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight block leading-tight">
+                      Campus Placement Portal
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium block">
+                      Training &amp; Placement Cell
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 text-xs text-slate-600 font-medium">
+                  <span className="hidden sm:inline-block px-3 py-1 bg-slate-100 rounded-md border border-slate-200 text-slate-600 text-xs font-semibold">
+                    Academic Year 2025–26
+                  </span>
+                </div>
+              </div>
+            </header>
+
+            {/* Landing Content: Tagline, short supporting sentence, and 3 Role Cards */}
+            <main className="flex-1 flex flex-col justify-center">
+              <LandingView onOpenAuth={handleOpenAuth} />
+            </main>
+
+            {/* Clean Institutional Footer */}
+            <footer className="bg-white border-t border-slate-200 py-4 text-xs text-slate-500 text-center">
+              <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <span>&copy; Campus Placement &amp; Internship Portal &bull; Directorate of Training &amp; Placement</span>
+                <span className="text-slate-400">Institutional Access Gateway</span>
+              </div>
+            </footer>
+
+            {/* Auth Modal with Preselected Role */}
+            <AuthModal
+              isOpen={authModalOpen}
+              initialMode={authModalMode}
+              initialRole={authModalRole}
+              onClose={() => setAuthModalOpen(false)}
+              onSuccess={(u) => {
+                setUser(u);
+                if (u.role === "STUDENT") loadNotifications();
+                addToast(`Welcome back, ${u.name}!`, "success");
+              }}
+            />
+
+            <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+          </div>
+        );
+      }
+
+      // 2. LOGGED-IN WORKSPACE (Dashboard for Student, Recruiter, Admin unchanged)
       return (
         <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col font-sans relative">
           {/* Top Enterprise Navigation */}
           <header className="sticky top-0 z-40 bg-gray-950/80 backdrop-blur-2xl border-b border-white/[0.08] shadow-2xl shadow-black/40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
               
-              {/* Brand Logo & AWS Cloud Pulse */}
-              <div className="flex items-center space-x-4 cursor-pointer" onClick={() => setUser(user)}>
-                <HoverPopup title="Apex Campus OS" subtitle="Institutional Campus Placement Portal" badge="v2.0" position="bottom">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25 group transition-transform duration-300 hover:scale-105">
-                    <div className="w-full h-full bg-gray-950 rounded-[15px] flex items-center justify-center">
-                      <span className="text-sm font-black tracking-tight bg-gradient-to-tr from-white to-indigo-200 bg-clip-text text-transparent">
-                        AP
-                      </span>
-                    </div>
+              {/* Brand Logo & Portal Title */}
+              <div className="flex items-center space-x-3 cursor-pointer">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/25">
+                  <div className="w-full h-full bg-gray-950 rounded-[11px] flex items-center justify-center">
+                    <span className="text-xs font-black tracking-tight text-white">
+                      CP
+                    </span>
                   </div>
-                </HoverPopup>
+                </div>
 
                 <div>
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <span className="font-extrabold text-sm sm:text-base tracking-tight text-white flex items-center gap-1.5">
-                      Apex <span className="text-gray-400 font-medium text-xs hidden sm:inline">| Campus Placement Portal</span>
+                      Campus Placement Portal
                     </span>
-
-                    {/* AWS Cloud Live Status Indicator with Pop-Up Animation */}
-                    <HoverPopup
-                      title={awsStatus?.s3_configured ? "AWS Cloud Active" : "Local Storage Sandbox"}
-                      subtitle={awsStatus ? `Region: ${awsStatus.region} • S3 Bucket: ${awsStatus.s3_configured ? 'Online' : 'Fallback'}` : "AWS Engine Standby"}
-                      badge={awsStatus?.s3_configured ? "AWS S3 / SES" : "Local Mock"}
-                      position="bottom"
-                    >
-                      <div className="cursor-pointer flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-sm transition-all hover:bg-emerald-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span className="hidden md:inline">AWS Cloud Engine</span>
-                        <span className="md:hidden">AWS</span>
-                      </div>
-                    </HoverPopup>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
+                      {user.role} WORKSPACE
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Navigation Controls */}
               <div className="flex items-center space-x-2.5 sm:space-x-3">
-                {user ? (
-                  <>
-                    {/* Student Alert Inbox */}
-                    {user.role === "STUDENT" && (
-                      <HoverPopup title="Notification Inbox" subtitle={`${unreadCount} unread system announcements`} position="bottom">
-                        <button
-                          onClick={() => setNotificationsOpen(true)}
-                          className="relative p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40 icon-bounce"
-                        >
-                          🔔
-                          {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-rose-500 text-white font-extrabold text-[9px] rounded-full animate-bounce shadow-md">
-                              {unreadCount}
-                            </span>
-                          )}
-                        </button>
-                      </HoverPopup>
-                    )}
-
-                    {/* User Identity Pill with Pop-Up Details */}
-                    <HoverPopup
-                      title={user.name || user.email}
-                      subtitle={`Role: ${user.role} • Status: ${user.status || 'Verified'}`}
-                      badge={user.role}
-                      position="bottom"
-                    >
-                      <div className="cursor-pointer flex items-center space-x-2.5 bg-gray-900/90 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner group">
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center font-bold text-white text-xs shadow-md icon-bounce">
-                          {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                        </div>
-                        <div className="text-right hidden sm:block">
-                          <div className="text-xs font-bold text-white leading-tight">{user.name}</div>
-                          <div className="text-[10px] text-gray-400 font-mono">{user.email}</div>
-                        </div>
-                      </div>
-                    </HoverPopup>
-
-                    {/* Change Password Key */}
-                    <HoverPopup title="Security Credentials" subtitle="Update current account password" position="bottom">
-                      <button
-                        onClick={() => setPasswordModalOpen(true)}
-                        className="p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40 icon-bounce"
-                      >
-                        🔑
-                      </button>
-                    </HoverPopup>
-
-                    {/* Sign Out */}
-                    <HoverPopup title="End Active Session" subtitle="Safely revoke JWT token and logout" position="bottom">
-                      <button
-                        onClick={handleLogout}
-                        className="text-xs font-bold px-3 py-2 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
-                      >
-                        Sign Out
-                      </button>
-                    </HoverPopup>
-                  </>
-                ) : (
-                  <div className="flex items-center space-x-2">
+                {/* Student Alert Inbox */}
+                {user.role === "STUDENT" && (
+                  <HoverPopup title="Notification Inbox" subtitle={`${unreadCount} unread system announcements`} position="bottom">
                     <button
-                      onClick={() => { setAuthModalMode("LOGIN"); setAuthModalOpen(true); }}
-                      className="btn-shine text-xs font-bold px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/30 transition-all"
+                      onClick={() => setNotificationsOpen(true)}
+                      className="relative p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
                     >
-                      Sign In / Register →
+                      🔔
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-rose-500 text-white font-extrabold text-[9px] rounded-full animate-bounce shadow-md">
+                          {unreadCount}
+                        </span>
+                      )}
                     </button>
-                  </div>
+                  </HoverPopup>
                 )}
+
+                {/* User Identity Pill */}
+                <HoverPopup
+                  title={user.name || user.email}
+                  subtitle={`Role: ${user.role} • Status: ${user.status || 'Verified'}`}
+                  badge={user.role}
+                  position="bottom"
+                >
+                  <div className="cursor-pointer flex items-center space-x-2.5 bg-gray-900/90 px-3 py-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center font-bold text-white text-xs shadow-md">
+                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <div className="text-right hidden sm:block">
+                      <div className="text-xs font-bold text-white leading-tight">{user.name}</div>
+                      <div className="text-[10px] text-gray-400 font-mono">{user.email}</div>
+                    </div>
+                  </div>
+                </HoverPopup>
+
+                {/* Change Password Key */}
+                <HoverPopup title="Security Credentials" subtitle="Update current account password" position="bottom">
+                  <button
+                    onClick={() => setPasswordModalOpen(true)}
+                    className="p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white border border-white/10 transition-all hover:border-indigo-500/40"
+                  >
+                    🔑
+                  </button>
+                </HoverPopup>
+
+                {/* Sign Out */}
+                <HoverPopup title="End Active Session" subtitle="Safely revoke JWT token and logout" position="bottom">
+                  <button
+                    onClick={handleLogout}
+                    className="text-xs font-bold px-3 py-2 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-all"
+                  >
+                    Sign Out
+                  </button>
+                </HoverPopup>
               </div>
             </div>
           </header>
 
           {/* Main Workspace Body */}
           <main className="flex-1 flex flex-col">
-            {!user ? (
-              <LandingView
-                onQuickLogin={handleQuickLogin}
-                onOpenAuth={(mode) => { setAuthModalMode(mode); setAuthModalOpen(true); }}
-                awsStatus={awsStatus}
-              />
-            ) : user.role === "STUDENT" ? (
+            {user.role === "STUDENT" ? (
               <StudentView user={user} onRefreshNotifications={loadNotifications} addToast={addToast} />
             ) : user.role === "RECRUITER" ? (
               <RecruiterView user={user} addToast={addToast} />
@@ -640,18 +579,7 @@
             ) : null}
           </main>
 
-          {/* Global Modals */}
-          <AuthModal
-            isOpen={authModalOpen}
-            initialMode={authModalMode}
-            onClose={() => setAuthModalOpen(false)}
-            onSuccess={(u) => {
-              setUser(u);
-              if (u.role === "STUDENT") loadNotifications();
-              addToast(`Welcome back, ${u.name}!`, "success");
-            }}
-          />
-
+          {/* Global Modals for Logged-In User */}
           <ChangePasswordModal
             isOpen={passwordModalOpen}
             onClose={() => setPasswordModalOpen(false)}
@@ -667,386 +595,96 @@
 
           <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-          {/* Professional Enterprise Footer */}
-          <footer className="border-t border-white/[0.08] bg-gray-950/90 py-6 text-xs text-gray-500">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-white">Apex Institutional Suite</span>
-                <span>&bull;</span>
-                <span>Campus Placement Portal &bull; Enterprise ACID Relational Guarantee</span>
-              </div>
-              <div className="flex items-center gap-4 text-gray-400 font-mono text-[11px]">
-                <HoverPopup title="FastAPI 2.0" subtitle="Asynchronous REST API with Pydantic v2">
-                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> FastAPI
-                  </span>
-                </HoverPopup>
-                <span>&bull;</span>
-                <HoverPopup title="Amazon S3 & SES" subtitle="Cloud Native Storage and Mailer Engine">
-                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> AWS Cloud
-                  </span>
-                </HoverPopup>
-                <span>&bull;</span>
-                <HoverPopup title="PostgreSQL 15" subtitle="Physical Entity Isolation & Compound Indexing">
-                  <span className="cursor-pointer hover:text-white flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> PostgreSQL
-                  </span>
-                </HoverPopup>
-              </div>
+          {/* Logged in footer */}
+          <footer className="border-t border-white/[0.08] bg-gray-950/90 py-5 text-xs text-gray-500 text-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+              <span>Campus Placement Portal &bull; Institutional Recruitment System</span>
+              <span className="text-gray-400 font-mono text-[11px]">Active Session</span>
             </div>
           </footer>
         </div>
       );
     }
 
-    // --- LANDING VIEW (COMPANY HERO PAGE) ---
-    function LandingView({ onQuickLogin, onOpenAuth, awsStatus }) {
-      const [activeStage, setActiveStage] = useState(0);
-
-      const stages = [
-        {
-          id: 0,
-          icon: "🎓",
-          step: "STAGE 01",
-          name: "Deterministic Intake",
-          summary: "Pre-Flight CGPA & Arrears Gating",
-          badge: "FastAPI Engine",
-          code: "ASSERT candidate.cgpa >= job.min_cgpa && backlogs <= job.max_backlogs",
-          description: "Every student application is evaluated deterministically in memory before any SQL write. Criteria mismatches return an explicit breakdown of failure reasons.",
-          stat: "100% Gating Accuracy",
-        },
-        {
-          id: 1,
-          icon: "☁️",
-          step: "STAGE 02",
-          name: "AWS S3 Document Vault",
-          summary: "Presigned Streaming & Sanitization",
-          badge: "AWS Cloud Native",
-          code: "PUT https://s3.ap-south-1.amazonaws.com/apex-resumes/uuid.pdf",
-          description: "Direct-to-S3 pre-authenticated uploads with instant PDF format validation. Automatic fallback to local sandboxed filesystem if cloud keys are offline.",
-          stat: "Zero-Latency Uploads",
-        },
-        {
-          id: 2,
-          icon: "🏢",
-          step: "STAGE 03",
-          name: "ATS Kanban Funnel",
-          summary: "ACID Batch Candidate Advancement",
-          badge: "Recruitment OS",
-          code: "POST /api/recruiters/jobs/{id}/applicants/batch-stage -> COMMIT",
-          description: "Recruiters manage candidate stages from APPLIED -> SHORTLISTED -> INTERVIEW -> OFFERED with atomic state transitions and batch actions.",
-          stat: "< 120ms Batch Latency",
-        },
-        {
-          id: 3,
-          icon: "🛡️",
-          step: "STAGE 04",
-          name: "Placement Governance",
-          summary: "Cryptographic Audit & Institutional CSV",
-          badge: "Superuser Console",
-          code: "AUDIT_LOG: [ADMIN_APPROVE_JOB] target_job_id=4 timestamp=ISO_8601",
-          description: "Central placement cell verifies recruiters, vets job postings before public visibility, monitors all administrative actions, and exports official placement CSVs.",
-          stat: "Immutable Ledger",
-        },
-      ];
-
+    // --- LANDING VIEW (CLEAN VTOP-INSPIRED LIGHT THEME) ---
+    function LandingView({ onOpenAuth }) {
       return (
-        <div className="flex-1 flex flex-col justify-center">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 space-y-16">
+        <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto w-full space-y-10">
             
-            {/* Hero Banner */}
-            <div className="text-center space-y-6 max-w-3xl mx-auto">
-              <HoverPopup title="Cloud Verified" subtitle="FastAPI + AWS S3 + PostgreSQL" badge="Production Grade">
-                <div className="cursor-pointer inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-bold shadow-lg shadow-indigo-500/10 transition-all hover:bg-indigo-500/20">
-                  <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-                  Institutional Campus Placement Portal &bull; Multi-Tenant ATS OS
-                </div>
-              </HoverPopup>
-
-              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white">
-                The Operating System for <br />
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
-                  Institutional Placements.
-                </span>
+            {/* Tagline / Headline at the top */}
+            <div className="text-center space-y-3">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Campus Placement &amp; Internship Portal
               </h1>
-
-              <p className="text-sm sm:text-base text-gray-400 leading-relaxed font-normal">
-                Engineered for university placement cells, student applicants, and partner recruiters. Featuring server-side CGPA gating, native AWS S3 resume indexing, and atomic applicant tracking.
+              <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+                Centralized gateway for academic placement drives, corporate internships, and recruitment governance.
               </p>
-
-              {/* Action CTAs */}
-              <div className="flex items-center justify-center gap-4 pt-2">
-                <button
-                  onClick={() => onOpenAuth("LOGIN")}
-                  className="btn-shine text-xs font-bold px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 text-white shadow-xl shadow-indigo-600/30 hover:scale-[1.02] transition-all"
-                >
-                  Enter Workspace Portal →
-                </button>
-                <button
-                  onClick={() => onQuickLogin("student@placement.edu", "Student@1234", "STUDENT")}
-                  className="text-xs font-bold px-6 py-3 rounded-xl bg-gray-900/90 hover:bg-gray-800 text-gray-200 border border-white/10 hover:border-indigo-500/40 transition-all flex items-center gap-2"
-                >
-                  <span className="icon-bounce">⚡</span> Instant Demo Sign-In
-                </button>
-              </div>
             </div>
 
-            {/* Enterprise Platform Metrics Strip */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 px-6 rounded-2xl bg-gray-900/60 border border-white/10 backdrop-blur-xl">
-              <div className="text-center sm:text-left">
-                <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">100%</div>
-                <div className="text-[11px] text-gray-400 font-medium">Deterministic Gating</div>
-              </div>
-              <div className="text-center sm:text-left">
-                <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">AWS S3</div>
-                <div className="text-[11px] text-gray-400 font-medium">Cloud Resume Engine</div>
-              </div>
-              <div className="text-center sm:text-left">
-                <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">&lt; 120ms</div>
-                <div className="text-[11px] text-gray-400 font-medium">ATS Pipeline Latency</div>
-              </div>
-              <div className="text-center sm:text-left">
-                <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-emerald-400">3 Roles</div>
-                <div className="text-[11px] text-gray-400 font-medium">Cryptographic RBAC</div>
-              </div>
-            </div>
-
-            {/* Live Interactive Architecture Pipeline Explorer */}
-            <div className="company-card rounded-3xl p-6 sm:p-8 relative overflow-visible border border-indigo-500/20 bg-gradient-to-b from-gray-900/90 to-gray-950/90 shadow-2xl">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 pb-6 border-b border-white/10">
+            {/* Three separate login cards: Responsive row on desktop, stacked on mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+              
+              {/* Card 1: Student */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-6 sm:p-7 flex flex-col justify-between text-left">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                    <span className="text-[11px] font-extrabold uppercase tracking-widest text-cyan-400">Interactive Pipeline Architecture</span>
+                  <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-2xl mb-4">
+                    🎓
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white">How Apex Recruitment OS Operates</h3>
+                  <h2 className="text-lg font-bold text-slate-900 mb-1.5">Student</h2>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-6">
+                    Access active placement drives, submit applications, check eligibility status, and track interview calls.
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-gray-400">
-                  <span>Hover on icons or click stages to trace engine execution:</span>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth("LOGIN", "STUDENT")}
+                  className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-sm text-center"
+                >
+                  Student Login
+                </button>
               </div>
 
-              {/* 4 Interactive Stage Nodes */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                {stages.map((st, idx) => (
-                  <button
-                    key={st.id}
-                    onClick={() => setActiveStage(idx)}
-                    className={`p-4 rounded-2xl text-left transition-all duration-300 relative border ${
-                      activeStage === idx
-                        ? "bg-indigo-600/20 border-indigo-500 shadow-lg shadow-indigo-500/20 scale-[1.02]"
-                        : "bg-gray-950/60 border-white/5 hover:border-white/20 hover:bg-gray-900/60"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <HoverPopup title={st.name} subtitle={st.summary} badge={st.badge}>
-                        <span className="icon-bounce text-2xl">{st.icon}</span>
-                      </HoverPopup>
-                      <span className="text-[9px] font-mono font-bold text-gray-400 px-1.5 py-0.5 rounded bg-white/5">
-                        {st.step}
-                      </span>
-                    </div>
-                    <div className="text-xs font-extrabold text-white mb-0.5">{st.name}</div>
-                    <div className="text-[10px] text-gray-400 leading-tight">{st.summary}</div>
-                  </button>
-                ))}
+              {/* Card 2: Company / Recruiter */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-6 sm:p-7 flex flex-col justify-between text-left">
+                <div>
+                  <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-2xl mb-4">
+                    🏢
+                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 mb-1.5">Company / Recruiter</h2>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-6">
+                    Publish campus job openings, review student candidates, manage candidate stages, and schedule interview rounds.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth("LOGIN", "RECRUITER")}
+                  className="w-full py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors shadow-sm text-center"
+                >
+                  Company Login
+                </button>
               </div>
 
-              {/* Active Stage Terminal / Live Inspection Box */}
-              <div className="bg-gray-950/90 rounded-2xl p-5 border border-indigo-500/30 font-mono text-xs shadow-inner">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-white/10">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <span className="text-gray-400 text-[11px] font-bold ml-2">execution-trace-log</span>
+              {/* Card 3: Administrator */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-6 sm:p-7 flex flex-col justify-between text-left">
+                <div>
+                  <div className="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center text-2xl mb-4">
+                    🛡️
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold border border-indigo-500/40">
-                      {stages[activeStage].badge}
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/40">
-                      {stages[activeStage].stat}
-                    </span>
-                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 mb-1.5">Administrator</h2>
+                  <p className="text-xs text-slate-600 leading-relaxed mb-6">
+                    Verify recruiter accounts, approve job postings, oversee placement procedures, and export institutional reports.
+                  </p>
                 </div>
-
-                <div className="text-cyan-300 font-bold mb-2 break-all">
-                  $ <span className="text-white">{stages[activeStage].code}</span>
-                </div>
-                <p className="text-gray-300 text-[11px] font-sans leading-relaxed">
-                  {stages[activeStage].description}
-                </p>
-              </div>
-            </div>
-
-            {/* Quick Interactive Persona Switcher Cards */}
-            <div className="space-y-4">
-              <div className="text-center text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center justify-center gap-2">
-                <span>⚡ Instant 1-Click Persona Access (Hover on icons for animated pop-ups)</span>
+                <button
+                  type="button"
+                  onClick={() => onOpenAuth("LOGIN", "ADMIN")}
+                  className="w-full py-2.5 px-4 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs transition-colors shadow-sm text-center"
+                >
+                  Administrator Login
+                </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                {/* 1. Student Demo Card */}
-                <div className="company-card rounded-2xl p-6 text-left relative overflow-visible group">
-                  <div className="flex items-center justify-between mb-4">
-                    <HoverPopup title="Candidate Profile" subtitle="Roll: 21CS001 • Class of 2025" badge="CSE">
-                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
-                        <span className="icon-bounce">🎓</span>
-                      </div>
-                    </HoverPopup>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                      STUDENT
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-1">Ronak Soni</h3>
-                  <div className="text-xs text-cyan-300 font-semibold mb-4">Computer Science & Engineering</div>
-
-                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Academic CGPA</span>
-                      <span className="font-extrabold text-emerald-400">9.20 / 10.0</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Resume Status</span>
-                      <span className="font-bold text-cyan-300">AWS S3 Indexed</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Scheduled Interview</span>
-                      <span className="font-bold text-indigo-300">Round 1 (AWS)</span>
-                    </div>
-                  </div>
-
-                  <HoverPopup title="Launch Student View" subtitle="Explore job feed & interview notifications">
-                    <button
-                      onClick={() => onQuickLogin("student@placement.edu", "Student@1234", "STUDENT")}
-                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-600/25 transition-all flex items-center justify-center gap-2"
-                    >
-                      Enter Student Workspace →
-                    </button>
-                  </HoverPopup>
-                </div>
-
-                {/* 2. Recruiter Demo Card */}
-                <div className="company-card rounded-2xl p-6 text-left relative overflow-visible group">
-                  <div className="flex items-center justify-between mb-4">
-                    <HoverPopup title="Partner Company" subtitle="Enterprise Recruiter Account" badge="Verified">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
-                        <span className="icon-bounce">🏢</span>
-                      </div>
-                    </HoverPopup>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                      ACTIVE PARTNER
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-1">Amazon Web Services</h3>
-                  <div className="text-xs text-indigo-300 font-semibold mb-4">HR Partner: Priya Sharma</div>
-
-                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Active Opening</span>
-                      <span className="font-bold text-white">Cloud SDE (AWS)</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Package / CTC</span>
-                      <span className="font-extrabold text-emerald-400">₹18.5 LPA</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">ATS Pipeline</span>
-                      <span className="font-bold text-indigo-300">ACID Batch Actions</span>
-                    </div>
-                  </div>
-
-                  <HoverPopup title="Launch Recruiter ATS" subtitle="Review candidates, schedule interviews, and export CSVs">
-                    <button
-                      onClick={() => onQuickLogin("recruiter@placement.edu", "Recruiter@1234", "RECRUITER")}
-                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2"
-                    >
-                      Enter Recruiter ATS →
-                    </button>
-                  </HoverPopup>
-                </div>
-
-                {/* 3. Placement Director Admin Card */}
-                <div className="company-card rounded-2xl p-6 text-left relative overflow-visible group">
-                  <div className="flex items-center justify-between mb-4">
-                    <HoverPopup title="Institutional Admin" subtitle="Central Placement Cell Governance" badge="Director">
-                      <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110">
-                        <span className="icon-bounce">🛡️</span>
-                      </div>
-                    </HoverPopup>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
-                      SUPERUSER
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white mb-1">Placement Cell Director</h3>
-                  <div className="text-xs text-purple-300 font-semibold mb-4">University Governance Console</div>
-
-                  <div className="space-y-2 text-xs text-gray-300 mb-6 bg-gray-950/50 p-3 rounded-xl border border-white/5">
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Vetting Queues</span>
-                      <span className="font-bold text-amber-300">Partner & Job Approvals</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Audit Trail</span>
-                      <span className="font-bold text-white">Immutable Logs</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Institutional Reports</span>
-                      <span className="font-bold text-emerald-400">CSV Export Ready</span>
-                    </div>
-                  </div>
-
-                  <HoverPopup title="Launch Admin Console" subtitle="Vetting queues, platform metrics, and audit trail">
-                    <button
-                      onClick={() => onQuickLogin("admin@placement.edu", "Admin@1234", "ADMIN")}
-                      className="btn-shine w-full py-2.5 px-4 rounded-xl font-bold text-xs bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-600/25 transition-all flex items-center justify-center gap-2"
-                    >
-                      Enter Admin Console →
-                    </button>
-                  </HoverPopup>
-                </div>
-              </div>
-            </div>
-
-            {/* Architecture Highlights Pill Matrix */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/[0.08]">
-              <HoverPopup title="AWS S3 Presigned Uploads" subtitle="PDF format sanitation & secure download endpoints">
-                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
-                  <div className="text-xl mb-1.5 icon-bounce">☁️</div>
-                  <div className="text-xs font-bold text-white mb-1">AWS S3 Resume Hub</div>
-                  <div className="text-[11px] text-gray-400">Direct streaming to Amazon S3 with zero-config fallback.</div>
-                </div>
-              </HoverPopup>
-
-              <HoverPopup title="Server-Side Gatekeeper" subtitle="Calculates CGPA, batch, branch, and deadline constraints">
-                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
-                  <div className="text-xl mb-1.5 icon-bounce">⚡</div>
-                  <div className="text-xs font-bold text-white mb-1">Deterministic Eligibility</div>
-                  <div className="text-[11px] text-gray-400">Guaranteed criteria matching before SQL write persistence.</div>
-                </div>
-              </HoverPopup>
-
-              <HoverPopup title="ACID ATS Funnel" subtitle="Atomic status updates with rollback on invalid foreign keys">
-                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
-                  <div className="text-xl mb-1.5 icon-bounce">🔄</div>
-                  <div className="text-xs font-bold text-white mb-1">Atomic Pipeline</div>
-                  <div className="text-[11px] text-gray-400">Batch updates, interview scheduling, and CSV generation.</div>
-                </div>
-              </HoverPopup>
-
-              <HoverPopup title="Cryptographic Audit" subtitle="All admin actions recorded in immutable audit tables">
-                <div className="company-card p-4 rounded-2xl text-left cursor-pointer w-full">
-                  <div className="text-xl mb-1.5 icon-bounce">📜</div>
-                  <div className="text-xs font-bold text-white mb-1">Immutable Logs</div>
-                  <div className="text-[11px] text-gray-400">Full transparency on recruiter approvals and job edits.</div>
-                </div>
-              </HoverPopup>
             </div>
 
           </div>
@@ -3157,9 +2795,10 @@
     }
 
     // --- AUTH MODAL ---
-    function AuthModal({ isOpen, initialMode, onClose, onSuccess }) {
+    // --- AUTH MODAL ---
+    function AuthModal({ isOpen, initialMode, initialRole, onClose, onSuccess }) {
       const [mode, setMode] = useState(initialMode || "LOGIN");
-      const [role, setRole] = useState("STUDENT");
+      const [role, setRole] = useState(initialRole || "STUDENT");
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
       const [fullName, setFullName] = useState("");
@@ -3171,6 +2810,14 @@
       const [hrName, setHrName] = useState("");
       const [error, setError] = useState("");
       const [submitting, setSubmitting] = useState(false);
+
+      useEffect(() => {
+        if (isOpen) {
+          if (initialMode) setMode(initialMode);
+          if (initialRole) setRole(initialRole);
+          setError("");
+        }
+      }, [isOpen, initialMode, initialRole]);
 
       if (!isOpen) return null;
 
@@ -3222,22 +2869,36 @@
         }
       };
 
+      const getSubmitBtnStyle = () => {
+        if (mode !== "LOGIN") return "bg-blue-600 hover:bg-blue-700";
+        if (role === "STUDENT") return "bg-blue-600 hover:bg-blue-700";
+        if (role === "RECRUITER") return "bg-emerald-600 hover:bg-emerald-700";
+        if (role === "ADMIN") return "bg-purple-600 hover:bg-purple-700";
+        return "bg-blue-600 hover:bg-blue-700";
+      };
+
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <h3 className="font-extrabold text-base text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-bold text-base text-slate-900">
                 {mode === "LOGIN"
                   ? "Sign In • Campus Placement Portal"
                   : mode === "REGISTER_STUDENT"
                   ? "Register Student Applicant"
                   : "Register Partner Recruiter"}
               </h3>
-              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
+              >
+                ✕
+              </button>
             </div>
 
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-xs whitespace-pre-line">
+              <div className="p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs whitespace-pre-line">
                 {error}
               </div>
             )}
@@ -3245,20 +2906,24 @@
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               {mode === "LOGIN" && (
                 <div>
-                  <label className="block text-gray-400 font-semibold mb-1">Target Account Role</label>
+                  <label className="block text-slate-700 font-semibold mb-1.5">Portal Role</label>
                   <div className="grid grid-cols-3 gap-2">
-                    {["STUDENT", "RECRUITER", "ADMIN"].map((r) => (
+                    {[
+                      { id: "STUDENT", label: "Student", activeClass: "bg-blue-600 text-white" },
+                      { id: "RECRUITER", label: "Company", activeClass: "bg-emerald-600 text-white" },
+                      { id: "ADMIN", label: "Admin", activeClass: "bg-purple-600 text-white" },
+                    ].map((item) => (
                       <button
                         type="button"
-                        key={r}
-                        onClick={() => setRole(r)}
-                        className={`py-2 rounded-xl font-bold text-xs transition-all ${
-                          role === r
-                            ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-                            : "bg-gray-900 text-gray-400 hover:text-white border border-white/5"
+                        key={item.id}
+                        onClick={() => setRole(item.id)}
+                        className={`py-2 rounded-lg font-semibold text-xs transition-colors ${
+                          role === item.id
+                            ? `${item.activeClass} shadow-sm`
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200"
                         }`}
                       >
-                        {r}
+                        {item.label}
                       </button>
                     ))}
                   </div>
@@ -3268,30 +2933,30 @@
               {mode === "REGISTER_STUDENT" && (
                 <>
                   <div>
-                    <label className="block text-gray-400 font-semibold mb-1">Full Name</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Full Name</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Ronak Soni"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-gray-400 font-semibold mb-1">Roll Number</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Roll Number</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. 21CS001"
                         value={rollNumber}
                         onChange={(e) => setRollNumber(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-400 font-semibold mb-1">Academic CGPA</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Academic CGPA</label>
                       <input
                         type="number"
                         step="0.01"
@@ -3300,17 +2965,17 @@
                         required
                         value={cgpa}
                         onChange={(e) => setCgpa(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-gray-400 font-semibold mb-1">Branch</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Branch</label>
                       <select
                         value={branch}
                         onChange={(e) => setBranch(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       >
                         <option value="CSE">CSE</option>
                         <option value="ECE">ECE</option>
@@ -3320,13 +2985,13 @@
                       </select>
                     </div>
                     <div>
-                      <label className="block text-gray-400 font-semibold mb-1">Batch Year</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Batch Year</label>
                       <input
                         type="number"
                         required
                         value={gradYear}
                         onChange={(e) => setGradYear(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                       />
                     </div>
                   </div>
@@ -3336,51 +3001,51 @@
               {mode === "REGISTER_RECRUITER" && (
                 <>
                   <div>
-                    <label className="block text-gray-400 font-semibold mb-1">Company Name</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Company Name</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Amazon Web Services"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-400 font-semibold mb-1">HR Representative Name</label>
+                    <label className="block text-slate-700 font-semibold mb-1">HR Representative Name</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. Priya Sharma"
                       value={hrName}
                       onChange={(e) => setHrName(e.target.value)}
-                      className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                     />
                   </div>
                 </>
               )}
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Email Address</label>
+                <label className="block text-slate-700 font-semibold mb-1">Email Address</label>
                 <input
                   type="email"
                   required
                   placeholder="name@placement.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 font-semibold mb-1">Password</label>
+                <label className="block text-slate-700 font-semibold mb-1">Password</label>
                 <input
                   type="password"
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                 />
               </div>
 
@@ -3388,17 +3053,17 @@
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-shine w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50"
+                  className={`w-full py-2.5 rounded-lg text-white font-semibold text-xs transition-colors shadow-sm disabled:opacity-50 ${getSubmitBtnStyle()}`}
                 >
                   {submitting
                     ? "Validating..."
                     : mode === "LOGIN"
-                    ? "Enter Workspace →"
-                    : "Create Profile →"}
+                    ? "Sign In"
+                    : "Create Account"}
                 </button>
               </div>
 
-              <div className="pt-2 text-center text-[11px] text-gray-400 space-y-1">
+              <div className="pt-2 text-center text-xs text-slate-500 space-y-1.5">
                 {mode === "LOGIN" ? (
                   <>
                     <div>
@@ -3406,7 +3071,7 @@
                       <button
                         type="button"
                         onClick={() => { setMode("REGISTER_STUDENT"); setError(""); }}
-                        className="text-cyan-400 hover:underline font-bold"
+                        className="text-blue-600 hover:underline font-semibold"
                       >
                         Register as Student
                       </button>
@@ -3416,7 +3081,7 @@
                       <button
                         type="button"
                         onClick={() => { setMode("REGISTER_RECRUITER"); setError(""); }}
-                        className="text-indigo-400 hover:underline font-bold"
+                        className="text-emerald-600 hover:underline font-semibold"
                       >
                         Register Organization
                       </button>
@@ -3428,7 +3093,7 @@
                     <button
                       type="button"
                       onClick={() => { setMode("LOGIN"); setError(""); }}
-                      className="text-indigo-400 hover:underline font-bold"
+                      className="text-blue-600 hover:underline font-semibold"
                     >
                       Sign In here
                     </button>
