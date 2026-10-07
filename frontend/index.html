@@ -373,10 +373,7 @@
             <ToastContainer toasts={toasts} onDismiss={dismissToast} />
           </div>
         );
-      }
-
-      // 2. LOGGED-IN WORKSPACE (Dashboard for Student, Recruiter, Admin unchanged)
-      return (
+      }      
       // 2. LOGGED-IN WORKSPACE (Dashboard for Student, Recruiter, Admin)
       return (
         <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans relative">
@@ -497,7 +494,7 @@
           </footer>
         </div>
       );
-      );
+      
     }
 
     // --- LANDING VIEW (CLEAN VTOP-INSPIRED LIGHT THEME) ---
@@ -1965,7 +1962,6 @@
     }
 
     // --- ADMIN VIEW (GOVERNANCE SUITE) ---
-    // --- ADMIN VIEW (PLACEMENT CELL ADMINISTRATION) ---
     function AdminView({ user, addToast }) {
       const [metrics, setMetrics] = useState(null);
       const [pendingRecruiters, setPendingRecruiters] = useState([]);
@@ -1973,9 +1969,8 @@
       const [students, setStudents] = useState([]);
       const [recruiters, setRecruiters] = useState([]);
       const [auditLogs, setAuditLogs] = useState([]);
-      const [activeTab, setActiveTab] = useState("RECRUITER_APPROVALS");
+      const [activeTab, setActiveTab] = useState("VETTING");
       const [feedbackModalJob, setFeedbackModalJob] = useState(null);
-      const [studentSearch, setStudentSearch] = useState("");
 
       useEffect(() => {
         loadAdminData();
@@ -2005,7 +2000,7 @@
       const handleApproveRecruiter = async (id) => {
         try {
           await api.approveRecruiter(id);
-          addToast("Recruiter approved and activated.", "success");
+          addToast("Recruiter approved and activated in directory.", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
@@ -2025,318 +2020,306 @@
       const handleApproveJob = async (id) => {
         try {
           await api.approveJob(id);
-          addToast("Placement drive approved and published.", "success");
+          addToast("Job verified and unlocked for student applicants!", "success");
           loadAdminData();
         } catch (e) {
           addToast(e.message, "error");
         }
       };
 
-      const filteredStudents = useMemo(() => {
-        if (!studentSearch.trim()) return students;
-        const q = studentSearch.toLowerCase();
-        return students.filter(
-          (s) =>
-            s.full_name?.toLowerCase().includes(q) ||
-            s.roll_number?.toLowerCase().includes(q) ||
-            s.branch?.toLowerCase().includes(q)
-        );
-      }, [students, studentSearch]);
-
       return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
           
-          {/* Header */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* Admin Command Header */}
+          <div className="company-card rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Placement Cell Administration</h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Manage students, recruiters, placement drives and applications.
-              </p>
+              <div className="text-xs font-bold uppercase tracking-wider text-purple-400">Institutional Governance Console</div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white">Central Placement Cell Operations</h2>
+              <div className="text-xs text-gray-400 mt-1">Superuser Clearance &bull; Permanent Audit Logging Active</div>
             </div>
 
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <a
-                href={api.exportStudentsCsvUrl()}
-                download
-                className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 shadow-sm transition-colors"
-              >
-                Export Students (CSV)
-              </a>
+            <div className="flex items-center gap-3 flex-wrap">
+              <HoverPopup title="Student Database" subtitle="Export complete student metrics to CSV">
+                <a
+                  href={api.exportStudentsCsvUrl()}
+                  download
+                  className="px-3.5 py-2 rounded-xl bg-purple-600/20 text-purple-200 border border-purple-500/40 text-xs font-bold hover:bg-purple-600/30 flex items-center gap-1.5 transition-all"
+                >
+                  <span className="icon-bounce">📥</span> Student Registry (CSV)
+                </a>
+              </HoverPopup>
 
-              <a
-                href={api.exportPlacementsCsvUrl()}
-                download
-                className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 shadow-sm transition-colors"
-              >
-                Export Placements (CSV)
-              </a>
+              <HoverPopup title="Placement Record" subtitle="Export all offered students and CTC to CSV">
+                <a
+                  href={api.exportPlacementsCsvUrl()}
+                  download
+                  className="px-3.5 py-2 rounded-xl bg-emerald-600/20 text-emerald-200 border border-emerald-500/40 text-xs font-bold hover:bg-emerald-600/30 flex items-center gap-1.5 transition-all"
+                >
+                  <span className="icon-bounce">🏆</span> Placements Report (CSV)
+                </a>
+              </HoverPopup>
             </div>
           </div>
 
-          {/* Summary Cards */}
+          {/* KPI Cards */}
           {metrics && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Total Students</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_students}</div>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3.5">
+              <HoverPopup title="Student Cohort" subtitle="Total verified student signups">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Total Students</div>
+                  <div className="text-2xl font-black text-white mt-1">{metrics.total_students}</div>
+                </div>
+              </HoverPopup>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Registered Companies</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_recruiters}</div>
-                {metrics.pending_recruiters > 0 && (
-                  <div className="text-[11px] text-amber-700 font-medium mt-0.5">{metrics.pending_recruiters} Pending</div>
-                )}
-              </div>
+              <HoverPopup title="Corporate Network" subtitle={`${metrics.pending_recruiters} awaiting administrative vetting`}>
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Recruiters</div>
+                  <div className="text-2xl font-black text-cyan-400 mt-1">{metrics.total_recruiters}</div>
+                  <div className="text-[10px] text-gray-400">{metrics.pending_recruiters} Pending</div>
+                </div>
+              </HoverPopup>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Active Placement Drives</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.active_jobs}</div>
-                {metrics.pending_jobs > 0 && (
-                  <div className="text-[11px] text-amber-700 font-medium mt-0.5">{metrics.pending_jobs} In Review</div>
-                )}
-              </div>
+              <HoverPopup title="Drives Live" subtitle={`${metrics.pending_jobs} drives in review queue`}>
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Active Drives</div>
+                  <div className="text-2xl font-black text-indigo-400 mt-1">{metrics.active_jobs}</div>
+                  <div className="text-[10px] text-gray-400">{metrics.pending_jobs} In Review</div>
+                </div>
+              </HoverPopup>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Applications</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.total_applications}</div>
-              </div>
+              <HoverPopup title="Total Applications" subtitle="Submissions evaluated server-side">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Applications</div>
+                  <div className="text-2xl font-black text-purple-400 mt-1">{metrics.total_applications}</div>
+                </div>
+              </HoverPopup>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Offers Released</div>
-                <div className="text-2xl font-bold text-emerald-600 mt-1">{metrics.total_offered}</div>
-              </div>
+              <HoverPopup title="Offers Confirmed" subtitle="Successful candidate selections">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Offers Released</div>
+                  <div className="text-2xl font-black text-emerald-400 mt-1">{metrics.total_offered}</div>
+                </div>
+              </HoverPopup>
 
-              <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm text-left">
-                <div className="text-xs font-semibold text-slate-500">Conversion Rate</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">{metrics.conversion_rate_percentage}%</div>
-              </div>
+              <HoverPopup title="Placement Efficiency" subtitle="Candidate offer conversion ratio">
+                <div className="company-card p-4 rounded-xl text-left cursor-pointer w-full">
+                  <div className="text-xs text-gray-400 font-bold">Conversion Rate</div>
+                  <div className="text-2xl font-black text-amber-400 mt-1">{metrics.conversion_rate_percentage}%</div>
+                </div>
+              </HoverPopup>
             </div>
           )}
 
-          {/* Admin Navigation Tabs */}
-          <div className="flex border-b border-slate-200 space-x-2 overflow-x-auto">
+          {/* Segmented Control Admin Tabs */}
+          <div className="bg-gray-900/60 p-1 rounded-2xl border border-white/[0.08] inline-flex gap-1.5 backdrop-blur-xl overflow-x-auto">
             <button
-              type="button"
-              onClick={() => setActiveTab("RECRUITER_APPROVALS")}
-              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeTab === "RECRUITER_APPROVALS"
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+              onClick={() => setActiveTab("VETTING")}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                activeTab === "VETTING"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              Recruiter Approvals ({pendingRecruiters.length})
+              <span className="icon-bounce">⚖️</span>
+              <span>Vetting Queues</span>
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
+                {pendingRecruiters.length + pendingJobs.length}
+              </span>
             </button>
             <button
-              type="button"
-              onClick={() => setActiveTab("JOBS")}
-              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeTab === "JOBS"
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Placement Drives ({pendingJobs.length})
-            </button>
-            <button
-              type="button"
               onClick={() => setActiveTab("STUDENTS")}
-              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "STUDENTS"
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              Students ({students.length})
+              <span className="icon-bounce">🎓</span>
+              <span>Student Directory</span>
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
+                {students.length}
+              </span>
             </button>
             <button
-              type="button"
-              onClick={() => setActiveTab("COMPANIES")}
-              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
-                activeTab === "COMPANIES"
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+              onClick={() => setActiveTab("RECRUITERS")}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                activeTab === "RECRUITERS"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              Companies ({recruiters.length})
+              <span className="icon-bounce">🏢</span>
+              <span>Partner Directory</span>
+              <span className="px-1.5 py-0.2 rounded-md text-[10px] bg-black/40 text-purple-200">
+                {recruiters.length}
+              </span>
             </button>
             <button
-              type="button"
               onClick={() => setActiveTab("AUDIT")}
-              className={`pb-3 px-4 text-xs font-semibold transition-colors border-b-2 whitespace-nowrap ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "AUDIT"
-                  ? "border-blue-600 text-blue-600 font-bold"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              Audit Logs
+              <span className="icon-bounce">📜</span>
+              <span>Audit Trail</span>
             </button>
           </div>
 
-          {/* TAB 1: RECRUITER APPROVALS */}
-          {activeTab === "RECRUITER_APPROVALS" && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h2 className="text-sm font-bold text-slate-900">Pending Recruiter Approvals</h2>
-                <span className="text-xs text-slate-500">{pendingRecruiters.length} awaiting review</span>
-              </div>
-
-              {pendingRecruiters.length === 0 ? (
-                <div className="py-8 text-center text-slate-400 text-xs">
-                  No pending recruiter accounts awaiting approval.
+          {/* TAB 1: VETTING QUEUES */}
+          {activeTab === "VETTING" && (
+            <div className="space-y-6">
+              
+              {/* Recruiter Vetting */}
+              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <span>🏢 Recruiter Verification Queue</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-bold">
+                      {pendingRecruiters.length} Pending
+                    </span>
+                  </h3>
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
-                        <th className="py-3 px-3">Company</th>
-                        <th className="py-3 px-3">HR Representative</th>
-                        <th className="py-3 px-3">Email</th>
-                        <th className="py-3 px-3">Status</th>
-                        <th className="py-3 px-3 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {pendingRecruiters.map((r) => (
-                        <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                          <td className="py-3 px-3 font-semibold text-slate-900">{r.company_name}</td>
-                          <td className="py-3 px-3 text-slate-700">{r.hr_name}</td>
-                          <td className="py-3 px-3 text-slate-500 font-mono">{r.email}</td>
-                          <td className="py-3 px-3">
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                              Pending
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-right">
-                            <div className="inline-flex gap-2">
-                              <button
-                                type="button"
-                                onClick={() => handleApproveRecruiter(r.id)}
-                                className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm"
-                              >
-                                Approve
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRejectRecruiter(r.id)}
-                                className="px-3 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 font-semibold text-xs"
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
 
-          {/* TAB 2: PLACEMENT DRIVES APPROVAL */}
-          {activeTab === "JOBS" && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h2 className="text-sm font-bold text-slate-900">Placement Drive Vetting Queue</h2>
-                <span className="text-xs text-slate-500">{pendingJobs.length} In Review</span>
-              </div>
-
-              {pendingJobs.length === 0 ? (
-                <div className="py-8 text-center text-slate-400 text-xs">
-                  No placement drive postings awaiting verification.
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {pendingJobs.map((j) => (
-                    <div
-                      key={j.id}
-                      className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-                    >
-                      <div className="space-y-1">
-                        <span className="text-xs font-semibold text-slate-500">{j.company_name}</span>
-                        <h3 className="text-sm font-bold text-slate-900">{j.title}</h3>
-                        <div className="text-xs text-slate-600">
-                          Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Departments: [{j.allowed_branches.join(", ")}]
-                          {j.ctc_lpa > 0 && ` • Package: ₹${j.ctc_lpa} LPA`}
+                {pendingRecruiters.length === 0 ? (
+                  <div className="py-6 text-center text-gray-400 text-xs">
+                    All partner organizations verified. No pending reviews in queue!
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingRecruiters.map((r) => (
+                      <div
+                        key={r.id}
+                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex items-center justify-between gap-4"
+                      >
+                        <div>
+                          <div className="font-bold text-white">{r.company_name}</div>
+                          <div className="text-xs text-gray-400">
+                            HR Partner: <b className="text-gray-300">{r.hr_name}</b> &bull; {r.email}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <HoverPopup title="Authorize Recruiter" subtitle="Grant immediate job posting permissions">
+                            <button
+                              onClick={() => handleApproveRecruiter(r.id)}
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            >
+                              Approve
+                            </button>
+                          </HoverPopup>
+                          <HoverPopup title="Decline Account" subtitle="Mark recruiter as rejected">
+                            <button
+                              onClick={() => handleRejectRecruiter(r.id)}
+                              className="px-3 py-1.5 rounded-xl bg-rose-600/30 text-rose-300 border border-rose-500/40 hover:bg-rose-600/50 text-xs font-bold"
+                            >
+                              Reject
+                            </button>
+                          </HoverPopup>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleApproveJob(j.id)}
-                          className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm"
-                        >
-                          Approve Drive
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setFeedbackModalJob(j)}
-                          className="px-3.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold text-xs shadow-sm"
-                        >
-                          Request Changes
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+              {/* Job Draft Vetting */}
+              <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <span>📋 Job Opening Approval Queue</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-indigo-500/20 text-indigo-300 font-bold">
+                      {pendingJobs.length} In Review
+                    </span>
+                  </h3>
                 </div>
-              )}
+
+                {pendingJobs.length === 0 ? (
+                  <div className="py-6 text-center text-gray-400 text-xs">
+                    No job drafts awaiting placement cell vetting.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingJobs.map((j) => (
+                      <div
+                        key={j.id}
+                        className="p-4 rounded-xl bg-gray-900 border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                      >
+                        <div className="space-y-1">
+                          <div className="text-xs font-bold text-gray-400">{j.company_name}</div>
+                          <div className="text-sm font-bold text-white">{j.title}</div>
+                          <div className="text-xs text-gray-300">
+                            Min CGPA: <b>{j.min_cgpa.toFixed(2)}</b> &bull; Whitelist: [{j.allowed_branches.join(", ")}]
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <HoverPopup title="Approve Opening" subtitle="Make visible to eligible students">
+                            <button
+                              onClick={() => handleApproveJob(j.id)}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                            >
+                              Approve Drive
+                            </button>
+                          </HoverPopup>
+                          <HoverPopup title="Request Modifications" subtitle="Append feedback & return to recruiter">
+                            <button
+                              onClick={() => setFeedbackModalJob(j)}
+                              className="px-3.5 py-1.5 rounded-xl bg-amber-600/30 text-amber-200 border border-amber-500/40 hover:bg-amber-600/50 font-bold text-xs"
+                            >
+                              Request Changes
+                            </button>
+                          </HoverPopup>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
             </div>
           )}
 
-          {/* TAB 3: STUDENT DIRECTORY */}
+          {/* TAB 2: STUDENT DIRECTORY */}
           {activeTab === "STUDENTS" && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900">Student Directory</h2>
-                  <span className="text-xs text-slate-500">{students.length} Registered Candidates</span>
-                </div>
-
-                <input
-                  type="text"
-                  value={studentSearch}
-                  onChange={(e) => setStudentSearch(e.target.value)}
-                  placeholder="Search by name, roll number, or branch..."
-                  className="w-full sm:w-72 px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">University Student Cohort Directory</h3>
+                <span className="text-xs text-gray-400 font-mono">{students.length} Registered</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
-                      <th className="py-3 px-3">Registration Number</th>
-                      <th className="py-3 px-3">Student Name</th>
-                      <th className="py-3 px-3">Department</th>
-                      <th className="py-3 px-3">CGPA</th>
-                      <th className="py-3 px-3">Batch</th>
-                      <th className="py-3 px-3">Resume</th>
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
+                      <th className="py-2.5 px-3">Roll Number</th>
+                      <th className="py-2.5 px-3">Full Name</th>
+                      <th className="py-2.5 px-3">Department</th>
+                      <th className="py-2.5 px-3">CGPA</th>
+                      <th className="py-2.5 px-3">Batch</th>
+                      <th className="py-2.5 px-3">Resume</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredStudents.map((s) => (
-                      <tr key={s.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="py-3 px-3 font-mono font-semibold text-slate-700">{s.roll_number}</td>
-                        <td className="py-3 px-3 font-semibold text-slate-900">{s.full_name}</td>
-                        <td className="py-3 px-3 text-slate-700">{s.branch}</td>
-                        <td className="py-3 px-3 font-bold text-slate-900">{s.cgpa.toFixed(2)}</td>
-                        <td className="py-3 px-3 text-slate-500">{s.graduation_year}</td>
+                  <tbody className="divide-y divide-white/[0.05]">
+                    {students.map((s) => (
+                      <tr key={s.id} className="hover:bg-gray-900/40">
+                        <td className="py-3 px-3 font-mono font-bold text-cyan-400">{s.roll_number}</td>
+                        <td className="py-3 px-3 font-semibold text-white">{s.full_name}</td>
+                        <td className="py-3 px-3 text-gray-300">{s.branch}</td>
+                        <td className="py-3 px-3 font-bold text-emerald-400">{s.cgpa.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-gray-400">{s.graduation_year}</td>
                         <td className="py-3 px-3">
                           {s.resume_url ? (
                             <a
                               href={s.resume_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-blue-600 hover:underline font-semibold"
+                              className="text-indigo-400 hover:underline font-bold"
                             >
-                              View PDF
+                              View PDF ↗
                             </a>
                           ) : (
-                            <span className="text-slate-400">—</span>
+                            <span className="text-gray-500">—</span>
                           )}
                         </td>
                       </tr>
@@ -2347,43 +2330,43 @@
             </div>
           )}
 
-          {/* TAB 4: COMPANY DIRECTORY */}
-          {activeTab === "COMPANIES" && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h2 className="text-sm font-bold text-slate-900">Company Directory</h2>
-                <span className="text-xs text-slate-500">{recruiters.length} Partner Organizations</span>
+          {/* TAB 3: PARTNER DIRECTORY */}
+          {activeTab === "RECRUITERS" && (
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">Corporate Recruitment Partners</h3>
+                <span className="text-xs text-gray-400 font-mono">{recruiters.length} Organizations</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
-                      <th className="py-3 px-3">Company</th>
-                      <th className="py-3 px-3">HR Representative</th>
-                      <th className="py-3 px-3">Email</th>
-                      <th className="py-3 px-3">Approval Status</th>
-                      <th className="py-3 px-3">Active Drives</th>
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
+                      <th className="py-2.5 px-3">Company</th>
+                      <th className="py-2.5 px-3">HR Lead</th>
+                      <th className="py-2.5 px-3">Email</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3">Active Drives</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-white/[0.05]">
                     {recruiters.map((r) => (
-                      <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="py-3 px-3 font-semibold text-slate-900">{r.company_name}</td>
-                        <td className="py-3 px-3 text-slate-700">{r.hr_name}</td>
-                        <td className="py-3 px-3 text-slate-500 font-mono">{r.email}</td>
+                      <tr key={r.id} className="hover:bg-gray-900/40">
+                        <td className="py-3 px-3 font-bold text-white">{r.company_name}</td>
+                        <td className="py-3 px-3 text-gray-300">{r.hr_name}</td>
+                        <td className="py-3 px-3 text-gray-400">{r.email}</td>
                         <td className="py-3 px-3">
                           <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                               r.status === "ACTIVE"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : "bg-amber-50 text-amber-700 border-amber-200"
+                                ? "bg-emerald-500/20 text-emerald-300"
+                                : "bg-amber-500/20 text-amber-300"
                             }`}
                           >
-                            {r.status === "ACTIVE" ? "Approved" : "Pending"}
+                            {r.status}
                           </span>
                         </td>
-                        <td className="py-3 px-3 font-semibold text-slate-900">{r.jobs_count || 0}</td>
+                        <td className="py-3 px-3 font-bold text-indigo-400">{r.jobs_count || 0}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2392,33 +2375,33 @@
             </div>
           )}
 
-          {/* TAB 5: AUDIT LOGS */}
+          {/* TAB 4: AUDIT TRAIL */}
           {activeTab === "AUDIT" && (
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 text-left">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h2 className="text-sm font-bold text-slate-900">Administrative Audit Trail</h2>
-                <span className="text-xs text-slate-400 font-mono">IMMUTABLE LOGS</span>
+            <div className="company-card rounded-2xl p-6 space-y-4 text-left">
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <h3 className="font-extrabold text-white text-sm">Cryptographic Application-Level Audit Logs</h3>
+                <span className="text-[11px] text-gray-400 font-mono">APPEND-ONLY INTEGRITY</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px] tracking-wider bg-slate-50">
-                      <th className="py-3 px-3">Timestamp</th>
-                      <th className="py-3 px-3">Performed By</th>
-                      <th className="py-3 px-3">Action</th>
-                      <th className="py-3 px-3">Entity</th>
-                      <th className="py-3 px-3">Details</th>
+                    <tr className="border-b border-white/[0.08] text-gray-400 uppercase text-[10px]">
+                      <th className="py-2.5 px-3">Timestamp</th>
+                      <th className="py-2.5 px-3">Admin</th>
+                      <th className="py-2.5 px-3">Action</th>
+                      <th className="py-2.5 px-3">Entity</th>
+                      <th className="py-2.5 px-3">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
+                  <tbody className="divide-y divide-white/[0.05] font-mono text-[11px]">
                     {auditLogs.map((log) => (
-                      <tr key={log.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="py-2.5 px-3 text-slate-500">{new Date(log.timestamp).toLocaleString()}</td>
-                        <td className="py-2.5 px-3 text-blue-700 font-sans">{log.admin_email}</td>
-                        <td className="py-2.5 px-3 font-bold text-slate-900 font-sans">{log.action}</td>
-                        <td className="py-2.5 px-3 text-slate-600">{log.target_entity} #{log.target_id}</td>
-                        <td className="py-2.5 px-3 text-slate-600 font-sans">{log.details}</td>
+                      <tr key={log.id} className="hover:bg-gray-900/40">
+                        <td className="py-2.5 px-3 text-gray-400">{new Date(log.timestamp).toLocaleString()}</td>
+                        <td className="py-2.5 px-3 text-purple-300">{log.admin_email}</td>
+                        <td className="py-2.5 px-3 font-bold text-white">{log.action}</td>
+                        <td className="py-2.5 px-3 text-cyan-400">{log.target_entity} #{log.target_id}</td>
+                        <td className="py-2.5 px-3 text-gray-300 font-sans">{log.details}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2463,31 +2446,25 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900">Request Drive Modifications</h3>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
-              >
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Request Job Corrections</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">
-                  Required Changes for {job.company_name} ({job.title})
+                <label className="block text-gray-400 font-semibold mb-1">
+                  Mandatory Correction Feedback for {job.company_name}
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Detail changes required before approval..."
+                  placeholder="Explain requested corrections (e.g. adjust minimum CGPA, clarify branch requirements)..."
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -2495,14 +2472,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold disabled:opacity-50"
                 >
                   {sending ? "Sending..." : "Submit Feedback"}
                 </button>
@@ -2536,40 +2513,34 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-xl max-w-sm w-full p-6 text-left border border-slate-200 shadow-xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900">Change Password</h3>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
-              >
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-sm w-full p-6 text-left border border-white/10 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Change Password</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">Current Password</label>
+                <label className="block text-gray-400 font-semibold mb-1">Current Password</label>
                 <input
                   type="password"
                   required
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-semibold mb-1">New Password (Min 6 characters)</label>
+                <label className="block text-gray-400 font-semibold mb-1">New Password (Min 6 characters)</label>
                 <input
                   type="password"
                   required
                   minLength={6}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
@@ -2577,14 +2548,14 @@
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs shadow-sm transition-colors"
+                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold border border-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-1 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors disabled:opacity-50"
+                  className="btn-shine flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold disabled:opacity-50"
                 >
                   {saving ? "Updating..." : "Confirm Update"}
                 </button>
@@ -2607,46 +2578,39 @@
       };
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 text-left border border-slate-200 shadow-xl space-y-4 max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900">Student Notifications</h3>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-slate-400 hover:text-slate-600 text-base font-bold leading-none"
-              >
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="company-card rounded-2xl max-w-md w-full p-6 text-left border border-white/10 shadow-2xl space-y-4 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="font-extrabold text-base text-white">Student Alert Inbox</h3>
+              <button onClick={onClose} className="text-gray-400 hover:text-white text-sm">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
               {notifications.length === 0 ? (
-                <div className="py-8 text-center text-slate-400 text-xs">No alerts in your inbox.</div>
+                <div className="py-8 text-center text-gray-400 text-xs">No alerts in your inbox.</div>
               ) : (
                 notifications.map((n) => (
                   <div
                     key={n.id}
-                    className={`p-3.5 rounded-lg border text-xs space-y-1 transition-all ${
+                    className={`p-3.5 rounded-xl border text-xs space-y-1.5 transition-all ${
                       n.is_read
-                        ? "bg-slate-50 border-slate-200 text-slate-500"
-                        : "bg-blue-50 border-blue-200 text-slate-800"
+                        ? "bg-gray-900/40 border-gray-800 text-gray-400"
+                        : "bg-indigo-950/40 border-indigo-700/50 text-gray-200"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="font-bold text-slate-900 text-xs">{n.title}</div>
+                      <div className="font-bold text-white text-xs">{n.title}</div>
                       {!n.is_read && (
                         <button
-                          type="button"
                           onClick={() => handleMarkRead(n.id)}
-                          className="text-[10px] text-blue-600 hover:underline font-semibold"
+                          className="text-[10px] text-cyan-400 hover:underline font-bold"
                         >
                           Mark as read
                         </button>
                       )}
                     </div>
-                    <div className="text-[11px] leading-relaxed text-slate-600">{n.message}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">
+                    <div className="text-[11px] leading-relaxed">{n.message}</div>
+                    <div className="text-[10px] text-gray-500 font-mono">
                       {new Date(n.created_at).toLocaleString()}
                     </div>
                   </div>
